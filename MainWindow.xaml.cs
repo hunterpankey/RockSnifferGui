@@ -55,9 +55,16 @@ namespace RockSnifferGui
         {
             InitializeComponent();
 
+            try
+            {
+                this.Initialize();
+                this.Run();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message + ex.StackTrace, "Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
-            this.Initialize();
-            this.Run();
             //Keep running even when rocksmith disappears
             //while (true)
             //{
@@ -179,8 +186,9 @@ namespace RockSnifferGui
                 {
                     Logger.LogError("Executable hash does not match expected hash, make sure you have the correct version");
                     Logger.Log("Press any key to exit");
-                    Console.ReadKey();
-                    Environment.Exit(0);
+                    //Console.ReadKey();
+                    //Environment.Exit(0);
+                    this.Close();
                 }
 
                 //Initialize file handle reader and memory reader

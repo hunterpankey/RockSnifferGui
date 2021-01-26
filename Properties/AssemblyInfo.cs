@@ -8,7 +8,7 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("RockSnifferGui")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Graphical interface for RockSniffer, for showing heads-up song information from the RockSmith game")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("RockSnifferGui")]
