@@ -1,0 +1,33 @@
+﻿<Window x:Class="RockSnifferGui.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RockSnifferGui"
+        mc:Ignorable="d"
+        Title="RockSniffer GUI" Height="367" Width="493" Icon="sniffy.ico">
+    <Grid Margin="0,0,0,0" Height="357">
+        <Label x:Name="bandLabel" Content="Band" HorizontalAlignment="Left" Margin="123,22,0,0" VerticalAlignment="Top" Width="100"/>
+        <Label x:Name="bandNameLabel" Content="" HorizontalAlignment="Left" Margin="228,22,0,0" VerticalAlignment="Top" Width="250"/>
+        <Label x:Name="songLabel" Content="Song" HorizontalAlignment="Left" Margin="123,53,0,0" VerticalAlignment="Top" Width="100"/>
+        <Label x:Name="songNameLabel" Content="" HorizontalAlignment="Left" Margin="228,53,0,0" VerticalAlignment="Top" Width="250"/>
+        <Label x:Name="albumName" Content="Album" HorizontalAlignment="Left" Margin="123,84,0,0" VerticalAlignment="Top" Width="100"/>
+        <Label x:Name="albumNameLabel" Content="" HorizontalAlignment="Left" Margin="228,84,0,0" VerticalAlignment="Top" Width="250"/>
+        <Label x:Name="songTimerLabel" Content="Time" HorizontalAlignment="Left" Margin="10,115,0,0" VerticalAlignment="Top" Width="100"/>
+        <Label x:Name="notesHitLabel" Content="Notes Hit" HorizontalAlignment="Left" Margin="10,146,0,0" VerticalAlignment="Top" Width="100"/>
+        <Label x:Name="notesMissedLabel" Content="Notes Missed" HorizontalAlignment="Left" Margin="10,177,0,0" VerticalAlignment="Top" Width="100"/>
+        <Label x:Name="totalNotesLabel" Content="Total Notes" HorizontalAlignment="Left" Margin="10,208,0,0" VerticalAlignment="Top" Width="100"/>
+        <Label x:Name="currentStreakLabel" Content="Current Streak" HorizontalAlignment="Left" Margin="10,239,0,0" VerticalAlignment="Top" Width="100"/>
+        <Label x:Name="highestStreakLabel" Content="Highest Streak" HorizontalAlignment="Left" Margin="10,270,0,0" VerticalAlignment="Top" Width="100"/>
+        <Label x:Name="noteHitPercentageLabel" Content="Note Hit Pct." HorizontalAlignment="Left" Margin="10,301,0,0" VerticalAlignment="Top" Width="100"/>
+        <Label x:Name="songTimerimeValueLabel" Content="" HorizontalAlignment="Left" Margin="115,115,0,0" VerticalAlignment="Top" Width="250"/>
+        <Label x:Name="notesHitValueLabel" Content="" HorizontalAlignment="Left" Margin="115,146,0,0" VerticalAlignment="Top" Width="250"/>
+        <Label x:Name="notesMissedValueLabel" Content="" HorizontalAlignment="Left" Margin="115,177,0,0" VerticalAlignment="Top" Width="250"/>
+        <Label x:Name="totalNotesValueLabel" Content="" HorizontalAlignment="Left" Margin="115,208,0,0" VerticalAlignment="Top" Width="250"/>
+        <Label x:Name="currentStreakValueLabel" Content="" HorizontalAlignment="Left" Margin="115,239,0,0" VerticalAlignment="Top" Width="250"/>
+        <Label x:Name="highestStreakValueLabel" Content="" HorizontalAlignment="Left" Margin="115,270,0,0" VerticalAlignment="Top" Width="250"/>
+        <Label x:Name="noteHitPercentageValueLabel" Content="" HorizontalAlignment="Left" Margin="115,301,0,0" VerticalAlignment="Top" Width="250"/>
+        <Image x:Name="albumArtImage" HorizontalAlignment="Left" Height="100" Margin="10,10,0,0" VerticalAlignment="Top" Width="100" Source="sniffy.ico"/>
+
+    </Grid>
+</Window>
