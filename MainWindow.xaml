@@ -7,12 +7,12 @@
         mc:Ignorable="d"
         Title="RockSniffer GUI" Height="367" Width="493" Icon="sniffy.ico">
     <Grid Margin="0,0,0,0" Height="357">
-        <Label x:Name="bandLabel" Content="Band" HorizontalAlignment="Left" Margin="123,22,0,0" VerticalAlignment="Top" Width="100"/>
-        <Label x:Name="bandNameLabel" Content="" HorizontalAlignment="Left" Margin="228,22,0,0" VerticalAlignment="Top" Width="250"/>
-        <Label x:Name="songLabel" Content="Song" HorizontalAlignment="Left" Margin="123,53,0,0" VerticalAlignment="Top" Width="100"/>
-        <Label x:Name="songNameLabel" Content="" HorizontalAlignment="Left" Margin="228,53,0,0" VerticalAlignment="Top" Width="250"/>
-        <Label x:Name="albumName" Content="Album" HorizontalAlignment="Left" Margin="123,84,0,0" VerticalAlignment="Top" Width="100"/>
-        <Label x:Name="albumNameLabel" Content="" HorizontalAlignment="Left" Margin="228,84,0,0" VerticalAlignment="Top" Width="250"/>
+        <Label x:Name="bandLabel" Content="Band" HorizontalAlignment="Left" Margin="123,22,0,0" VerticalAlignment="Top" Width="50"/>
+        <Label x:Name="bandNameLabel" Content="" HorizontalAlignment="Left" Margin="178,22,0,0" VerticalAlignment="Top" Width="300"/>
+        <Label x:Name="songLabel" Content="Song" HorizontalAlignment="Left" Margin="123,53,0,0" VerticalAlignment="Top" Width="50"/>
+        <Label x:Name="songNameLabel" Content="" HorizontalAlignment="Left" Margin="178,53,0,0" VerticalAlignment="Top" Width="300"/>
+        <Label x:Name="albumName" Content="Album" HorizontalAlignment="Left" Margin="123,84,0,0" VerticalAlignment="Top" Width="50"/>
+        <Label x:Name="albumNameLabel" Content="" HorizontalAlignment="Left" Margin="178,84,0,0" VerticalAlignment="Top" Width="300"/>
         <Label x:Name="songTimerLabel" Content="Time" HorizontalAlignment="Left" Margin="10,115,0,0" VerticalAlignment="Top" Width="100"/>
         <Label x:Name="notesHitLabel" Content="Notes Hit" HorizontalAlignment="Left" Margin="10,146,0,0" VerticalAlignment="Top" Width="100"/>
         <Label x:Name="notesMissedLabel" Content="Notes Missed" HorizontalAlignment="Left" Margin="10,177,0,0" VerticalAlignment="Top" Width="100"/>

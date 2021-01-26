@@ -84,7 +84,7 @@ namespace RockSnifferGui
         public void Initialize()
         {
             //Set title and print version
-            this.Title = string.Format("RockSniffer {0}", version);
+            this.Title = string.Format("Unofficial RockSniffer GUI {0}", version);
             //Console.Title = string.Format("RockSniffer {0}", version);
             Logger.Log("RockSniffer {0} ({1}bits)", version, Is64Bits ? "64" : "32");
 
@@ -198,7 +198,7 @@ namespace RockSnifferGui
                 sniffer.OnSongChanged += Sniffer_OnCurrentSongChanged;
                 sniffer.OnSongStarted += Sniffer_OnSongStarted;
                 sniffer.OnSongEnded += Sniffer_OnSongEnded;
-
+                
                 sniffer.OnMemoryReadout += Sniffer_OnMemoryReadout;
             }
             //Add RPC event listeners
@@ -250,48 +250,30 @@ namespace RockSnifferGui
         #region Sniffer Events
         private void Sniffer_OnSongStarted(object sender, OnSongStartedArgs e)
         {
+            details = e.song;
             SongPlayInstance newSong = new SongPlayInstance(e.song);
 
             this.playedSongs.Add(newSong);
             this.currentSong = newSong;
 
             newSong.StartSong();
+
+            updateValues();
         }
 
         private void Sniffer_OnSongEnded(object sender, OnSongEndedArgs e)
         {
-            this.currentSong.FinishSong();
+            if (this.currentSong != null)
+            {
+                this.currentSong.FinishSong();
+            }
+
             this.currentSong = null;
         }
 
         private void Sniffer_OnCurrentSongChanged(object sender, OnSongChangedArgs args)
         {
-            details = args.songDetails;
-            updateValues();
-
-            //Write album art
-            if (details.albumArt != null)
-            {
-                WriteImageToFileLocking("output/album_cover.jpeg", details.albumArt);
-
-                using (var memory = new MemoryStream())
-                {
-                    details.albumArt.Save(memory, ImageFormat.Png);
-                    memory.Position = 0;
-
-                    var bitmapImage = new BitmapImage();
-                    bitmapImage.BeginInit();
-                    bitmapImage.StreamSource = memory;
-                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmapImage.EndInit();
-
-                    this.albumArtImage.Source = bitmapImage;
-                }
-            }
-            else
-            {
-                WriteImageToFileLocking("output/album_cover.jpeg", defaultAlbumCover);
-            }
+            //details = args.songDetails;
         }
 
         private void Sniffer_OnMemoryReadout(object sender, OnMemoryReadoutArgs args)
@@ -299,7 +281,7 @@ namespace RockSnifferGui
             memReadout = args.memoryReadout;
             updateValues();
 
-            if (args.memoryReadout.noteData != null)
+            if ((this.currentSong != null) && (args.memoryReadout.noteData != null))
             {
                 this.currentSong.UpdateNoteData(args.memoryReadout.noteData);
             }
@@ -378,6 +360,25 @@ namespace RockSnifferGui
             this.highestStreakValueLabel.Content = nd.HighestHitStreak.ToString();
 
             this.noteHitPercentageValueLabel.Content = FormatPercentage(nd.Accuracy);
+
+            if (details.albumArt != null)
+            {
+                //WriteImageToFileLocking("output/album_cover.jpeg", details.albumArt);
+
+                using (var memory = new MemoryStream())
+                {
+                    details.albumArt.Save(memory, ImageFormat.Png);
+                    memory.Position = 0;
+
+                    var bitmapImage = new BitmapImage();
+                    bitmapImage.BeginInit();
+                    bitmapImage.StreamSource = memory;
+                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmapImage.EndInit();
+
+                    this.albumArtImage.Source = bitmapImage;
+                }
+            }
         }
 
         public static string FormatTime(float lengthTime)
