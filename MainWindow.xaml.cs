@@ -152,54 +152,47 @@ namespace RockSnifferGui
 
             //Loop infinitely trying to find rocksmith process
             // should do this asynchronously on another thread
-            while (true)
+            //while (true)
+            //{
+            var processes = Process.GetProcessesByName("Rocksmith2014");
+
+            //Sleep for 1 second if no processes found
+            if (processes.Length == 0)
             {
-                var processes = Process.GetProcessesByName("Rocksmith2014");
-
-                //Sleep for 1 second if no processes found
-                if (processes.Length == 0)
-                {
-                    Thread.Sleep(1000);
-                    continue;
-                }
-
+                //Thread.Sleep(1000);
+                MessageBox.Show("Start RockSmith 2014 before running RockSniffer GUI.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                this.Close();
+                //continue;
+            }
+            else
+            {
                 //Select the first rocksmith process and open a handle
                 rsProcess = processes[0];
+                Logger.Log("Rocksmith found! Sniffing...");
 
-                if (rsProcess.HasExited || !rsProcess.Responding)
+                //Check rocksmith executable hash to make sure its the correct version
+                string hash = PSARCUtil.GetFileHash(new FileInfo(rsProcess.MainModule.FileName));
+
+                Logger.Log($"Rocksmith executable hash: {hash}");
+
+                if (!hash.Equals("GxT+/TXLpUFys+Cysek8zg=="))
                 {
-                    Thread.Sleep(1000);
-                    continue;
+                    Logger.LogError("Executable hash does not match expected hash, make sure you have the correct version");
+                    Logger.Log("Press any key to exit");
+                    Console.ReadKey();
+                    Environment.Exit(0);
                 }
 
-                break;
+                //Initialize file handle reader and memory reader
+                Sniffer sniffer = new Sniffer(rsProcess, cache, config.snifferSettings);
+
+                //Listen for events
+                sniffer.OnSongChanged += Sniffer_OnCurrentSongChanged;
+                sniffer.OnSongStarted += Sniffer_OnSongStarted;
+                sniffer.OnSongEnded += Sniffer_OnSongEnded;
+
+                sniffer.OnMemoryReadout += Sniffer_OnMemoryReadout;
             }
-
-            Logger.Log("Rocksmith found! Sniffing...");
-
-            //Check rocksmith executable hash to make sure its the correct version
-            string hash = PSARCUtil.GetFileHash(new FileInfo(rsProcess.MainModule.FileName));
-
-            Logger.Log($"Rocksmith executable hash: {hash}");
-
-            if (!hash.Equals("GxT+/TXLpUFys+Cysek8zg=="))
-            {
-                Logger.LogError("Executable hash does not match expected hash, make sure you have the correct version");
-                Logger.Log("Press any key to exit");
-                Console.ReadKey();
-                Environment.Exit(0);
-            }
-
-            //Initialize file handle reader and memory reader
-            Sniffer sniffer = new Sniffer(rsProcess, cache, config.snifferSettings);
-
-            //Listen for events
-            sniffer.OnSongChanged += Sniffer_OnCurrentSongChanged;
-            sniffer.OnSongStarted += Sniffer_OnSongStarted;
-            sniffer.OnSongEnded += Sniffer_OnSongEnded;
-
-            sniffer.OnMemoryReadout += Sniffer_OnMemoryReadout;
-
             //Add RPC event listeners
             // not doing anything with Discord right now
             //if (config.rpcSettings.enabled)
