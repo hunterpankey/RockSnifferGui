@@ -81,7 +81,7 @@
     <Compile Include="Configuration\OutputFile.cs" />
     <Compile Include="Configuration\OutputSettings.cs" />
     <Compile Include="Configuration\RPCSettings.cs" />
-    <Compile Include="DataStore\SQLiteStore.cs" />
+    <Compile Include="Data\SQLiteStore.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

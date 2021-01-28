@@ -18,16 +18,13 @@ namespace RockSnifferGui
 
         public App()
         {
-            this.gameProcessService = new GameProcessService();
+            this.gameProcessService = GameProcessService.Instance;
             this.Exit += App_Exit;
         }
 
         private void App_Exit(object sender, ExitEventArgs e)
         {
-            if(this.gameProcessService != null)
-            {
-                this.gameProcessService.Shutdown();
-            }
+            GameProcessService.Instance.Dispose();
         }
     }
 }

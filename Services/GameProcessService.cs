@@ -2,22 +2,25 @@
 using RockSnifferLib.RSHelpers;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xaml.Schema;
 
 namespace RockSnifferGui.Services
 {
-    public class GameProcessService
+    public class GameProcessService : IDisposable, INotifyPropertyChanged
     {
         public enum ProcessStatus { NOT_RUNNING, RUNNING, NOT_RESPONDING, EXITED }
         private const string GameProcessHash = "GxT+/TXLpUFys+Cysek8zg==";
 
         public delegate void OnGameProcessChanged(object sender, GameProcessChangedEventArgs args);
         public event OnGameProcessChanged GameProcessChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         private Process gameProcess;
         private ProcessStatus gameProcessStatus;
@@ -42,7 +45,26 @@ namespace RockSnifferGui.Services
         }
 
         public Process GameProcess { get => gameProcess; private set => gameProcess = value; }
-        public ProcessStatus GameProcessStatus { get => gameProcessStatus; private set => gameProcessStatus = value; }
+        public ProcessStatus Status { get => gameProcessStatus; private set => gameProcessStatus = value; }
+        public string StatusForDisplay 
+        { 
+            get
+            {
+                switch(this.Status)
+                {
+                    case ProcessStatus.RUNNING:
+                        return "Running";
+                    case ProcessStatus.NOT_RESPONDING:
+                        return "Not Responding";
+                    case ProcessStatus.EXITED:
+                        return "Exited";
+                    case ProcessStatus.NOT_RUNNING:
+                        return "Not Running";
+                    default:
+                        return string.Empty;
+                }
+            }
+        }
 
         public GameProcessService()
         {
@@ -50,6 +72,7 @@ namespace RockSnifferGui.Services
 
             // start the process watcher thread to track the game exe process
             this.processWatcher = new Thread(new ThreadStart(this.WatchProcess));
+            this.processWatcher.Name = "Game Process Service Worker";
             this.processWatcher.Start();
         }
 
@@ -63,7 +86,7 @@ namespace RockSnifferGui.Services
 
             if (processes.Length == 0)
             {
-                this.GameProcessStatus = ProcessStatus.NOT_RUNNING;
+                this.Status = ProcessStatus.NOT_RUNNING;
             }
             else
             {
@@ -73,7 +96,6 @@ namespace RockSnifferGui.Services
                 Logger.Log("Rocksmith found! Sniffing...");
                 if (this.CheckProcessHash())
                 {
-                    this.GameProcess.Exited += GameProcess_Exited;
                     InvokeNewGameProcess(this.GameProcess);
                 }
             }
@@ -99,11 +121,6 @@ namespace RockSnifferGui.Services
                 // Handle any exceptions that were thrown by the invoked method
                 Console.WriteLine("GameProcessService: GameProcessChanged handler threw an exception");
             }
-        }
-
-        private void GameProcess_Exited(object sender, EventArgs e)
-        {
-            this.GameProcessStatus = ProcessStatus.EXITED;
         }
 
         private bool CheckProcessHash()
@@ -132,21 +149,22 @@ namespace RockSnifferGui.Services
 
                 while (true)
                 {
+                    ProcessStatus currentStatus = this.Status;
+                    Process currentProcess = this.GameProcess;
+
                     if (this.GameProcess != null)
                     {
                         if (this.GameProcess.Responding)
                         {
-                            this.GameProcessStatus = ProcessStatus.RUNNING;
+                            this.Status = ProcessStatus.RUNNING;
                         }
                         else if (!this.GameProcess.Responding && !this.GameProcess.HasExited)
                         {
-                            Logger.Log("GameProcessWatcher: Game process is not responding.");
-                            this.GameProcessStatus = ProcessStatus.NOT_RESPONDING;
+                            this.Status = ProcessStatus.NOT_RESPONDING;
                         }
                         else if (this.GameProcess.HasExited)
                         {
-                            Logger.Log("GameProcessWatcher: Game process has exited.");
-                            this.GameProcessStatus = ProcessStatus.EXITED;
+                            this.Status = ProcessStatus.EXITED;
                             this.GameProcess = null;
 
                             this.FindGameProcess();
@@ -154,8 +172,21 @@ namespace RockSnifferGui.Services
                     }
                     else
                     {
-                        this.GameProcessStatus = ProcessStatus.NOT_RUNNING;
+                        this.Status = ProcessStatus.NOT_RUNNING;
                         this.FindGameProcess();
+                    }
+
+                    if(currentStatus != this.Status)
+                    {
+                        this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Status"));
+                        this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("StatusForDisplay"));
+                        Logger.Log($"GameProcessWatcher: New process status {this.StatusForDisplay}.");
+                    }
+
+                    if(currentProcess != this.GameProcess)
+                    {
+                        Logger.Log("GameProcessWatcher: Located new game process.");
+                        this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GameProcess"));
                     }
 
                     Thread.Sleep(1000);
@@ -167,11 +198,17 @@ namespace RockSnifferGui.Services
             }
         }
 
-        public void Shutdown()
+        public void Dispose()
         {
-            if(this.processWatcher != null)
+            if (this.processWatcher != null)
             {
                 this.processWatcher.Abort();
+            }
+
+            if (this.GameProcess != null)
+            {
+                this.GameProcess.Dispose();
+                this.GameProcess = null;
             }
         }
     }
