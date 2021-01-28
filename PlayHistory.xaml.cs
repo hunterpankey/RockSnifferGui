@@ -21,14 +21,14 @@ namespace RockSnifferGui
     /// <summary>
     /// Interaction logic for PlayHistory.xaml
     /// </summary>
-    public partial class PlayHistory : Window
+    public partial class PlayHistoryWindow : Window
     {
         private IEnumerable<SongPlayInstance> songPlays;
         private Sniffer sniffer;
 
         public IEnumerable<SongPlayInstance> SongPlays { get => songPlays; set => songPlays = value; }
 
-        public PlayHistory(List<SongPlayInstance> songPlays, Sniffer sniffer)
+        public PlayHistoryWindow(List<SongPlayInstance> songPlays, Sniffer sniffer)
         {
             InitializeComponent();
 

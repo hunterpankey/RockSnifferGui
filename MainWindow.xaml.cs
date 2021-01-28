@@ -11,6 +11,7 @@ using RockSnifferLib.Sniffing;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -61,6 +62,8 @@ namespace RockSnifferGui
 
         private List<SongPlayInstance> playedSongs = new List<SongPlayInstance>();
         private SongPlayInstance currentSong;
+
+        private PlayHistoryWindow playHistoryWindow;
 
         SQLiteStore songPlayInstancesDb = new SQLiteStore();
 
@@ -236,10 +239,26 @@ namespace RockSnifferGui
         #endregion
 
         #region UI Events
-        public void ShowPlayHistory_Executed(object sender, ExecutedRoutedEventArgs args)
+        public void TogglePlayHistoryWindow_Executed(object sender, ExecutedRoutedEventArgs args)
         {
-            PlayHistory ph = new PlayHistory(this.playedSongs, MainWindow.sniffer);
-            ph.Show();
+            if (this.playHistoryWindow != null)
+            {
+                this.playHistoryWindow.Close();
+                this.playHistoryWindow = null;
+            }
+            else
+            {
+                this.playHistoryWindow = new PlayHistoryWindow(this.playedSongs, MainWindow.sniffer);
+                this.playHistoryWindow.Closed += PlayHistoryWindow_Closed;
+                this.playHistoryMenuItem.IsChecked = true;
+                this.playHistoryWindow.Show();
+            }
+        }
+
+        private void PlayHistoryWindow_Closed(object sender, EventArgs e)
+        {
+            this.playHistoryWindow = null;
+            this.playHistoryMenuItem.IsChecked = false;
         }
 
         #endregion
