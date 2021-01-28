@@ -1,6 +1,7 @@
 ﻿using RockSnifferGui.Configuration;
 using RockSnifferGui.DataStore;
 using RockSnifferGui.Model;
+using RockSnifferGui.Services;
 using RockSnifferLib.Cache;
 using RockSnifferLib.Events;
 using RockSnifferLib.Logging;
@@ -9,6 +10,7 @@ using RockSnifferLib.RSHelpers.NoteData;
 using RockSnifferLib.Sniffing;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -27,13 +29,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace RockSnifferGui
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private static RoutedUICommand showPlayHistoryCommand = new RoutedUICommand("Show the Play History Window", "showPlayHistory", typeof(MainWindow),
             new InputGestureCollection() {
@@ -41,9 +44,9 @@ namespace RockSnifferGui
         });
         public static RoutedUICommand ShowPlayHistoryCommand { get => showPlayHistoryCommand; }
 
-        internal const string version = "0.0.1";
+        private const string version = "0.0.3";
+        public static string Version { get => "v" + version; }
 
-        internal static Process rsProcess;
         internal static ICache cache;
         internal static Config config;
         internal static Sniffer sniffer;
@@ -61,12 +64,24 @@ namespace RockSnifferGui
 
         SQLiteStore songPlayInstancesDb = new SQLiteStore();
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public string GameProcessServiceStatus
+        {
+            get
+            {
+                return GameProcessService.Instance.StatusForDisplay;
+            }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
 
             try
             {
+                GameProcessService.Instance.GameProcessChanged += GameProcessService_GameProcessChanged;
+                GameProcessService.Instance.PropertyChanged += GameProcessService_PropertyChanged;
                 this.Initialize();
                 this.Run();
             }
@@ -74,14 +89,29 @@ namespace RockSnifferGui
             {
                 MessageBox.Show(ex.Message + ex.StackTrace, "Exception", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
+            this.DataContext = this;
+        }
+
+        private void GameProcessService_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName.Equals("StatusForDisplay"))
+            {
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GameProcessServiceStatus"));
+            }
+        }
+
+        private void GameProcessService_GameProcessChanged(object sender, GameProcessChangedEventArgs e)
+        {
+            this.SetupSniffer(e.Process);
         }
 
         public void Initialize()
         {
             //Set title and print version
-            this.Title = string.Format("Unofficial RockSniffer GUI {0}", version);
+            this.Title = string.Format("Unofficial RockSniffer GUI {0}", Version);
             //Console.Title = string.Format("RockSniffer {0}", version);
-            Logger.Log("RockSniffer {0} ({1}bits)", version, Is64Bits ? "64" : "32");
+            Logger.Log("RockSniffer {0} ({1}bits)", Version, Is64Bits ? "64" : "32");
 
             //Initialize and load configuration
             config = new Config();
@@ -108,60 +138,31 @@ namespace RockSnifferGui
             cache = new SQLiteCache();
 
             this.playedSongs = this.songPlayInstancesDb.GetAll();
+
+            Logger.Log("Waiting for rocksmith");
+
+            if (GameProcessService.Instance.Status == GameProcessService.ProcessStatus.RUNNING)
+            {
+                this.SetupSniffer(GameProcessService.Instance.GameProcess);
+            }
+
+            this.Closing += MainWindow_Closing;
+        }
+
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (MainWindow.sniffer != null)
+            {
+                MainWindow.sniffer.Stop();
+            }
+
+            // no Discord RPC stuff right now
+            //rpcHandler?.Dispose();
+            //rpcHandler = null;
         }
 
         public void Run()
         {
-            //Clear output / create output files
-            // not working with file output right now
-            //ClearOutput();
-
-            Logger.Log("Waiting for rocksmith");
-
-            //Loop infinitely trying to find rocksmith process
-            // should do this asynchronously on another thread
-            //while (true)
-            //{
-            var processes = Process.GetProcessesByName("Rocksmith2014");
-
-            //Sleep for 1 second if no processes found
-            if (processes.Length == 0)
-            {
-                //Thread.Sleep(1000);
-                MessageBox.Show("Start RockSmith 2014 before running RockSniffer GUI.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                //this.Close();
-                //continue;
-            }
-            else
-            {
-                //Select the first rocksmith process and open a handle
-                rsProcess = processes[0];
-                Logger.Log("Rocksmith found! Sniffing...");
-
-                //Check rocksmith executable hash to make sure its the correct version
-                string hash = PSARCUtil.GetFileHash(new FileInfo(rsProcess.MainModule.FileName));
-
-                Logger.Log($"Rocksmith executable hash: {hash}");
-
-                if (!hash.Equals("GxT+/TXLpUFys+Cysek8zg=="))
-                {
-                    Logger.LogError("Executable hash does not match expected hash, make sure you have the correct version");
-                    Logger.Log("Press any key to exit");
-                    //Console.ReadKey();
-                    //Environment.Exit(0);
-                    //this.Close();
-                }
-
-                //Initialize file handle reader and memory reader
-                MainWindow.sniffer = new Sniffer(rsProcess, cache, config.snifferSettings);
-
-                //Listen for events
-                MainWindow.sniffer.OnSongChanged += Sniffer_OnCurrentSongChanged;
-                MainWindow.sniffer.OnSongStarted += Sniffer_OnSongStarted;
-                MainWindow.sniffer.OnSongEnded += Sniffer_OnSongEnded;
-                
-                MainWindow.sniffer.OnMemoryReadout += Sniffer_OnMemoryReadout;
-            }
             //Add RPC event listeners
             // not doing anything with Discord right now
             //if (config.rpcSettings.enabled)
@@ -175,40 +176,19 @@ namespace RockSnifferGui
             //{
             //    addonService.SetSniffer(sniffer);
             //}
+        }
 
-            // not a console app anymore, so this has to change
-            //while (true)
-            //{
-            //    if (rsProcess == null || rsProcess.HasExited)
-            //    {
-            //        break;
-            //    }
+        private void SetupSniffer(Process process)
+        {
+            //Initialize file handle reader and memory reader
+            MainWindow.sniffer = new Sniffer(process, cache, config.snifferSettings);
 
-            //    OutputDetails();
+            //Listen for events
+            MainWindow.sniffer.OnSongChanged += Sniffer_OnCurrentSongChanged;
+            MainWindow.sniffer.OnSongStarted += Sniffer_OnSongStarted;
+            MainWindow.sniffer.OnSongEnded += Sniffer_OnSongEnded;
 
-            //    //GOTTA GO FAST
-            //    Thread.Sleep(1000);
-
-            //    if (random.Next(100) == 0)
-            //    {
-            //        Console.WriteLine("*sniff sniff*");
-            //    }
-            //}
-
-            //sniffer.Stop();
-
-            //Clean up as best as we can
-            //rsProcess.Dispose();
-            //rsProcess = null;
-
-            // no Discord RPC stuff right now
-            //rpcHandler?.Dispose();
-            //rpcHandler = null;
-
-            //Logger.Log("This is rather unfortunate, the Rocksmith2014 process has vanished :/");
-
-            //long recordId = songPlayInstancesDb.Test();
-            //MessageBox.Show($"New row id: {recordId}");
+            MainWindow.sniffer.OnMemoryReadout += Sniffer_OnMemoryReadout;
         }
 
         #region Sniffer Events
@@ -222,7 +202,7 @@ namespace RockSnifferGui
 
             newSong.StartSong();
 
-            updateValues();
+            UpdateNowPlayingValues();
         }
 
         private void Sniffer_OnSongEnded(object sender, OnSongEndedArgs e)
@@ -239,13 +219,14 @@ namespace RockSnifferGui
 
         private void Sniffer_OnCurrentSongChanged(object sender, OnSongChangedArgs args)
         {
+            ;
             //details = args.songDetails;
         }
 
         private void Sniffer_OnMemoryReadout(object sender, OnMemoryReadoutArgs args)
         {
             memReadout = args.memoryReadout;
-            updateValues();
+            UpdateNowPlayingValues();
 
             if ((this.currentSong != null) && (args.memoryReadout.noteData != null))
             {
@@ -263,63 +244,14 @@ namespace RockSnifferGui
 
         #endregion
 
-        private void WriteImageToFileLocking(string file, System.Drawing.Image image)
+        private void UpdateNowPlayingValues()
         {
-            //If the file doesn't exist, create it by writing an empty string into it
-            if (!File.Exists(file))
+            if (!Dispatcher.CheckAccess())
             {
-                File.WriteAllText(file, "");
+                Dispatcher.Invoke(() => this.UpdateNowPlayingValues());
+                return;
             }
 
-            try
-            {
-                //Open a file stream, write access, no sharing
-                using (FileStream fstream = new FileStream(file, FileMode.Truncate, FileAccess.Write, FileShare.None))
-                {
-                    image.Save(fstream, ImageFormat.Jpeg);
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.LogError("Unable to write to file {0}: {1}\r\n{2}", file, e.Message, e.StackTrace);
-            }
-        }
-
-        private void WriteTextToFileLocking(string file, string contents)
-        {
-            //If the file doesn't exist, create it by writing an empty string into it
-            if (!File.Exists(file))
-            {
-                File.WriteAllText(file, "");
-            }
-
-            //Encode with UTF-8
-            byte[] data = Encoding.UTF8.GetBytes(contents);
-
-            //Write to file
-            WriteToFileLocking(file, data);
-        }
-
-        private void WriteToFileLocking(string file, byte[] contents)
-        {
-            try
-            {
-                //Open a file stream, write access, read only sharing
-                using (FileStream fstream = new FileStream(file, FileMode.Truncate, FileAccess.Write, FileShare.Read))
-                {
-                    //Write to file
-
-                    fstream.Write(contents, 0, contents.Length);
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.LogError("Unable to write to file {0}: {1}\r\n{2}", file, e.Message, e.StackTrace);
-            }
-        }
-
-        private void updateValues()
-        {
             this.bandNameLabel.Content = details.artistName;
             this.songNameLabel.Content = details.songName;
             this.albumNameLabel.Content = $"{details.albumName} ({details.albumYear})";
@@ -338,8 +270,6 @@ namespace RockSnifferGui
 
             if (details.albumArt != null)
             {
-                //WriteImageToFileLocking("output/album_cover.jpeg", details.albumArt);
-
                 using (var memory = new MemoryStream())
                 {
                     details.albumArt.Save(memory, ImageFormat.Png);
@@ -365,11 +295,6 @@ namespace RockSnifferGui
         public static string FormatPercentage(double frac)
         {
             return string.Format(config.formatSettings.percentageFormat, frac);
-        }
-
-        private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-
         }
     }
 
