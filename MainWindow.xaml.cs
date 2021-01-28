@@ -1,4 +1,5 @@
 ﻿using RockSnifferGui.Configuration;
+using RockSnifferGui.DataStore;
 using RockSnifferGui.Model;
 using RockSnifferLib.Cache;
 using RockSnifferLib.Events;
@@ -34,11 +35,18 @@ namespace RockSnifferGui
     /// </summary>
     public partial class MainWindow : Window
     {
+        private static RoutedUICommand showPlayHistoryCommand = new RoutedUICommand("Show the Play History Window", "showPlayHistory", typeof(MainWindow),
+            new InputGestureCollection() {
+                new KeyGesture(Key.H, ModifierKeys.Control)
+        });
+        public static RoutedUICommand ShowPlayHistoryCommand { get => showPlayHistoryCommand; }
+
         internal const string version = "0.0.1";
 
         internal static Process rsProcess;
         internal static ICache cache;
         internal static Config config;
+        internal static Sniffer sniffer;
 
         private static readonly bool Is64Bits = (IntPtr.Size == 8);
 
@@ -51,6 +59,8 @@ namespace RockSnifferGui
         private List<SongPlayInstance> playedSongs = new List<SongPlayInstance>();
         private SongPlayInstance currentSong;
 
+        SQLiteStore songPlayInstancesDb = new SQLiteStore();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -60,25 +70,10 @@ namespace RockSnifferGui
                 this.Initialize();
                 this.Run();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message + ex.StackTrace, "Exception", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
-            //Keep running even when rocksmith disappears
-            //while (true)
-            //{
-            //    try
-            //    {
-            //        this.Run();
-            //    }
-            //    catch (Exception e)
-            //    {
-            //        //Catch all exceptions that are not handled and log
-            //        Logger.LogError("Encountered unhandled exception: {0}\r\n{1}", e.Message, e.StackTrace);
-            //        throw e;
-            //    }
-            //}
         }
 
         public void Initialize()
@@ -100,20 +95,6 @@ namespace RockSnifferGui
                 throw e;
             }
 
-            //Run version check
-            // not doing version checking for now
-            //if (!config.debugSettings.disableVersionCheck)
-            //{
-            //    if (version.Contains("PR"))
-            //    {
-            //        Logger.Log("Pre-release version, skipping version check");
-            //    }
-            //    else
-            //    {
-            //        VersionCheck();
-            //    }
-            //}
-
             //Transfer logging options
             Logger.logStateMachine = config.debugSettings.debugStateMachine;
             Logger.logCache = config.debugSettings.debugCache;
@@ -126,27 +107,7 @@ namespace RockSnifferGui
             //Initialize cache
             cache = new SQLiteCache();
 
-            //Create directories
-            //Directory.CreateDirectory("output");
-
-            //Enable addon service if configured
-            // don't know what this is for yet
-            //if (config.addonSettings.enableAddons)
-            //{
-            //    try
-            //    {
-            //        addonService = new AddonService(config.addonSettings, new SQLiteStorage());
-            //    }
-            //    catch (SocketException e)
-            //    {
-            //        Logger.LogError("Please verify that the IP address is valid and the port is not already in use");
-            //        Logger.LogError("Could not start addon service: {0}\r\n{1}", e.Message, e.StackTrace);
-            //    }
-            //    catch (Exception e)
-            //    {
-            //        Logger.LogError("Could not start addon service: {0}\r\n{1}", e.Message, e.StackTrace);
-            //    }
-            //}
+            this.playedSongs = this.songPlayInstancesDb.GetAll();
         }
 
         public void Run()
@@ -168,7 +129,7 @@ namespace RockSnifferGui
             {
                 //Thread.Sleep(1000);
                 MessageBox.Show("Start RockSmith 2014 before running RockSniffer GUI.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                this.Close();
+                //this.Close();
                 //continue;
             }
             else
@@ -188,18 +149,18 @@ namespace RockSnifferGui
                     Logger.Log("Press any key to exit");
                     //Console.ReadKey();
                     //Environment.Exit(0);
-                    this.Close();
+                    //this.Close();
                 }
 
                 //Initialize file handle reader and memory reader
-                Sniffer sniffer = new Sniffer(rsProcess, cache, config.snifferSettings);
+                MainWindow.sniffer = new Sniffer(rsProcess, cache, config.snifferSettings);
 
                 //Listen for events
-                sniffer.OnSongChanged += Sniffer_OnCurrentSongChanged;
-                sniffer.OnSongStarted += Sniffer_OnSongStarted;
-                sniffer.OnSongEnded += Sniffer_OnSongEnded;
+                MainWindow.sniffer.OnSongChanged += Sniffer_OnCurrentSongChanged;
+                MainWindow.sniffer.OnSongStarted += Sniffer_OnSongStarted;
+                MainWindow.sniffer.OnSongEnded += Sniffer_OnSongEnded;
                 
-                sniffer.OnMemoryReadout += Sniffer_OnMemoryReadout;
+                MainWindow.sniffer.OnMemoryReadout += Sniffer_OnMemoryReadout;
             }
             //Add RPC event listeners
             // not doing anything with Discord right now
@@ -245,6 +206,9 @@ namespace RockSnifferGui
             //rpcHandler = null;
 
             //Logger.Log("This is rather unfortunate, the Rocksmith2014 process has vanished :/");
+
+            //long recordId = songPlayInstancesDb.Test();
+            //MessageBox.Show($"New row id: {recordId}");
         }
 
         #region Sniffer Events
@@ -266,6 +230,8 @@ namespace RockSnifferGui
             if (this.currentSong != null)
             {
                 this.currentSong.FinishSong();
+
+                songPlayInstancesDb.Add(this.currentSong);
             }
 
             this.currentSong = null;
@@ -286,6 +252,15 @@ namespace RockSnifferGui
                 this.currentSong.UpdateNoteData(args.memoryReadout.noteData);
             }
         }
+        #endregion
+
+        #region UI Events
+        public void ShowPlayHistory_Executed(object sender, ExecutedRoutedEventArgs args)
+        {
+            PlayHistory ph = new PlayHistory(this.playedSongs, MainWindow.sniffer);
+            ph.Show();
+        }
+
         #endregion
 
         private void WriteImageToFileLocking(string file, System.Drawing.Image image)
@@ -391,5 +366,19 @@ namespace RockSnifferGui
         {
             return string.Format(config.formatSettings.percentageFormat, frac);
         }
+
+        private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+
+        }
+    }
+
+    public class MainWindowCommands
+    {
+        private static RoutedUICommand showPlayHistoryCommand = new RoutedUICommand("Show the Play History Window", "showPlayHistory", typeof(MainWindowCommands),
+            new InputGestureCollection() {
+                new KeyGesture(Key.H, ModifierKeys.Control)
+            });
+        public static RoutedUICommand ShowPlayHistoryCommand { get => showPlayHistoryCommand; }
     }
 }
