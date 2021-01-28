@@ -16,10 +16,17 @@ namespace RockSnifferGui.Model
         private DateTime startTime;
         private DateTime endTime;
 
-        public SongPlayInstance(SongDetails details)
+        public SongDetails SongDetails { get => songDetails; set => songDetails = value; }
+        public INoteData NoteData { get => noteData; set => noteData = value; }
+        public DateTime StartTime { get => startTime;}
+        public DateTime EndTime { get => endTime;}
+
+        public SongPlayInstance(SongDetails details, INoteData noteData = null, DateTime startTime = default(DateTime), DateTime endTime = default(DateTime))
         {
-            this.songDetails = details;
-            this.noteData = new LearnASongNoteData();
+            this.SongDetails = details;
+            this.noteData = noteData ?? new LearnASongNoteData();
+            this.startTime = startTime;
+            this.endTime = endTime;
         }
 
         public void StartSong()
