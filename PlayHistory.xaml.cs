@@ -27,16 +27,19 @@ namespace RockSnifferGui
         private Sniffer sniffer;
 
         public IEnumerable<SongPlayInstance> SongPlays { get => songPlays; set => songPlays = value; }
+        public int SongPlayCount { get => SongPlays.Count(); }
 
         public PlayHistoryWindow(List<SongPlayInstance> songPlays, Sniffer sniffer)
         {
             InitializeComponent();
 
             this.songPlays = songPlays;
-            this.playHistoryDataGrid.ItemsSource = this.songPlays;
+            this.playHistoryDataGrid.ItemsSource = this.SongPlays;
 
             this.sniffer = sniffer;
             this.AttachSniffer();
+
+            this.DataContext = this;
         }
 
         private void AttachSniffer()

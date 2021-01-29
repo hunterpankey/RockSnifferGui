@@ -230,7 +230,7 @@ namespace RockSnifferGui.DataStore
                             albumYear = (int)ReadField<long>(reader, "albumYear"),
                             arrangements = JsonConvert.DeserializeObject<List<ArrangementDetails>>(ReadField<string>(reader, "arrangements")),
                             albumArt = null
-                        };
+                    };
 
                         try
                         {
@@ -247,8 +247,15 @@ namespace RockSnifferGui.DataStore
                         }
 
                         var noteDetails = new LearnASongNoteData();
+                        SongPlayInstance spi = new SongPlayInstance(songDetails, noteDetails);
+                        spi.NotesHit = (int)ReadField<int>(reader, "notes_hit");
+                        return spi;
 
-                        return new SongPlayInstance(songDetails, noteDetails);
+                        //    cmd.Parameters["@notes_missed"].Value = songPlayInstance.NoteData.TotalNotesMissed;
+                        //cmd.Parameters["@total_notes"].Value = songPlayInstance.NoteData.TotalNotes;
+                        //cmd.Parameters["@max_streak"].Value = songPlayInstance.NoteData.HighestHitStreak;
+                        //cmd.Parameters["@start_time"].Value = songPlayInstance.EndTime;
+                        //cmd.Parameters["@end_time"].Value = songPlayInstance.StartTime;
                     }
                 }
             }
@@ -296,8 +303,15 @@ namespace RockSnifferGui.DataStore
 
                         }
 
+
                         var noteDetails = new LearnASongNoteData();
+                        
                         SongPlayInstance toAdd = new SongPlayInstance(songDetails, noteDetails, ReadField<DateTime>(reader, "start_time"), ReadField<DateTime>(reader, "end_time"));
+                        toAdd.NotesHit = (int)ReadField<long>(reader, "notes_hit");
+                        toAdd.NotesMissed = (int)ReadField<long>(reader, "notes_missed");
+                        toAdd.TotalNotes = (int)ReadField<long>(reader, "total_notes");
+                        toAdd.HighestHitStreak = (int)ReadField<long>(reader, "max_streak");
+
                         toReturn.Add(toAdd);
                     }
                 }
