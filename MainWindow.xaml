@@ -7,20 +7,29 @@
         xmlns:commands="clr-namespace:RockSnifferGui"
         mc:Ignorable="d"
         Title="RockSniffer GUI" Height="429.666" Width="550.999" Icon="sniffy.ico">
+    <Window.Resources>
+        <RoutedUICommand x:Key="togglePlayHistoryCommand" Text="Toggle Play _History" x:Name="togglePlayHistoryCommand">
+            <RoutedUICommand.InputGestures>
+                <KeyGesture>Ctrl+H</KeyGesture>
+            </RoutedUICommand.InputGestures>
+        </RoutedUICommand>
+    </Window.Resources>
     <Window.CommandBindings>
-        <CommandBinding Command="{x:Static local:MainWindowCommands.ShowPlayHistoryCommand}" Executed="TogglePlayHistoryWindow_Executed"/>
+        <CommandBinding Command="{StaticResource togglePlayHistoryCommand}" x:Name="TogglePlayHistoryCommandBinding" Executed="TogglePlayHistoryCommandBinding_Executed" />
+        <CommandBinding Command="{StaticResource exitCommand}" x:Name="ExitCommandBinding" Executed="ExitCommandBinding_Executed" />
     </Window.CommandBindings>
     <DockPanel>
         <Menu DockPanel.Dock="Top" VerticalAlignment="Top">
             <MenuItem Header="_File" Name="fileMenu">
-                <MenuItem Header="_Exit" Name="exitMenuItem" Command="" />
+                <MenuItem Header="_Exit" Name="exitMenuItem" Command="{StaticResource exitCommand}" />
             </MenuItem>
             <MenuItem Header="_View" Name="viewMenu">
-                <MenuItem Header="_Play History" Name="playHistoryMenuItem" IsCheckable="True" Command="{x:Static local:MainWindowCommands.ShowPlayHistoryCommand}" />
+                <MenuItem Header="_Play History" Name="playHistoryMenuItem" IsCheckable="True" Command="{StaticResource togglePlayHistoryCommand}" />
             </MenuItem>
         </Menu>
+        
         <ToolBar x:Name="mainToolbar" DockPanel.Dock="Top" Height="30" VerticalAlignment="Top" Margin="0">
-            <Button x:Name="playHistoryButton" Command="{x:Static local:MainWindowCommands.ShowPlayHistoryCommand}">Play History</Button>
+            <Button x:Name="playHistoryButton" Command="{StaticResource togglePlayHistoryCommand}">Play History</Button>
         </ToolBar>
 
         <StatusBar Name="statusBar" DockPanel.Dock="Bottom" Width="544">

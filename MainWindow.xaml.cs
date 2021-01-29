@@ -54,8 +54,6 @@ namespace RockSnifferGui
 
         private static readonly bool Is64Bits = (IntPtr.Size == 8);
 
-        private static readonly Random random = new Random();
-
         private SongDetails details = new SongDetails();
         private RSMemoryReadout memReadout = new RSMemoryReadout();
         private readonly System.Drawing.Image defaultAlbumCover = new Bitmap(256, 256);
@@ -239,7 +237,7 @@ namespace RockSnifferGui
         #endregion
 
         #region UI Events
-        public void TogglePlayHistoryWindow_Executed(object sender, ExecutedRoutedEventArgs args)
+        public void TogglePlayHistoryCommandBinding_Executed(object sender, ExecutedRoutedEventArgs args)
         {
             if (this.playHistoryWindow != null)
             {
@@ -315,14 +313,10 @@ namespace RockSnifferGui
         {
             return string.Format(config.formatSettings.percentageFormat, frac);
         }
-    }
 
-    public class MainWindowCommands
-    {
-        private static RoutedUICommand showPlayHistoryCommand = new RoutedUICommand("Show the Play History Window", "showPlayHistory", typeof(MainWindowCommands),
-            new InputGestureCollection() {
-                new KeyGesture(Key.H, ModifierKeys.Control)
-            });
-        public static RoutedUICommand ShowPlayHistoryCommand { get => showPlayHistoryCommand; }
+        private void ExitCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Application.Current.Shutdown(0);
+        }
     }
 }

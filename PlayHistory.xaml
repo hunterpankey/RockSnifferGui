@@ -6,8 +6,12 @@
         xmlns:local="clr-namespace:RockSnifferGui"
         mc:Ignorable="d"
         Title="Song Play History" Height="450" Width="1120" ScrollViewer.CanContentScroll="True">
+    <Window.Resources>
+        <ResourceDictionary>
+            
+        </ResourceDictionary>
+    </Window.Resources>
     <DockPanel>
-
         <StatusBar Name="statusBar" DockPanel.Dock="Bottom" Margin="0,0,0.333,0">
             <StatusBar.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -43,18 +47,67 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Button Name="refreshButton" Content="Refresh" Grid.Row="0" Width="75" Click="refreshButton_Click" Canvas.Left="10" VerticalAlignment="Top" HorizontalAlignment="Left" />
-            <DataGrid x:Name="playHistoryDataGrid" Grid.Row="1" RowHeight="30" ColumnWidth="100" AutoGenerateColumns="False" Canvas.Top="36" DataContext="{Binding songDetails}" Canvas.Left="10" IsReadOnly="True" >
+            <DataGrid x:Name="playHistoryDataGrid" RowHeight="30" ColumnWidth="100" AutoGenerateColumns="False" Canvas.Top="36" DataContext="{Binding SongDetails}" Canvas.Left="10" IsReadOnly="True" Margin="0,21,0,0" 
+                      Grid.RowSpan="2" Height="350" HorizontalGridLinesBrush="{StaticResource CloudsBrush}">
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="{StaticResource MidnightBlueBrush}" />
+                        <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="Background" Value="{StaticResource PeterRiverBrush}" />
+                        <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
+                    </Style>
+                </DataGrid.RowStyle>
+                <DataGrid.CellStyle>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="DataGridCell">
+                                    <Grid Background="{TemplateBinding Background}">
+                                        <ContentPresenter VerticalAlignment="Center" />
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </DataGrid.CellStyle>
+                <DataGrid.Resources>
+                    <Style x:Key="HeaderCellCentered" TargetType="DataGridColumnHeader">
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        <Setter Property="Background" Value="{StaticResource MidnightBlueBrush}" />
+                        <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
+                    </Style>
+                    <Style x:Key="CellCentered" TargetType="DataGridCell">
+                        <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="DataGridCell">
+                                    <Grid Background="{TemplateBinding Background}">
+                                        <ContentPresenter VerticalAlignment="Center" />
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                    <Style x:Key="DataGridBodyCell" TargetType="DataGridCell">
+                        <Setter Property="Background" Value="{StaticResource PeterRiverBrush}" />
+                        <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
+                    </Style>
+                </DataGrid.Resources>
                 <DataGrid.Columns>
                     <DataGridTextColumn x:Name="startTime" Binding="{Binding StartTime}" Header="Time" MinWidth="130" />
                     <DataGridTextColumn x:Name="artistNameColumn" Binding="{Binding SongDetails.ArtistName}" Header="Artist" MinWidth="200" Width="200" />
                     <DataGridTextColumn x:Name="songNameColumn" Binding="{Binding SongDetails.SongName}" Header="Song" MinWidth="200" Width="200" />
                     <DataGridTextColumn x:Name="albumNameColumn" Binding="{Binding SongDetails.AlbumName}" Header="Album" MinWidth="200" Width="200" />
-                    <DataGridTextColumn x:Name="yearNameColumn" Binding="{Binding SongDetails.AlbumYear}" Header="Year" MinWidth="50" Width="50" />
+                    <DataGridTextColumn x:Name="yearNameColumn" Binding="{Binding SongDetails.AlbumYear}" Header="Year" MinWidth="50" Width="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
 
-                    <DataGridTextColumn x:Name="hitNotesColumn" Binding="{Binding NotesHit}" Header="Hit" MinWidth="70" Width="70" />
-                    <DataGridTextColumn x:Name="missedNotesColumn" Binding="{Binding NotesMissed}" Header="Missed" MinWidth="70" Width="70" />
-                    <DataGridTextColumn x:Name="noteAccuracyColumn" Binding="{Binding AccuracyAsPercentage}" Header="Accuracy" MinWidth="70" Width="70" />
-                    <DataGridTextColumn x:Name="maxStreakColumn" Binding="{Binding HighestHitStreak}" Header="Top Streak" MinWidth="70" Width="70" />
+                    <DataGridTextColumn x:Name="hitNotesColumn" Binding="{Binding NotesHit}" Header="Hit" MinWidth="50" Width="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
+                    <DataGridTextColumn x:Name="missedNotesColumn" Binding="{Binding NotesMissed}" Header="Missed" MinWidth="50" Width="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
+                    <DataGridTextColumn x:Name="noteAccuracyColumn" Binding="{Binding AccuracyAsPercentage}" Header="Accuracy" MinWidth="50" Width="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
+                    <DataGridTextColumn x:Name="maxStreakColumn" Binding="{Binding HighestHitStreak}" Header="Streak" MinWidth="50" Width="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
