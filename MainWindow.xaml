@@ -7,38 +7,93 @@
         xmlns:commands="clr-namespace:RockSnifferGui"
         mc:Ignorable="d"
         Title="RockSniffer GUI" Height="429.666" Width="550.999" Icon="sniffy.ico">
+    <Window.Resources>
+        <RoutedUICommand x:Key="togglePlayHistoryCommand" Text="Toggle Play _History" x:Name="togglePlayHistoryCommand">
+            <RoutedUICommand.InputGestures>
+                <KeyGesture>Ctrl+H</KeyGesture>
+            </RoutedUICommand.InputGestures>
+        </RoutedUICommand>
+    </Window.Resources>
     <Window.CommandBindings>
-        <CommandBinding Command="{x:Static commands:MainWindowCommands.ShowPlayHistoryCommand}" Executed="ShowPlayHistory_Executed"/>
+        <CommandBinding Command="{StaticResource togglePlayHistoryCommand}" x:Name="TogglePlayHistoryCommandBinding" Executed="TogglePlayHistoryCommandBinding_Executed" />
+        <CommandBinding Command="{StaticResource exitCommand}" x:Name="ExitCommandBinding" Executed="ExitCommandBinding_Executed" />
     </Window.CommandBindings>
-    <Grid Margin="0,0,0,0">
-        <ToolBar x:Name="mainToolbar" Height="30" VerticalAlignment="Top" Margin="0">
-            <Button x:Name="playHistoryButton" Command="{x:Static commands:MainWindowCommands.ShowPlayHistoryCommand}">Play History</Button>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top" VerticalAlignment="Top">
+            <MenuItem Header="_File" Name="fileMenu">
+                <MenuItem Header="_Exit" Name="exitMenuItem" Command="{StaticResource exitCommand}" />
+            </MenuItem>
+            <MenuItem Header="_View" Name="viewMenu">
+                <MenuItem Header="_Play History" Name="playHistoryMenuItem" IsCheckable="True" Command="{StaticResource togglePlayHistoryCommand}" />
+            </MenuItem>
+        </Menu>
+        
+        <ToolBar x:Name="mainToolbar" DockPanel.Dock="Top" Height="30" VerticalAlignment="Top" Margin="0">
+            <Button x:Name="playHistoryButton" Command="{StaticResource togglePlayHistoryCommand}">Play History</Button>
         </ToolBar>
-        <Canvas HorizontalAlignment="Left" Height="118" Margin="10,32,0,0" VerticalAlignment="Top" Width="478">
-            <Label x:Name="bandLabel" Content="Band" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50" Canvas.Left="115" Canvas.Top="10" RenderTransformOrigin="2.473,0.551"/>
-            <Label x:Name="bandNameLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="300" Canvas.Left="170" Canvas.Top="10"/>
-            <Label x:Name="songLabel" Content="Song" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50" Canvas.Left="115" Canvas.Top="36"/>
-            <Label x:Name="songNameLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="300" Canvas.Left="170" Canvas.Top="36"/>
-            <Label x:Name="albumName" Content="Album" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50" Canvas.Left="115" Canvas.Top="62"/>
-            <Label x:Name="albumNameLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="300" Canvas.Left="170" Canvas.Top="62"/>
-            <Image x:Name="albumArtImage" HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="100" Source="sniffy.ico" Canvas.Left="10" Canvas.Top="10"/>
-        </Canvas>
-        <Canvas HorizontalAlignment="Left" Height="227" Margin="10,160,0,0" VerticalAlignment="Top" Width="350">
-            <Label x:Name="songTimerLabel" Content="Time" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Canvas.Left="10" Canvas.Top="10"/>
-            <Label x:Name="notesHitLabel" Content="Notes Hit" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Canvas.Left="10" Canvas.Top="41"/>
-            <Label x:Name="notesMissedLabel" Content="Notes Missed" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Canvas.Left="10" Canvas.Top="71"/>
-            <Label x:Name="totalNotesLabel" Content="Total Notes" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Canvas.Left="10" Canvas.Top="102"/>
-            <Label x:Name="currentStreakLabel" Content="Current Streak" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Canvas.Left="10" Canvas.Top="134"/>
-            <Label x:Name="highestStreakLabel" Content="Highest Streak" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Canvas.Left="10" Canvas.Top="165"/>
-            <Label x:Name="noteHitPercentageLabel" Content="Note Hit Pct." HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Canvas.Left="10" Canvas.Top="195"/>
-            <Label x:Name="songTimerimeValueLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="225" Canvas.Left="115" Canvas.Top="10"/>
-            <Label x:Name="notesHitValueLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="225" Canvas.Left="115" Canvas.Top="41"/>
-            <Label x:Name="notesMissedValueLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="225" Canvas.Left="115" Canvas.Top="71"/>
-            <Label x:Name="totalNotesValueLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="225" Canvas.Left="115" Canvas.Top="102"/>
-            <Label x:Name="currentStreakValueLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="225" Canvas.Left="115" Canvas.Top="134"/>
-            <Label x:Name="highestStreakValueLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="225" Canvas.Left="115" Canvas.Top="165"/>
-            <Label x:Name="noteHitPercentageValueLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="225" Canvas.Left="115" Canvas.Top="195"/>
-        </Canvas>
 
-    </Grid>
+        <StatusBar Name="statusBar" DockPanel.Dock="Bottom">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem Grid.Column="0" Margin="0,0,0,0">
+                <TextBlock>
+                    <Run Text="RockSniffer GUI" />
+                    <Run Text="{Binding Path=Version, Mode=OneWay}" FontWeight="Bold" />
+                </TextBlock>   
+            </StatusBarItem>
+            <Separator Grid.Column="1" />
+            <StatusBarItem Grid.Column="2" />
+            <Separator Grid.Column="3" />
+            <StatusBarItem Grid.Column="4" Margin="0,0,0,0" >
+                <TextBlock Name="gameProcessAttachedLabel">
+                    <Run Text="Game" />
+                    <Run Text="{Binding Path=GameProcessServiceStatus, Mode=OneWay}" FontWeight="Bold" />
+                </TextBlock>
+            </StatusBarItem>
+        </StatusBar>
+
+        <Grid x:Name="contentGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            
+            <Canvas Grid.Row="0" HorizontalAlignment="Left" Height="118" VerticalAlignment="Top" Width="478">
+                <Label x:Name="bandLabel" Content="Band" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50" Canvas.Left="115" Canvas.Top="10" RenderTransformOrigin="2.473,0.551"/>
+                <Label x:Name="bandNameLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="300" Canvas.Left="170" Canvas.Top="10"/>
+                <Label x:Name="songLabel" Content="Song" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50" Canvas.Left="115" Canvas.Top="36"/>
+                <Label x:Name="songNameLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="300" Canvas.Left="170" Canvas.Top="36"/>
+                <Label x:Name="albumName" Content="Album" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50" Canvas.Left="115" Canvas.Top="62"/>
+                <Label x:Name="albumNameLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="300" Canvas.Left="170" Canvas.Top="62"/>
+                <Image x:Name="albumArtImage" HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="100" Source="sniffy.ico" Canvas.Left="10" Canvas.Top="10"/>
+            </Canvas>
+            <Canvas Grid.Row="1" HorizontalAlignment="Left" Height="227" VerticalAlignment="Top" Width="350">
+                <Label x:Name="songTimerLabel" Content="Time" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Canvas.Left="10" Canvas.Top="10"/>
+                <Label x:Name="notesHitLabel" Content="Notes Hit" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Canvas.Left="10" Canvas.Top="41"/>
+                <Label x:Name="notesMissedLabel" Content="Notes Missed" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Canvas.Left="10" Canvas.Top="71"/>
+                <Label x:Name="totalNotesLabel" Content="Total Notes" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Canvas.Left="10" Canvas.Top="102"/>
+                <Label x:Name="currentStreakLabel" Content="Current Streak" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Canvas.Left="10" Canvas.Top="134"/>
+                <Label x:Name="highestStreakLabel" Content="Highest Streak" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Canvas.Left="10" Canvas.Top="165"/>
+                <Label x:Name="noteHitPercentageLabel" Content="Note Hit Pct." HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Canvas.Left="10" Canvas.Top="195"/>
+                <Label x:Name="songTimerimeValueLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="225" Canvas.Left="115" Canvas.Top="10"/>
+                <Label x:Name="notesHitValueLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="225" Canvas.Left="115" Canvas.Top="41"/>
+                <Label x:Name="notesMissedValueLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="225" Canvas.Left="115" Canvas.Top="71"/>
+                <Label x:Name="totalNotesValueLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="225" Canvas.Left="115" Canvas.Top="102"/>
+                <Label x:Name="currentStreakValueLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="225" Canvas.Left="115" Canvas.Top="134"/>
+                <Label x:Name="highestStreakValueLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="225" Canvas.Left="115" Canvas.Top="165"/>
+                <Label x:Name="noteHitPercentageValueLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="225" Canvas.Left="115" Canvas.Top="195"/>
+            </Canvas>
+        </Grid>
+    </DockPanel>
 </Window>
