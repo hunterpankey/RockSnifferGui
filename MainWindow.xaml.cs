@@ -45,9 +45,6 @@ namespace RockSnifferGui
         });
         public static RoutedUICommand ShowPlayHistoryCommand { get => showPlayHistoryCommand; }
 
-        private const string version = "0.0.3";
-        public static string Version { get => "v" + version; }
-
         internal static ICache cache;
         internal static Config config;
         internal static Sniffer sniffer;
@@ -67,6 +64,7 @@ namespace RockSnifferGui
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public static string Version { get => App.Version; }
         public string GameProcessServiceStatus
         {
             get
@@ -110,9 +108,8 @@ namespace RockSnifferGui
         public void Initialize()
         {
             //Set title and print version
-            this.Title = string.Format("Unofficial RockSniffer GUI {0}", Version);
-            //Console.Title = string.Format("RockSniffer {0}", version);
-            Logger.Log("RockSniffer {0} ({1}bits)", Version, Is64Bits ? "64" : "32");
+            this.Title = string.Format("Unofficial RockSniffer GUI {0}", App.Version);
+            Logger.Log("RockSniffer GUI {0} ({1}bits)", App.Version, Is64Bits ? "64" : "32");
 
             //Initialize and load configuration
             config = new Config();
