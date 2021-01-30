@@ -16,6 +16,10 @@ namespace RockSnifferGui
     {
         private GameProcessService gameProcessService;
 
+
+        private const string version = "0.0.4";
+        public static string Version { get => "v" + version; }
+
         public App()
         {
             this.gameProcessService = GameProcessService.Instance;
