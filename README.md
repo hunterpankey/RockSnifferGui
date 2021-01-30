@@ -5,14 +5,14 @@ Simple GUI to display RockSniffer data instead of having to read and display the
 So [Rocksmith](https://rocksmith.ubisoft.com/rocksmith/en-us/home/) is excellent, and [RockSniffer](https://github.com/kokolihapihvi/RockSniffer) is an excellent add-on to get data out of the game for whatever reason you might want to. If you've been using RockSniffer, there's a decent chance you're a streamer trying to show an overlay to your viewers. Well, this is for the non-streamers out there (not exclusively or anything. Streamers should feel free to use this if it works for your visual setup.) This is a simple Windows application that will display the main song details and statistics on-screen, updating automatically, just like the RockSniffer output text files do, but in graphical form.
 
 ## Download
-I don't know why Github makes this difficult, but to download, you have to go to the "[Releases](https://github.com/hunterpankey/RockSnifferGui/releases)" section, then expand the "Assets" section, and then finally download the "RockSnifferGui-0.0.2.zip" file to download. Or...
+I don't know why Github makes this difficult, but to download, you have to go to the "[Releases](https://github.com/hunterpankey/RockSnifferGui/releases)" section, then expand the "Assets" section, and then finally download the "RockSnifferGui-0.0.4.zip" file to download. Or...
 
-### [Download RockSnifferGui](https://github.com/hunterpankey/RockSnifferGui/releases/download/0.0.2/RockSnifferGui-0.0.2.zip)
+### [Download (Unofficial) RockSniffer GUI v0.0.4](https://github.com/hunterpankey/RockSnifferGui/releases/download/0.0.4/RockSnifferGui-0.0.4.zip)
 
 Extract it into its own folder and run RockSnifferGui.exe to launch it. ~~Launch the Rocksmith game first, though. It'll complain about it if you don't.~~ No longer necessary! URSG now watches for the game process and automatically attaches when a new instance of the game is launched. This is helpful if you have some bunk CDLCs that crash your game a lot.
 
 ## Drawbacks/Limitations
-This doesn't do any of the text files and album cover image file output that you're used to with RockSniffer. All it does is display the info in its little window. Also, once you close the program, that data's gone. It'll keep all the cached information it knows about your CDLCs and stuff like that. It just won't keep a record of your performance from session to session.
+This doesn't do any of the text files and album cover image file output that you're used to with RockSniffer. All it does is display the info in its little window. It'll keep all the cached information it knows about your CDLCs and stuff like that as well. ~~It just won't keep a record of your performance from session to session.~~ Yes it will! URSG now stores song play data alongside the other CDLC data and will show you your song play history along with note statistics!
 
 Also, there's not really much to configure yet. Actually, there's nothing to configure, as far as I can see. That will likely be forthcoming, but it's sure not in there now.
 
