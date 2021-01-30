@@ -51,7 +51,7 @@
                 <Button Name="refreshButton" Grid.Row="0" Content="Refresh" Style="{StaticResource buttonStyle}" Click="refreshButton_Click" />
                 <Button Name="testButton" Grid.Row="0" Content="Test" Width="75" Style="{StaticResource buttonStyle}" Click="testButton_Click" Visibility="Hidden" />
             </StackPanel>
-            <DataGrid Name="playHistoryDataGrid" Grid.Row="1" AutoGenerateColumns="False" DataContext="{Binding SongDetails}" IsReadOnly="True" RowHeaderWidth="0" 
+            <DataGrid Name="playHistoryDataGrid" Grid.Row="1" AutoGenerateColumns="False" DataContext="{Binding SongPlays}" IsReadOnly="True" RowHeaderWidth="0" 
                       HorizontalGridLinesBrush="{StaticResource CloudsBrush}" VerticalGridLinesBrush="{StaticResource CloudsBrush}">
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow">
@@ -65,26 +65,34 @@
                         <Setter Property="HorizontalContentAlignment" Value="Center" />
                         <Setter Property="Background" Value="{StaticResource MidnightBlueBrush}" />
                         <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
+                        <Setter Property="FontWeight" Value="Bold" />
+                        <Setter Property="FontSize" Value="14" />
                     </Style>
                     <Style x:Key="HeaderCell" TargetType="DataGridColumnHeader">
                         <Setter Property="Background" Value="{StaticResource MidnightBlueBrush}" />
                         <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
                         <Setter Property="Padding" Value="2" />
+                        <Setter Property="FontWeight" Value="Bold" />
+                        <Setter Property="FontSize" Value="14" />
                     </Style>
                     <Style x:Key="CellCentered" TargetType="DataGridCell">
                         <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                        <Setter Property="FontSize" Value="14" />
+                    </Style>
+                    <Style x:Key="Cell" TargetType="DataGridCell">
+                        <Setter Property="FontSize" Value="14" />
                     </Style>
                 </DataGrid.Resources>
                 <DataGrid.Columns>
-                    <DataGridTextColumn x:Name="startTime" Binding="{Binding StartTime}" Header="Time" MinWidth="130" HeaderStyle="{StaticResource HeaderCell}" />
-                    <DataGridTextColumn x:Name="artistNameColumn" Binding="{Binding SongDetails.ArtistName}" Header="Artist" MinWidth="200" Width="200" HeaderStyle="{StaticResource HeaderCell}" />
-                    <DataGridTextColumn x:Name="songNameColumn" Binding="{Binding SongDetails.SongName}" Header="Song" MinWidth="200" Width="200" HeaderStyle="{StaticResource HeaderCell}" />
-                    <DataGridTextColumn x:Name="albumNameColumn" Binding="{Binding SongDetails.AlbumName}" Header="Album" MinWidth="200" Width="200" HeaderStyle="{StaticResource HeaderCell}" />
+                    <DataGridTextColumn x:Name="startTime" Binding="{Binding StartTime}" Header="Time" MinWidth="130" CellStyle="{StaticResource Cell}" HeaderStyle="{StaticResource HeaderCell}" />
+                    <DataGridTextColumn x:Name="artistNameColumn" Binding="{Binding SongDetails.ArtistName}" Header="Artist" MinWidth="200" Width="200" CellStyle="{StaticResource Cell}" HeaderStyle="{StaticResource HeaderCell}" />
+                    <DataGridTextColumn x:Name="songNameColumn" Binding="{Binding SongDetails.SongName}" Header="Song" MinWidth="200" Width="200" CellStyle="{StaticResource Cell}" HeaderStyle="{StaticResource HeaderCell}" />
+                    <DataGridTextColumn x:Name="albumNameColumn" Binding="{Binding SongDetails.AlbumName}" Header="Album" MinWidth="200" Width="200" CellStyle="{StaticResource Cell}" HeaderStyle="{StaticResource HeaderCell}" />
                     <DataGridTextColumn x:Name="yearNameColumn" Binding="{Binding SongDetails.AlbumYear}" Header="Year" MinWidth="50" Width="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
 
                     <DataGridTextColumn x:Name="hitNotesColumn" Binding="{Binding NotesHit}" Header="Hit" MinWidth="50" Width="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
                     <DataGridTextColumn x:Name="missedNotesColumn" Binding="{Binding NotesMissed}" Header="Missed" MinWidth="50" Width="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
-                    <DataGridTextColumn x:Name="noteAccuracyColumn" Binding="{Binding AccuracyAsPercentage}" Header="Accuracy" MinWidth="50" Width="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
+                    <DataGridTextColumn x:Name="noteAccuracyColumn" Binding="{Binding AccuracyAsPercentage}" Header="Accuracy" MinWidth="65" Width="65" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
                     <DataGridTextColumn x:Name="maxStreakColumn" Binding="{Binding HighestHitStreak}" Header="Streak" MinWidth="50" Width="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
                 </DataGrid.Columns>
             </DataGrid>

@@ -36,11 +36,17 @@ namespace RockSnifferGui
 
             this.SongPlays = songPlays;
             this.playHistoryDataGrid.Loaded += PlayHistoryDataGrid_Loaded;
+            this.SizeChanged += PlayHistoryWindow_SizeChanged;
 
             this.sniffer = sniffer;
             this.AttachSniffer();
 
             this.DataContext = this;
+        }
+
+        private void PlayHistoryWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            this.playHistoryDataGrid.Width = e.NewSize.Width - SystemParameters.VerticalScrollBarWidth;
         }
 
         private void PlayHistoryDataGrid_Loaded(object sender, RoutedEventArgs e)
