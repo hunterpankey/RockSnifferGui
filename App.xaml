@@ -4,6 +4,33 @@
              xmlns:local="clr-namespace:RockSnifferGui"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <RoutedUICommand x:Key="exitCommand" Text="E_xit" x:Name="exitCommand">
+                <RoutedUICommand.InputGestures>
+                    <KeyGesture>Alt+F4</KeyGesture>
+                </RoutedUICommand.InputGestures>
+            </RoutedUICommand>
+            <Color x:Key="PeterRiver">#3498db</Color>
+            <Color x:Key="MidnightBlue">#2c3e50</Color>
+            <Color x:Key="Concrete">#95a5a6</Color>
+            <Color x:Key="Clouds">#ecf0f1</Color>
+            <Color x:Key="Asbestos">#7f8c8d</Color>
+            <Color x:Key="Silver">#bdc3c7</Color>
+            <Color x:Key="BelizeHole">#2980b9</Color>
+
+            <SolidColorBrush x:Key="PeterRiverBrush" Color="{StaticResource PeterRiver}" />
+            <SolidColorBrush x:Key="MidnightBlueBrush" Color="{StaticResource MidnightBlue}" />
+            <SolidColorBrush x:Key="ConcreteBrush" Color="{StaticResource Concrete}" />
+            <SolidColorBrush x:Key="CloudsBrush" Color="{StaticResource Clouds}" />
+            <SolidColorBrush x:Key="AsbestosBrush" Color="{StaticResource Asbestos}" />
+            <SolidColorBrush x:Key="SilverBrush" Color="{StaticResource Silver}" />
+            <SolidColorBrush x:Key="BelizeHoleBrush" Color="{StaticResource BelizeHole}" />
+            
+            <Style x:Key="buttonStyle" TargetType="Button">
+                <Setter Property="Margin" Value="2" />
+                <Setter Property="Width" Value="75" />
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+            </Style>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

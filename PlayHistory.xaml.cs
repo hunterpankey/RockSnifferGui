@@ -1,4 +1,5 @@
-﻿using RockSnifferGui.Model;
+﻿using RockSnifferGui.DataStore;
+using RockSnifferGui.Model;
 using RockSnifferLib.RSHelpers.NoteData;
 using RockSnifferLib.Sniffing;
 using System;
@@ -27,16 +28,24 @@ namespace RockSnifferGui
         private Sniffer sniffer;
 
         public IEnumerable<SongPlayInstance> SongPlays { get => songPlays; set => songPlays = value; }
+        public int SongPlayCount { get => SongPlays.Count(); }
 
         public PlayHistoryWindow(List<SongPlayInstance> songPlays, Sniffer sniffer)
         {
             InitializeComponent();
 
-            this.songPlays = songPlays;
-            this.playHistoryDataGrid.ItemsSource = this.songPlays;
+            this.SongPlays = songPlays;
+            this.playHistoryDataGrid.Loaded += PlayHistoryDataGrid_Loaded;
 
             this.sniffer = sniffer;
             this.AttachSniffer();
+
+            this.DataContext = this;
+        }
+
+        private void PlayHistoryDataGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.RefreshDisplay();
         }
 
         private void AttachSniffer()
@@ -60,8 +69,26 @@ namespace RockSnifferGui
 
         private void RefreshDisplay()
         {
-            //this.playHistoryDataGrid.ItemsSource = this.songPlays;
+            this.playHistoryDataGrid.ItemsSource = this.SongPlays;
             this.playHistoryDataGrid.Items.Refresh();
+
+            if (this.playHistoryDataGrid.Items.Count > 0)
+            {
+                var border = VisualTreeHelper.GetChild(this.playHistoryDataGrid, 0) as Decorator;
+                if (border != null)
+                {
+                    var scroll = border.Child as ScrollViewer;
+                    if (scroll != null) scroll.ScrollToEnd();
+                }
+            }
+        }
+
+        private void testButton_Click(object sender, RoutedEventArgs e)
+        {
+            SQLiteStore store = new SQLiteStore();
+            store.Test();
+            this.songPlays = store.GetAll();
+            this.RefreshDisplay();
         }
     }
 }

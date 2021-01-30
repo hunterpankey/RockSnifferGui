@@ -6,26 +6,89 @@
         xmlns:local="clr-namespace:RockSnifferGui"
         mc:Ignorable="d"
         Title="Song Play History" Height="450" Width="1120" ScrollViewer.CanContentScroll="True">
-    <Canvas Margin="0" Width="Auto" Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Left">
-        <DataGrid x:Name="playHistoryDataGrid" RowHeight="30" ColumnWidth="100" AutoGenerateColumns="False" Canvas.Top="36" DataContext="{Binding songDetails}" HorizontalAlignment="Left" VerticalAlignment="Top" Height="374" Canvas.Left="10" IsReadOnly="True" Width="1093">
-            <DataGrid.Columns>
-                <DataGridTextColumn x:Name="startTime" Binding="{Binding StartTime}" Header="Time" MinWidth="130" />
-                <DataGridTextColumn x:Name="artistNameColumn" Binding="{Binding SongDetails.ArtistName}" Header="Artist" MinWidth="200" Width="200" />
-                <DataGridTextColumn x:Name="songNameColumn" Binding="{Binding SongDetails.SongName}" Header="Song" MinWidth="200" Width="200" />
-                <DataGridTextColumn x:Name="albumNameColumn" Binding="{Binding SongDetails.AlbumName}" Header="Album" MinWidth="200" Width="200" />
-                <DataGridTextColumn x:Name="yearNameColumn" Binding="{Binding SongDetails.AlbumYear}" Header="Year" MinWidth="50" Width="50" />
+    <Window.Resources>
+        <ResourceDictionary>
+            
+        </ResourceDictionary>
+    </Window.Resources>
+    <DockPanel>
+        <StatusBar Name="statusBar" DockPanel.Dock="Bottom" Margin="0,0,0,0">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem Grid.Column="0" Margin="0,0,0,0">
+                <TextBlock>
+                    <Run Text="Play History" />
+                </TextBlock>
+            </StatusBarItem>
+            <Separator Grid.Column="1" />
+            <StatusBarItem Grid.Column="2" />
+            <Separator Grid.Column="3" />
+            <StatusBarItem Grid.Column="4" Margin="0,0,0,0" >
+                <TextBlock Name="gameProcessAttachedLabel">
+                    <Run Text="{Binding Path=SongPlayCount, Mode=OneWay}" FontWeight="Bold" />
+                    <Run Text="Songs" />
+                </TextBlock>
+            </StatusBarItem>
+        </StatusBar>
+        <Grid ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" VerticalAlignment="Top" ScrollViewer.CanContentScroll="True" Margin="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="15*" />
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Song Play History" />
+                <Button Name="refreshButton" Grid.Row="0" Content="Refresh" Style="{StaticResource buttonStyle}" Click="refreshButton_Click" />
+                <Button Name="testButton" Grid.Row="0" Content="Test" Width="75" Style="{StaticResource buttonStyle}" Click="testButton_Click" Visibility="Hidden" />
+            </StackPanel>
+            <DataGrid Name="playHistoryDataGrid" Grid.Row="1" AutoGenerateColumns="False" DataContext="{Binding SongDetails}" IsReadOnly="True" RowHeaderWidth="0" 
+                      HorizontalGridLinesBrush="{StaticResource CloudsBrush}" VerticalGridLinesBrush="{StaticResource CloudsBrush}">
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="Background" Value="{StaticResource BelizeHoleBrush}" />
+                        <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
+                        <!--<Setter Property="IsHitTestVisible" Value="False" />-->
+                    </Style>
+                </DataGrid.RowStyle>
+                <DataGrid.Resources>
+                    <Style x:Key="HeaderCellCentered" TargetType="DataGridColumnHeader">
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        <Setter Property="Background" Value="{StaticResource MidnightBlueBrush}" />
+                        <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
+                    </Style>
+                    <Style x:Key="HeaderCell" TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="{StaticResource MidnightBlueBrush}" />
+                        <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
+                        <Setter Property="Padding" Value="2" />
+                    </Style>
+                    <Style x:Key="CellCentered" TargetType="DataGridCell">
+                        <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                    </Style>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTextColumn x:Name="startTime" Binding="{Binding StartTime}" Header="Time" MinWidth="130" HeaderStyle="{StaticResource HeaderCell}" />
+                    <DataGridTextColumn x:Name="artistNameColumn" Binding="{Binding SongDetails.ArtistName}" Header="Artist" MinWidth="200" Width="200" HeaderStyle="{StaticResource HeaderCell}" />
+                    <DataGridTextColumn x:Name="songNameColumn" Binding="{Binding SongDetails.SongName}" Header="Song" MinWidth="200" Width="200" HeaderStyle="{StaticResource HeaderCell}" />
+                    <DataGridTextColumn x:Name="albumNameColumn" Binding="{Binding SongDetails.AlbumName}" Header="Album" MinWidth="200" Width="200" HeaderStyle="{StaticResource HeaderCell}" />
+                    <DataGridTextColumn x:Name="yearNameColumn" Binding="{Binding SongDetails.AlbumYear}" Header="Year" MinWidth="50" Width="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
 
-                <DataGridTextColumn x:Name="hitNotesColumn" Binding="{Binding NoteData.TotalNotesHit}" Header="Hit" MinWidth="70" Width="70" />
-                <DataGridTextColumn x:Name="missedNotesColumn" Binding="{Binding NoteData.TotalNotesMissed}" Header="Missed" MinWidth="70" Width="70" />
-                <DataGridTextColumn x:Name="noteAccuracyColumn" Binding="{Binding NoteData.Accuracy}" Header="Accuracy" MinWidth="70" Width="70" />
-                <DataGridTextColumn x:Name="maxStreakColumn" Binding="{Binding NoteData.HighestHitStreak}" Header="Top Streak" MinWidth="70" Width="70" />
-                <!--<DataGridTextColumn x:Name="nameColumn" Binding="{Binding Name}" Header="Name" />
-                <DataGridTextColumn x:Name="name2Column" Binding="{Binding Name2}" Header="Name2" />
-                <DataGridTextColumn x:Name="thingColumn" Binding="{Binding Thing}" Header="Thing" />-->
-            </DataGrid.Columns>
-        </DataGrid>
-        <Button Name="refreshButton" Content="Refresh" Canvas.Top="10" Width="75" Click="refreshButton_Click" Canvas.Left="10" VerticalAlignment="Top" />
-    </Canvas>
+                    <DataGridTextColumn x:Name="hitNotesColumn" Binding="{Binding NotesHit}" Header="Hit" MinWidth="50" Width="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
+                    <DataGridTextColumn x:Name="missedNotesColumn" Binding="{Binding NotesMissed}" Header="Missed" MinWidth="50" Width="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
+                    <DataGridTextColumn x:Name="noteAccuracyColumn" Binding="{Binding AccuracyAsPercentage}" Header="Accuracy" MinWidth="50" Width="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
+                    <DataGridTextColumn x:Name="maxStreakColumn" Binding="{Binding HighestHitStreak}" Header="Streak" MinWidth="50" Width="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
 
-
+    </DockPanel>
 </Window>
