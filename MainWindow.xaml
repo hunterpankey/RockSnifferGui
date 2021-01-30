@@ -32,7 +32,7 @@
             <Button x:Name="playHistoryButton" Command="{StaticResource togglePlayHistoryCommand}">Play History</Button>
         </ToolBar>
 
-        <StatusBar Name="statusBar" DockPanel.Dock="Bottom" Width="544">
+        <StatusBar Name="statusBar" DockPanel.Dock="Bottom">
             <StatusBar.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Grid>
