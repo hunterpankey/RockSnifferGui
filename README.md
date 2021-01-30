@@ -9,7 +9,7 @@ I don't know why Github makes this difficult, but to download, you have to go to
 
 ### [Download RockSnifferGui](https://github.com/hunterpankey/RockSnifferGui/releases/download/0.0.2/RockSnifferGui-0.0.2.zip)
 
-Extract it into its own folder and run RockSnifferGui.exe to launch it. Launch the Rocksmith game first, though. It'll complain about it if you don't.
+Extract it into its own folder and run RockSnifferGui.exe to launch it. ~~Launch the Rocksmith game first, though. It'll complain about it if you don't.~~ No longer necessary! URSG now watches for the game process and automatically attaches when a new instance of the game is launched. This is helpful if you have some bunk CDLCs that crash your game a lot.
 
 ## Drawbacks/Limitations
 This doesn't do any of the text files and album cover image file output that you're used to with RockSniffer. All it does is display the info in its little window. Also, once you close the program, that data's gone. It'll keep all the cached information it knows about your CDLCs and stuff like that. It just won't keep a record of your performance from session to session.
