@@ -1,12 +1,7 @@
 ﻿using RockSnifferGui.Common;
 using RockSnifferLib.RSHelpers.NoteData;
-using RockSnifferLib.Sniffing;
+using System;
 using System.ComponentModel;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Runtime.CompilerServices;
-using System.Windows.Media.Imaging;
 
 namespace RockSnifferGui.Controls
 {
@@ -39,6 +34,7 @@ namespace RockSnifferGui.Controls
                     this.SetProperty(ref this.maxStreak, value.HighestHitStreak, "MaxStreak");
 
                     this.SetProperty(ref this.accuracy, value.Accuracy, "Accuracy");
+                    this.OnPropertyChanged(new PropertyChangedEventArgs("AccuracyDisplay"));
                 }
             }
         }
@@ -49,14 +45,17 @@ namespace RockSnifferGui.Controls
             set
             {
                 this.SetProperty(ref this.songTimer, value, "SongTimer");
+                this.OnPropertyChanged(new PropertyChangedEventArgs("SongTimerDisplay"));
             }
         }
+
+        public string SongTimerDisplay { get => TimeSpan.FromSeconds(this.SongTimer).ToString(@"m\:ss"); }
         public int NotesHit { get => notesHit; set => notesHit = value; }
         public int NotesMissed { get => notesMissed; set => notesMissed = value; }
         public int TotalNotes { get => totalNotes; set => totalNotes = value; }
         public int CurrentStreak { get => currentStreak; set => currentStreak = value; }
         public int MaxStreak { get => maxStreak; set => maxStreak = value; }
         public float Accuracy { get => accuracy; set => accuracy = value; }
-
+        public string AccuracyDisplay { get => string.Format(@"{0:f2}%", this.Accuracy); }
     }
 }
