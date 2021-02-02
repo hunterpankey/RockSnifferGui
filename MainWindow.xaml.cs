@@ -1,4 +1,5 @@
-﻿using RockSnifferGui.Configuration;
+﻿using RockSnifferGui.Common;
+using RockSnifferGui.Configuration;
 using RockSnifferGui.DataStore;
 using RockSnifferGui.Model;
 using RockSnifferGui.Services;
@@ -39,21 +40,11 @@ namespace RockSnifferGui
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private static RoutedUICommand showPlayHistoryCommand = new RoutedUICommand("Show the Play History Window", "showPlayHistory", typeof(MainWindow),
-            new InputGestureCollection() {
-                new KeyGesture(Key.H, ModifierKeys.Control)
-        });
-        public static RoutedUICommand ShowPlayHistoryCommand { get => showPlayHistoryCommand; }
-
         internal static ICache cache;
         internal static Config config;
         internal static Sniffer sniffer;
 
         private static readonly bool Is64Bits = (IntPtr.Size == 8);
-
-        private SongDetails details = new SongDetails();
-        private RSMemoryReadout memReadout = new RSMemoryReadout();
-        private readonly System.Drawing.Image defaultAlbumCover = new Bitmap(256, 256);
 
         private List<SongPlayInstance> playedSongs = new List<SongPlayInstance>();
         private SongPlayInstance currentSong;
@@ -82,7 +73,6 @@ namespace RockSnifferGui
                 GameProcessService.Instance.GameProcessChanged += GameProcessService_GameProcessChanged;
                 GameProcessService.Instance.PropertyChanged += GameProcessService_PropertyChanged;
                 this.Initialize();
-                this.Run();
             }
             catch (Exception ex)
             {
@@ -92,26 +82,11 @@ namespace RockSnifferGui
             this.DataContext = this;
         }
 
-        private void GameProcessService_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if(e.PropertyName.Equals("StatusForDisplay"))
-            {
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GameProcessServiceStatus"));
-            }
-        }
-
-        private void GameProcessService_GameProcessChanged(object sender, GameProcessChangedEventArgs e)
-        {
-            this.SetupSniffer(e.Process);
-        }
-
         public void Initialize()
         {
-            //Set title and print version
             this.Title = string.Format("Unofficial RockSniffer GUI {0}", App.Version);
             Logger.Log("RockSniffer GUI {0} ({1}bits)", App.Version, Is64Bits ? "64" : "32");
 
-            //Initialize and load configuration
             config = new Config();
             try
             {
@@ -145,22 +120,7 @@ namespace RockSnifferGui
             }
 
             this.Closing += MainWindow_Closing;
-        }
 
-        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (MainWindow.sniffer != null)
-            {
-                MainWindow.sniffer.Stop();
-            }
-
-            // no Discord RPC stuff right now
-            //rpcHandler?.Dispose();
-            //rpcHandler = null;
-        }
-
-        public void Run()
-        {
             //Add RPC event listeners
             // not doing anything with Discord right now
             //if (config.rpcSettings.enabled)
@@ -189,46 +149,87 @@ namespace RockSnifferGui
             MainWindow.sniffer.OnMemoryReadout += Sniffer_OnMemoryReadout;
         }
 
+        #region Game Process Events
+        private void GameProcessService_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName.Equals("StatusForDisplay"))
+            {
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GameProcessServiceStatus"));
+            }
+        }
+
+        private void GameProcessService_GameProcessChanged(object sender, GameProcessChangedEventArgs e)
+        {
+            this.SetupSniffer(e.Process);
+
+            if (this.playHistoryWindow != null)
+            {
+                this.playHistoryWindow.AttachSniffer(MainWindow.sniffer);
+            }
+        }
+        #endregion
+
         #region Sniffer Events
         private void Sniffer_OnSongStarted(object sender, OnSongStartedArgs e)
         {
-            details = e.song;
-            SongPlayInstance newSong = new SongPlayInstance(e.song);
+            try
+            {
+                this.nowPlayingControl.UpdateSong(e.song);
+                SongPlayInstance newSong = new SongPlayInstance(e.song);
 
-            this.playedSongs.Add(newSong);
-            this.currentSong = newSong;
+                this.playedSongs.Add(newSong);
+                this.currentSong = newSong;
 
-            newSong.StartSong();
+                newSong.StartSong();
 
-            UpdateNowPlayingValues();
+            }
+            catch (Exception ex)
+            {
+                Utilities.ShowExceptionMessageBox(ex);
+            }
         }
 
         private void Sniffer_OnSongEnded(object sender, OnSongEndedArgs e)
         {
-            if (this.currentSong != null)
+            try
             {
-                this.currentSong.FinishSong();
 
-                songPlayInstancesDb.Add(this.currentSong);
+                if (this.currentSong != null)
+                {
+                    this.currentSong.FinishSong();
+
+                    songPlayInstancesDb.Add(this.currentSong);
+                }
+
+                this.currentSong = null;
             }
-
-            this.currentSong = null;
+            catch (Exception ex)
+            {
+                Utilities.ShowExceptionMessageBox(ex);
+            }
         }
 
         private void Sniffer_OnCurrentSongChanged(object sender, OnSongChangedArgs args)
         {
-            ;
-            //details = args.songDetails;
+            this.nowPlayingControl.UpdateSong(args.songDetails);
         }
 
         private void Sniffer_OnMemoryReadout(object sender, OnMemoryReadoutArgs args)
         {
-            memReadout = args.memoryReadout;
-            UpdateNowPlayingValues();
-
-            if ((this.currentSong != null) && (args.memoryReadout.noteData != null))
+            try
             {
-                this.currentSong.UpdateNoteData(args.memoryReadout.noteData);
+                this.notesPlayedControl.UpdateNoteData(args.memoryReadout.noteData, args.memoryReadout.songTimer);
+                
+                //this.UpdateNoteDataDisplays(args.memoryReadout);
+
+                if ((this.currentSong != null) && (args.memoryReadout.noteData != null))
+                {
+                    this.currentSong.UpdateNoteData(args.memoryReadout.noteData);
+                }
+            }
+            catch (Exception ex)
+            {
+                Utilities.ShowExceptionMessageBox(ex);
             }
         }
         #endregion
@@ -250,6 +251,14 @@ namespace RockSnifferGui
             }
         }
 
+        private void ManualTestCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            GenericNoteData n = new GenericNoteData();
+            n.TotalNotes = 10;
+
+            this.notesPlayedControl.UpdateNoteData(n, 50.5f);
+        }
+
         private void PlayHistoryWindow_Closed(object sender, EventArgs e)
         {
             this.playHistoryWindow = null;
@@ -258,47 +267,24 @@ namespace RockSnifferGui
 
         #endregion
 
-        private void UpdateNowPlayingValues()
+        #region App Lifecycle Events
+        private void ExitCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (!Dispatcher.CheckAccess())
-            {
-                Dispatcher.Invoke(() => this.UpdateNowPlayingValues());
-                return;
-            }
-
-            this.bandNameLabel.Content = details.artistName;
-            this.songNameLabel.Content = details.songName;
-            this.albumNameLabel.Content = $"{details.albumName} ({details.albumYear})";
-
-            var nd = memReadout.noteData ?? new LearnASongNoteData();
-            this.songTimerimeValueLabel.Content = FormatTime(memReadout.songTimer);
-
-            this.notesHitValueLabel.Content = nd.TotalNotesHit.ToString();
-            this.notesMissedValueLabel.Content = nd.TotalNotesMissed.ToString();
-            this.totalNotesValueLabel.Content = nd.TotalNotes.ToString();
-
-            this.currentStreakValueLabel.Content = (nd.CurrentHitStreak - nd.CurrentMissStreak).ToString();
-            this.highestStreakValueLabel.Content = nd.HighestHitStreak.ToString();
-
-            this.noteHitPercentageValueLabel.Content = FormatPercentage(nd.Accuracy);
-
-            if (details.albumArt != null)
-            {
-                using (var memory = new MemoryStream())
-                {
-                    details.albumArt.Save(memory, ImageFormat.Png);
-                    memory.Position = 0;
-
-                    var bitmapImage = new BitmapImage();
-                    bitmapImage.BeginInit();
-                    bitmapImage.StreamSource = memory;
-                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmapImage.EndInit();
-
-                    this.albumArtImage.Source = bitmapImage;
-                }
-            }
+            Application.Current.Shutdown(0);
         }
+
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (MainWindow.sniffer != null)
+            {
+                MainWindow.sniffer.Stop();
+            }
+
+            // no Discord RPC stuff right now
+            //rpcHandler?.Dispose();
+            //rpcHandler = null;
+        }
+        #endregion
 
         public static string FormatTime(float lengthTime)
         {
@@ -309,11 +295,6 @@ namespace RockSnifferGui
         public static string FormatPercentage(double frac)
         {
             return string.Format(config.formatSettings.percentageFormat, frac);
-        }
-
-        private void ExitCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            Application.Current.Shutdown(0);
         }
     }
 }
