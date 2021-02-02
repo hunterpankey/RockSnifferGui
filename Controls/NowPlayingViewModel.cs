@@ -1,14 +1,19 @@
-﻿using RockSnifferLib.Sniffing;
+﻿using RockSnifferGui.Common;
+using RockSnifferLib.Sniffing;
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media.Imaging;
 
 namespace RockSnifferGui.Controls
 {
-    public class NowPlayingViewModel : INotifyPropertyChanged
+    public class NowPlayingViewModel : GenericViewModel, INotifyPropertyChanged
     {
         private SongDetails songDetails;
 
@@ -16,39 +21,20 @@ namespace RockSnifferGui.Controls
         private string songName;
         private string albumName;
         private int albumYear;
-        private System.Windows.Controls.Image albumArtImage;
+        private System.Drawing.Image albumArtImage;
 
         public SongDetails SongDetails
         {
             get => this.songDetails;
             set
             {
-                this.SetProperty<SongDetails>(ref songDetails, value);
+                this.SetProperty(ref songDetails, value);
+
                 this.SetProperty(ref this.artistName, value.artistName, "ArtistName");
                 this.SetProperty(ref this.songName, value.songName, "SongName");
                 this.SetProperty(ref this.albumName, value.albumName, "AlbumName");
                 this.SetProperty(ref this.albumYear, value.albumYear, "AlbumYear");
-                //this.SetProperty(ref this.albumArtImage, value.albumArt, "AlbumArtImage");
-
-                if (value.albumArt != null)
-                {
-                    using (var memory = new MemoryStream())
-                    {
-                        value.albumArt.Save(memory, ImageFormat.Png);
-                        memory.Position = 0;
-
-                        var bitmapImage = new BitmapImage();
-                        bitmapImage.BeginInit();
-                        bitmapImage.StreamSource = memory;
-                        bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                        bitmapImage.EndInit();
-
-                        this.albumArtImage = new System.Windows.Controls.Image();
-                        this.albumArtImage.Source = bitmapImage;
-                        this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AlbumArtImage"));
-                    }
-                }
-
+                this.SetProperty(ref this.albumArtImage, value.albumArt, "AlbumArtImage");
             }
         }
 
@@ -56,24 +42,63 @@ namespace RockSnifferGui.Controls
         public string SongName { get => songName; set => songName = value; }
         public string AlbumName { get => albumName; set => albumName = value; }
         public int AlbumYear { get => albumYear; set => albumYear = value; }
-        public System.Windows.Controls.Image AlbumArtImage { get => albumArtImage; set => albumArtImage = value; }
+        public System.Drawing.Image AlbumArtImage { get => albumArtImage; set => albumArtImage = value; }
 
         public NowPlayingViewModel()
         {
             this.SongDetails = new SongDetails();
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        private bool SetProperty<T>(ref T field, T newValue, [CallerMemberName] string propertyName = null)
+    }
+
+    [ValueConversion(typeof(System.Drawing.Image), typeof(System.Windows.Controls.Image))]
+    public class AlbumArtImageConverter : IValueConverter
+    {
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(object.Equals(field, newValue)))
+            var toReturn = new BitmapImage();
+            var input = (System.Drawing.Image)value;
+
+            if (value != null)
             {
-                field = (newValue);
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-                return true;
+                using (var memory = new MemoryStream())
+                {
+                    input.Save(memory, ImageFormat.Png);
+                    memory.Position = 0;
+
+                    toReturn.BeginInit();
+                    toReturn.StreamSource = memory;
+                    toReturn.CacheOption = BitmapCacheOption.OnLoad;
+                    toReturn.EndInit();
+                }
             }
 
-            return false;
+            return toReturn;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            Bitmap toReturn = null;
+
+            if (value != null)
+            {
+                System.Windows.Controls.Image image = (System.Windows.Controls.Image)value;
+
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    PngBitmapEncoder encoder = new PngBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create((BitmapSource)image.Source));
+                    encoder.Save(ms);
+
+                    using (Bitmap bmp = new Bitmap(ms))
+                    {
+                        toReturn = new Bitmap(bmp);
+                    }
+                }
+            }
+
+            return toReturn;
         }
     }
 }

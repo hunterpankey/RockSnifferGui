@@ -27,6 +27,7 @@
                 <Setter Property="Canvas.Left" Value="170" />
                 <Setter Property="FontWeight" Value="Bold" />
             </Style>
+            <local:AlbumArtImageConverter x:Key="AlbumArtImageConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Canvas Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="118" Width="478" Background="#ffffffff">
@@ -56,7 +57,7 @@
         <Image x:Name="albumArtImage" HorizontalAlignment="Left" VerticalAlignment="Top" 
                                Height="100" Width="100" 
                                Canvas.Left="10" Canvas.Top="10"
-                               Source="{Binding AlbumArtImage.Source}" />
+                               Source="{Binding AlbumArtImage, Converter={StaticResource AlbumArtImageConverter}}" />
 
     </Canvas>
 </UserControl>

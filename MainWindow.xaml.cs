@@ -40,12 +40,6 @@ namespace RockSnifferGui
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private static RoutedUICommand showPlayHistoryCommand = new RoutedUICommand("Show the Play History Window", "showPlayHistory", typeof(MainWindow),
-            new InputGestureCollection() {
-                new KeyGesture(Key.H, ModifierKeys.Control)
-        });
-        public static RoutedUICommand ShowPlayHistoryCommand { get => showPlayHistoryCommand; }
-
         internal static ICache cache;
         internal static Config config;
         internal static Sniffer sniffer;
@@ -224,9 +218,9 @@ namespace RockSnifferGui
         {
             try
             {
-                //memReadout = args.memoryReadout;
-                //UpdateAllDisplays();
-                this.UpdateNoteDataDisplays(args.memoryReadout);
+                this.notesPlayedControl.UpdateNoteData(args.memoryReadout.noteData, args.memoryReadout.songTimer);
+                
+                //this.UpdateNoteDataDisplays(args.memoryReadout);
 
                 if ((this.currentSong != null) && (args.memoryReadout.noteData != null))
                 {
@@ -257,6 +251,14 @@ namespace RockSnifferGui
             }
         }
 
+        private void ManualTestCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            GenericNoteData n = new GenericNoteData();
+            n.TotalNotes = 10;
+
+            this.notesPlayedControl.UpdateNoteData(n, 50.5f);
+        }
+
         private void PlayHistoryWindow_Closed(object sender, EventArgs e)
         {
             this.playHistoryWindow = null;
@@ -282,33 +284,6 @@ namespace RockSnifferGui
             //rpcHandler?.Dispose();
             //rpcHandler = null;
         }
-        #endregion
-
-        #region UI Update Methods
-        private void UpdateNoteDataDisplays(RSMemoryReadout memReadout)
-        {
-            if (!Dispatcher.CheckAccess())
-            {
-                Dispatcher.Invoke(() => this.UpdateNoteDataDisplays(memReadout));
-                return;
-            }
-
-            this.songTimerimeValueLabel.Content = FormatTime(memReadout.songTimer);
-
-            if (memReadout.noteData != null)
-            {
-                this.notesHitValueLabel.Content = memReadout.noteData.TotalNotesHit.ToString();
-                this.notesMissedValueLabel.Content = memReadout.noteData.TotalNotesMissed.ToString();
-                this.totalNotesValueLabel.Content = memReadout.noteData.TotalNotes.ToString();
-
-                this.currentStreakValueLabel.Content = 
-                    (memReadout.noteData.CurrentHitStreak - memReadout.noteData.CurrentMissStreak).ToString();
-                this.highestStreakValueLabel.Content = memReadout.noteData.HighestHitStreak.ToString();
-
-                this.noteHitPercentageValueLabel.Content = FormatPercentage(memReadout.noteData.Accuracy);
-            }
-        }
-
         #endregion
 
         public static string FormatTime(float lengthTime)
