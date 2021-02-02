@@ -52,6 +52,8 @@ namespace RockSnifferGui.Model
             }
         }
 
+        public object imageLock = new object();
+
         public SongPlayInstance(SongDetails details, INoteData noteData = null, DateTime startTime = default(DateTime), DateTime endTime = default(DateTime))
         {
             this.SongDetails = details;

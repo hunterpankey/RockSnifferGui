@@ -62,6 +62,12 @@ namespace RockSnifferGui
             }
         }
 
+        public void AttachSniffer(Sniffer sniffer)
+        {
+            this.sniffer = sniffer;
+            this.AttachSniffer();
+        }
+
         private void Sniffer_OnSongEnded(object sender, RockSnifferLib.Events.OnSongEndedArgs e)
         {
             Thread.Sleep(1000);
