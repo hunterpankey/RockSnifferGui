@@ -4,18 +4,25 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RockSnifferGui"
-        xmlns:commands="clr-namespace:RockSnifferGui"
+        xmlns:RockSnifferGui="clr-namespace:RockSnifferGui"
+        xmlns:Controls="clr-namespace:RockSnifferGui.Controls"
         mc:Ignorable="d"
-        Title="RockSniffer GUI" Height="429.666" Width="550.999" Icon="sniffy.ico">
+        Title="RockSniffer GUI" Height="450" Width="550" Icon="sniffy.ico">
     <Window.Resources>
         <RoutedUICommand x:Key="togglePlayHistoryCommand" Text="Toggle Play _History" x:Name="togglePlayHistoryCommand">
             <RoutedUICommand.InputGestures>
                 <KeyGesture>Ctrl+H</KeyGesture>
             </RoutedUICommand.InputGestures>
         </RoutedUICommand>
+        <RoutedUICommand x:Key="manualTestCommand" Text="_Test" x:Name="manualTestCommand">
+            <RoutedUICommand.InputGestures>
+                <KeyGesture>Ctrl+Alt+T</KeyGesture>
+            </RoutedUICommand.InputGestures>
+        </RoutedUICommand>
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="{StaticResource togglePlayHistoryCommand}" x:Name="TogglePlayHistoryCommandBinding" Executed="TogglePlayHistoryCommandBinding_Executed" />
+        <CommandBinding Command="{StaticResource manualTestCommand}" x:Name="ManualTestCommandBinding" Executed="ManualTestCommandBinding_Executed" />
         <CommandBinding Command="{StaticResource exitCommand}" x:Name="ExitCommandBinding" Executed="ExitCommandBinding_Executed" />
     </Window.CommandBindings>
     <DockPanel>
@@ -30,6 +37,7 @@
         
         <ToolBar x:Name="mainToolbar" DockPanel.Dock="Top" Height="30" VerticalAlignment="Top" Margin="0">
             <Button x:Name="playHistoryButton" Command="{StaticResource togglePlayHistoryCommand}">Play History</Button>
+            <!--<Button x:Name="testButton" Command="{StaticResource manualTestCommand}">Test Something</Button>-->
         </ToolBar>
 
         <StatusBar Name="statusBar" DockPanel.Dock="Bottom">
@@ -68,17 +76,9 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            
-            <Canvas Grid.Row="0" HorizontalAlignment="Left" Height="118" VerticalAlignment="Top" Width="478">
-                <Label x:Name="bandLabel" Content="Band" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50" Canvas.Left="115" Canvas.Top="10" RenderTransformOrigin="2.473,0.551"/>
-                <Label x:Name="bandNameLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="300" Canvas.Left="170" Canvas.Top="10"/>
-                <Label x:Name="songLabel" Content="Song" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50" Canvas.Left="115" Canvas.Top="36"/>
-                <Label x:Name="songNameLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="300" Canvas.Left="170" Canvas.Top="36"/>
-                <Label x:Name="albumName" Content="Album" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50" Canvas.Left="115" Canvas.Top="62"/>
-                <Label x:Name="albumNameLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="300" Canvas.Left="170" Canvas.Top="62"/>
-                <Image x:Name="albumArtImage" HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="100" Source="sniffy.ico" Canvas.Left="10" Canvas.Top="10"/>
-            </Canvas>
-            <Canvas Grid.Row="1" HorizontalAlignment="Left" Height="227" VerticalAlignment="Top" Width="350">
+            <Controls:NowPlayingControl Grid.Row="0" x:Name="nowPlayingControl" />
+            <Controls:NotesPlayedDataControl Grid.Row="1" x:Name="notesPlayedControl" />
+            <!--<Canvas Grid.Row="1" HorizontalAlignment="Left" Height="227" VerticalAlignment="Top" Width="350">
                 <Label x:Name="songTimerLabel" Content="Time" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Canvas.Left="10" Canvas.Top="10"/>
                 <Label x:Name="notesHitLabel" Content="Notes Hit" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Canvas.Left="10" Canvas.Top="41"/>
                 <Label x:Name="notesMissedLabel" Content="Notes Missed" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Canvas.Left="10" Canvas.Top="71"/>
@@ -93,7 +93,7 @@
                 <Label x:Name="currentStreakValueLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="225" Canvas.Left="115" Canvas.Top="134"/>
                 <Label x:Name="highestStreakValueLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="225" Canvas.Left="115" Canvas.Top="165"/>
                 <Label x:Name="noteHitPercentageValueLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="225" Canvas.Left="115" Canvas.Top="195"/>
-            </Canvas>
+            </Canvas>-->
         </Grid>
     </DockPanel>
 </Window>

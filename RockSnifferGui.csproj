@@ -64,9 +64,28 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Common\GenericNoteData.cs" />
+    <Compile Include="Common\GenericViewModel.cs" />
     <Compile Include="Common\Utilities.cs" />
+    <Compile Include="Controls\NotesPlayedDataControl.xaml.cs">
+      <DependentUpon>NotesPlayedDataControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\NowPlayingControl.xaml.cs">
+      <DependentUpon>NowPlayingControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\NotesPlayedViewModel.cs" />
+    <Compile Include="Controls\NowPlayingViewModel.cs" />
+    <Compile Include="DebugDataBindingConvertor.cs" />
     <Compile Include="Services\GameProcessChangedEventArgs.cs" />
     <Compile Include="Services\GameProcessService.cs" />
+    <Page Include="Controls\NotesPlayedDataControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\NowPlayingControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -90,6 +109,10 @@
     <Page Include="PlayHistory.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>

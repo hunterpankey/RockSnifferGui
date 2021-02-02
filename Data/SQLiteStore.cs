@@ -116,17 +116,7 @@ namespace RockSnifferGui.DataStore
                     cmd.Parameters["@end_time"].Value = songPlayInstance.StartTime;
 
                     #region handle album art
-                    cmd.Parameters["@album_art"].Value = null;
-
-                    if (songPlayInstance.SongDetails.albumArt != null)
-                    {
-                        using (var ms = new MemoryStream())
-                        {
-                            songPlayInstance.SongDetails.albumArt.Save(ms, ImageFormat.Png);
-
-                            cmd.Parameters["@album_art"].Value = ms.ToArray();
-                        }
-                    }
+                    //cmd.Parameters["@album_art"].Value = SerializeImage(songPlayInstance.SongDetails.albumArt, songPlayInstance.imageLock);
                     #endregion
 
                     #endregion
@@ -151,6 +141,37 @@ namespace RockSnifferGui.DataStore
 
                 throw ex;
             }
+        }
+
+        public static byte[] SerializeImage(Image image, object imageLock)
+        {
+            byte[] toReturn = null;
+
+            if (image != null)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    lock (imageLock)
+                    {
+                        image.Save(ms, ImageFormat.Png);
+                        toReturn = ms.ToArray();
+                    }
+                }
+            }
+
+            return toReturn;
+        }
+
+        private Image DeserializeImage(byte[] imageBytes)
+        {
+            Image toReturn = null;
+
+            using (var ms = new MemoryStream(imageBytes))
+            {
+                toReturn = Image.FromStream(ms);
+            }
+
+            return toReturn;
         }
 
         public SongPlayInstance Get(string SongID)
@@ -180,19 +201,15 @@ namespace RockSnifferGui.DataStore
                                 albumArt = null
                             };
 
-                            try
-                            {
-                                var blob = ReadField<byte[]>(reader, "album_art");
+                            //try
+                            //{
+                            //    byte[] blob = ReadField<byte[]>(reader, "album_art");
+                            //    songDetails.albumArt = this.DeserializeImage(blob);
+                            //}
+                            //catch
+                            //{
 
-                                using (var ms = new MemoryStream(blob))
-                                {
-                                    songDetails.albumArt = Image.FromStream(ms);
-                                }
-                            }
-                            catch
-                            {
-
-                            }
+                            //}
 
                             var noteDetails = new LearnASongNoteData();
 
@@ -243,21 +260,16 @@ namespace RockSnifferGui.DataStore
                                 albumArt = null
                             };
 
-                            try
-                            {
-                                var blob = ReadField<byte[]>(reader, "album_art");
-
-                                using (var ms = new MemoryStream(blob))
-                                {
-                                    songDetails.albumArt = Image.FromStream(ms);
-                                }
-                            }
-                            catch
-                            {
-
-                            }
-
-
+                            //try
+                            //{
+                            //    byte[] blob = ReadField<byte[]>(reader, "album_art");
+                            //    songDetails.albumArt = this.DeserializeImage(blob);
+                            //}
+                            //catch(Exception ex)
+                            //{
+                            //    Logger.LogException(ex);
+                            //}
+                            
                             var noteDetails = new LearnASongNoteData();
 
                             SongPlayInstance toAdd = new SongPlayInstance(songDetails, noteDetails, ReadField<DateTime>(reader, "start_time"), ReadField<DateTime>(reader, "end_time"));
