@@ -283,16 +283,5 @@ namespace RockSnifferGui
             //rpcHandler = null;
         }
         #endregion
-
-        public static string FormatTime(float lengthTime)
-        {
-            TimeSpan t = TimeSpan.FromSeconds(Math.Ceiling(lengthTime));
-            return t.ToString(config.formatSettings.timeFormat);
-        }
-
-        public static string FormatPercentage(double frac)
-        {
-            return string.Format(config.formatSettings.percentageFormat, frac);
-        }
     }
 }

@@ -27,7 +27,7 @@
     </UserControl.Resources>
     <Canvas Grid.Row="1" HorizontalAlignment="Left" Height="227" VerticalAlignment="Top" Width="350" Background="#ffffffff">
         <Label x:Name="songTimerLabel" Content="Time" Style="{StaticResource LabelLiteral}" Canvas.Top="10" />
-        <Label x:Name="songTimerimeValueLabel" Content="{Binding SongTimer}" Style="{StaticResource LabelValue}" Canvas.Top="10"/>
+        <Label x:Name="songTimerimeValueLabel" Content="{Binding SongTimerDisplay}" Style="{StaticResource LabelValue}" Canvas.Top="10"/>
 
         <Label x:Name="notesHitLabel" Content="Notes Hit" Style="{StaticResource LabelLiteral}" Canvas.Top="41"/>
         <Label x:Name="notesHitValueLabel" Content="{Binding NotesHit}" Style="{StaticResource LabelValue}" Canvas.Top="41"/>
@@ -45,8 +45,8 @@
         <Label x:Name="highestStreakValueLabel" Content="{Binding MaxStreak}" Style="{StaticResource LabelValue}" Canvas.Top="165"/>
 
         <Label x:Name="noteHitPercentageLabel" Content="Note Hit Pct." Style="{StaticResource LabelLiteral}" Canvas.Top="195"/>
-        <Label x:Name="noteHitPercentageValueLabel" Style="{StaticResource LabelValue}" Canvas.Top="195">
-            <Binding Path="Accuracy" StringFormat="{}{0}%" />
-        </Label>
+        <Label x:Name="noteHitPercentageValueLabel" Content="{Binding AccuracyDisplay}" Style="{StaticResource LabelValue}" Canvas.Top="195" />
+        <!--<Binding Path="Accuracy" StringFormat="{}{0}%" />
+        </Label>-->
     </Canvas>
 </UserControl>
