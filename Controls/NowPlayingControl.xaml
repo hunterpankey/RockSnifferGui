@@ -33,6 +33,7 @@
     <Canvas Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="118" Width="478" Background="#ffffffff">
         <Canvas.Resources>
             <root:DebugDataBindingConvertor x:Key="DebugBinding" />
+            <BitmapImage x:Key="DefaultAlbumImage" UriSource="/sniffy.ico" />
         </Canvas.Resources>
         <Label x:Name="bandLabel" Canvas.Top="10" Style="{DynamicResource LiteralLabel}">Band</Label>
         <Label x:Name="bandNameLabel" Canvas.Top="10" Style="{DynamicResource ValueLabel}" 
@@ -43,21 +44,13 @@
                Content="{Binding SongName}" /> <!--, Converter={StaticResource DebugBinding}}" />-->
 
         <Label x:Name="albumName" Canvas.Top="62" Style="{DynamicResource LiteralLabel}">Album</Label>
-        <Label x:Name="albumNameLabel" Canvas.Top="62" Style="{DynamicResource ValueLabel}">
-            <TextBlock>
-                <TextBlock.Text>
-                    <MultiBinding StringFormat="{}{0} ({1})">
-                        <Binding Path="AlbumName" /> <!--Converter="{StaticResource DebugBinding}" />-->
-                        <Binding Path="AlbumYear" /> <!--Converter="{StaticResource DebugBinding}" />-->
-                    </MultiBinding>
-                </TextBlock.Text>
-            </TextBlock>
-        </Label>
+        <Label x:Name="albumNameLabel" Canvas.Top="62" Style="{DynamicResource ValueLabel}"  Content="{Binding AlbumDisplay}" />
 
         <Image x:Name="albumArtImage" HorizontalAlignment="Left" VerticalAlignment="Top" 
                                Height="100" Width="100" 
                                Canvas.Left="10" Canvas.Top="10"
-                               Source="{Binding AlbumArtImage, Converter={StaticResource AlbumArtImageConverter}}" />
+                               Source="{Binding AlbumArtImage, Converter={StaticResource AlbumArtImageConverter}, FallbackValue={StaticResource DefaultAlbumImage}, TargetNullValue={StaticResource DefaultAlbumImage}}"
+                />
 
     </Canvas>
 </UserControl>

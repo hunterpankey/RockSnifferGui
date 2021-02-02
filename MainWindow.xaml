@@ -78,22 +78,6 @@
             </Grid.RowDefinitions>
             <Controls:NowPlayingControl Grid.Row="0" x:Name="nowPlayingControl" />
             <Controls:NotesPlayedDataControl Grid.Row="1" x:Name="notesPlayedControl" />
-            <!--<Canvas Grid.Row="1" HorizontalAlignment="Left" Height="227" VerticalAlignment="Top" Width="350">
-                <Label x:Name="songTimerLabel" Content="Time" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Canvas.Left="10" Canvas.Top="10"/>
-                <Label x:Name="notesHitLabel" Content="Notes Hit" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Canvas.Left="10" Canvas.Top="41"/>
-                <Label x:Name="notesMissedLabel" Content="Notes Missed" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Canvas.Left="10" Canvas.Top="71"/>
-                <Label x:Name="totalNotesLabel" Content="Total Notes" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Canvas.Left="10" Canvas.Top="102"/>
-                <Label x:Name="currentStreakLabel" Content="Current Streak" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Canvas.Left="10" Canvas.Top="134"/>
-                <Label x:Name="highestStreakLabel" Content="Highest Streak" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Canvas.Left="10" Canvas.Top="165"/>
-                <Label x:Name="noteHitPercentageLabel" Content="Note Hit Pct." HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Canvas.Left="10" Canvas.Top="195"/>
-                <Label x:Name="songTimerimeValueLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="225" Canvas.Left="115" Canvas.Top="10"/>
-                <Label x:Name="notesHitValueLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="225" Canvas.Left="115" Canvas.Top="41"/>
-                <Label x:Name="notesMissedValueLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="225" Canvas.Left="115" Canvas.Top="71"/>
-                <Label x:Name="totalNotesValueLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="225" Canvas.Left="115" Canvas.Top="102"/>
-                <Label x:Name="currentStreakValueLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="225" Canvas.Left="115" Canvas.Top="134"/>
-                <Label x:Name="highestStreakValueLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="225" Canvas.Left="115" Canvas.Top="165"/>
-                <Label x:Name="noteHitPercentageValueLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Width="225" Canvas.Left="115" Canvas.Top="195"/>
-            </Canvas>-->
         </Grid>
     </DockPanel>
 </Window>

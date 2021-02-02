@@ -35,6 +35,8 @@ namespace RockSnifferGui.Controls
                 this.SetProperty(ref this.albumName, value.albumName, "AlbumName");
                 this.SetProperty(ref this.albumYear, value.albumYear, "AlbumYear");
                 this.SetProperty(ref this.albumArtImage, value.albumArt, "AlbumArtImage");
+
+                this.OnPropertyChanged(new PropertyChangedEventArgs("AlbumDisplay"));
             }
         }
 
@@ -42,6 +44,24 @@ namespace RockSnifferGui.Controls
         public string SongName { get => songName; set => songName = value; }
         public string AlbumName { get => albumName; set => albumName = value; }
         public int AlbumYear { get => albumYear; set => albumYear = value; }
+        public string AlbumDisplay
+        {
+            get
+            {
+                if(string.IsNullOrEmpty(this.AlbumName) && (this.AlbumYear == 0))
+                {
+                    return string.Empty;
+                }
+                else
+                {
+                    return $"{this.AlbumName} ({this.AlbumYear})";
+                }
+            }
+            set
+            {
+
+            }
+        }
         public System.Drawing.Image AlbumArtImage { get => albumArtImage; set => albumArtImage = value; }
 
         public NowPlayingViewModel()
@@ -57,7 +77,7 @@ namespace RockSnifferGui.Controls
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var toReturn = new BitmapImage();
+            BitmapImage toReturn = null;
             var input = (System.Drawing.Image)value;
 
             if (value != null)
@@ -67,6 +87,7 @@ namespace RockSnifferGui.Controls
                     input.Save(memory, ImageFormat.Png);
                     memory.Position = 0;
 
+                    toReturn = new BitmapImage();
                     toReturn.BeginInit();
                     toReturn.StreamSource = memory;
                     toReturn.CacheOption = BitmapCacheOption.OnLoad;

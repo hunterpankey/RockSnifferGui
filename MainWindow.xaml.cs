@@ -220,8 +220,6 @@ namespace RockSnifferGui
             {
                 this.notesPlayedControl.UpdateNoteData(args.memoryReadout.noteData, args.memoryReadout.songTimer);
                 
-                //this.UpdateNoteDataDisplays(args.memoryReadout);
-
                 if ((this.currentSong != null) && (args.memoryReadout.noteData != null))
                 {
                     this.currentSong.UpdateNoteData(args.memoryReadout.noteData);

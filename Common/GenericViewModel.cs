@@ -22,5 +22,10 @@ namespace RockSnifferGui.Common
 
             return false;
         }
+
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
+        {
+            this.PropertyChanged?.Invoke(this, args);
+        }
     }
 }
