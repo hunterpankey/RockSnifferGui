@@ -48,8 +48,8 @@
             </Grid.RowDefinitions>
             <StackPanel Orientation="Horizontal">
                 <Label Content="Song Play History" />
-                <Button Name="refreshButton" Grid.Row="0" Content="Refresh" Style="{StaticResource buttonStyle}" Click="refreshButton_Click" />
-                <Button Name="testButton" Grid.Row="0" Content="Test" Width="75" Style="{StaticResource buttonStyle}" Click="testButton_Click" Visibility="Hidden" />
+                <Button Name="refreshButton" Grid.Row="0" Content="Refresh" Style="{StaticResource BaseButton}" Click="refreshButton_Click" />
+                <Button Name="testButton" Grid.Row="0" Content="Test" Width="75" Style="{StaticResource BaseButton}" Click="testButton_Click" Visibility="Hidden" />
             </StackPanel>
             <DataGrid Name="playHistoryDataGrid" Grid.Row="1" AutoGenerateColumns="False" DataContext="{Binding SongPlays}" IsReadOnly="True" RowHeaderWidth="0" 
                       HorizontalGridLinesBrush="{StaticResource CloudsBrush}" VerticalGridLinesBrush="{StaticResource CloudsBrush}">
