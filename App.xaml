@@ -78,6 +78,12 @@
                 <Setter Property="VerticalAlignment" Value="Top" />-->
                 <Setter Property="FontFamily" Value="{StaticResource ResourceKey=ProximaSansFont}" />
                 <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
+                <Setter Property="TextBlock.Effect">
+                    <Setter.Value>
+                        <DropShadowEffect Direction="300" ShadowDepth="5" Opacity="0.8" BlurRadius="12"
+                                          Color="{StaticResource MidnightBlue}"/>
+                    </Setter.Value>
+                </Setter>
             </Style>
         </ResourceDictionary>
     </Application.Resources>

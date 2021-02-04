@@ -19,7 +19,7 @@
                 <Setter Property="TextAlignment" Value="Left" />
                 <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
-            <Style x:Key="NotesHitMissedTextBlock" TargetType="TextBlock" BasedOn="{StaticResource NotesPlayedTextBlock}">
+            <Style x:Key="NotesHitMissedTextBlock" TargetType="TextBlock">
                 <Setter Property="VerticalAlignment" Value="Stretch" />
             </Style>
             <Style x:Key="NotesPlayedBorder" TargetType="Border">
