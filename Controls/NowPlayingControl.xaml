@@ -12,45 +12,48 @@
     </UserControl.DataContext>
     <UserControl.Resources>
         <ResourceDictionary>
-            <Style x:Key="LiteralLabel" TargetType="Label">
-                <Setter Property="HorizontalAlignment" Value="Left" />
-                <Setter Property="VerticalAlignment" Value="Top" />
-                <Setter Property="Width" Value="50" />
-                <Setter Property="Height" Value="26" />
-                <Setter Property="Canvas.Left" Value="115" />
+            <Style x:Key="NowPlayingLabel" TargetType="Label" BasedOn="{StaticResource BaseLabel}">
+                <Setter Property="FontSize" Value="20" />
             </Style>
-            <Style x:Key="ValueLabel" TargetType="Label">
-                <Setter Property="HorizontalAlignment" Value="Left" />
-                <Setter Property="VerticalAlignment" Value="Top" />
+            <Style x:Key="LiteralLabel" TargetType="Label" BasedOn="{StaticResource NowPlayingLabel}">
+                <Setter Property="Width" Value="70" />
+                <Setter Property="Height" Value="36" />
+                <Setter Property="Canvas.Left" Value="115" />
+                <!--<Setter Property="FontWeight" Value="DemiBold" />-->
+                <!--<Setter Property="FontStyle" Value="Oblique" />-->
+            </Style>
+            <Style x:Key="ValueLabel" TargetType="Label" BasedOn="{StaticResource NowPlayingLabel}">
                 <Setter Property="Width" Value="300" />
-                <Setter Property="Height" Value="26" />
-                <Setter Property="Canvas.Left" Value="170" />
-                <Setter Property="FontWeight" Value="Bold" />
+                <Setter Property="Height" Value="36" />
+                <Setter Property="Canvas.Left" Value="190" />
             </Style>
             <local:AlbumArtImageConverter x:Key="AlbumArtImageConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
-    <Canvas Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="118" Width="478" Background="#ffffffff">
-        <Canvas.Resources>
+
+    <StackPanel Orientation="Horizontal"  Margin="5">
+        <StackPanel.Resources>
             <root:DebugDataBindingConvertor x:Key="DebugBinding" />
-            <BitmapImage x:Key="DefaultAlbumImage" UriSource="/sniffy.ico" />
-        </Canvas.Resources>
-        <Label x:Name="bandLabel" Canvas.Top="10" Style="{DynamicResource LiteralLabel}">Band</Label>
-        <Label x:Name="bandNameLabel" Canvas.Top="10" Style="{DynamicResource ValueLabel}" 
-               Content="{Binding ArtistName}" />  <!--, Converter={StaticResource DebugBinding}}" />-->
-
-        <Label x:Name="songLabel" Canvas.Top="36" Style="{DynamicResource LiteralLabel}">Song</Label>
-        <Label x:Name="songNameLabel" Canvas.Top="36" Style="{DynamicResource ValueLabel}" 
-               Content="{Binding SongName}" /> <!--, Converter={StaticResource DebugBinding}}" />-->
-
-        <Label x:Name="albumName" Canvas.Top="62" Style="{DynamicResource LiteralLabel}">Album</Label>
-        <Label x:Name="albumNameLabel" Canvas.Top="62" Style="{DynamicResource ValueLabel}"  Content="{Binding AlbumDisplay}" />
-
-        <Image x:Name="albumArtImage" HorizontalAlignment="Left" VerticalAlignment="Top" 
-                               Height="100" Width="100" 
-                               Canvas.Left="10" Canvas.Top="10"
-                               Source="{Binding AlbumArtImage, Converter={StaticResource AlbumArtImageConverter}, FallbackValue={StaticResource DefaultAlbumImage}, TargetNullValue={StaticResource DefaultAlbumImage}}"
-                />
-
-    </Canvas>
+            <BitmapImage x:Key="DefaultAlbumImage" UriSource="/Resources/sniffy.ico" />
+            <BitmapImage x:Key="FenderGuitarPickImage" UriSource="/Resources/Fender_Guitar_pick_01.png" />
+        </StackPanel.Resources>
+        <Image x:Name="albumArtImage" Width="100" Height="100" Stretch="Fill"
+            Source="{Binding AlbumArtImage, 
+                Converter={StaticResource AlbumArtImageConverter}, 
+                FallbackValue={StaticResource DefaultAlbumImage}, 
+                TargetNullValue={StaticResource DefaultAlbumImage}}" />
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+                <Label x:Name="songNameLabel" Style="{DynamicResource ValueLabel}" Content="{Binding SongName}" FontSize="24" Height="37" />
+                <!--, Converter={StaticResource DebugBinding}}" />-->
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label x:Name="bandNameLabel" Style="{DynamicResource ValueLabel}" Content="{Binding ArtistName}" FontFamily="{StaticResource AmplitudeFont}" Height="30" />
+                <!--, Converter={StaticResource DebugBinding}}" />-->
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label x:Name="albumNameLabel" Style="{DynamicResource ValueLabel}"  Content="{Binding AlbumDisplay}" FontFamily="{StaticResource AmplitudeFont}" Height="34" />
+            </StackPanel>
+        </StackPanel>
+    </StackPanel>
 </UserControl>

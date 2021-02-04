@@ -175,6 +175,7 @@ namespace RockSnifferGui
             try
             {
                 this.nowPlayingControl.UpdateSong(e.song);
+                this.notesPlayedControl.UpdateSong(e.song);
                 SongPlayInstance newSong = new SongPlayInstance(e.song);
 
                 this.playedSongs.Add(newSong);
@@ -212,6 +213,7 @@ namespace RockSnifferGui
         private void Sniffer_OnCurrentSongChanged(object sender, OnSongChangedArgs args)
         {
             this.nowPlayingControl.UpdateSong(args.songDetails);
+            this.notesPlayedControl.UpdateSong(args.songDetails);
         }
 
         private void Sniffer_OnMemoryReadout(object sender, OnMemoryReadoutArgs args)
@@ -219,7 +221,7 @@ namespace RockSnifferGui
             try
             {
                 this.notesPlayedControl.UpdateNoteData(args.memoryReadout.noteData, args.memoryReadout.songTimer);
-                
+
                 if ((this.currentSong != null) && (args.memoryReadout.noteData != null))
                 {
                     this.currentSong.UpdateNoteData(args.memoryReadout.noteData);
@@ -251,10 +253,32 @@ namespace RockSnifferGui
 
         private void ManualTestCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            GenericNoteData n = new GenericNoteData();
-            n.TotalNotes = 10;
+            new Task(() =>
+            {
+                SongDetails songDetails = new SongDetails() { SongLength = 60f };
+                this.notesPlayedControl.UpdateSong(songDetails);
 
-            this.notesPlayedControl.UpdateNoteData(n, 50.5f);
+                for (int i = 0; i < 30; i++)
+                {
+                    GenericNoteData n = new GenericNoteData();
+                    n.TotalNotes = i * 3;
+
+                    if (i % 2 == 0)
+                    {
+                        n.TotalNotesHit = i;
+                        n.TotalNotesMissed = i * 2;
+                    }
+                    else
+                    {
+                        n.TotalNotesHit = i + 1;
+                        n.TotalNotesMissed = i * 2 - 1;
+                    }
+
+                    this.notesPlayedControl.UpdateNoteData(n, i);
+
+                    Thread.Sleep(1000);
+                }
+            }).Start();
         }
 
         private void PlayHistoryWindow_Closed(object sender, EventArgs e)

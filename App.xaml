@@ -10,26 +10,74 @@
                     <KeyGesture>Alt+F4</KeyGesture>
                 </RoutedUICommand.InputGestures>
             </RoutedUICommand>
-            <Color x:Key="PeterRiver">#3498db</Color>
-            <Color x:Key="MidnightBlue">#2c3e50</Color>
-            <Color x:Key="Concrete">#95a5a6</Color>
-            <Color x:Key="Clouds">#ecf0f1</Color>
-            <Color x:Key="Asbestos">#7f8c8d</Color>
-            <Color x:Key="Silver">#bdc3c7</Color>
-            <Color x:Key="BelizeHole">#2980b9</Color>
 
+            <FontFamily x:Key="AmplitudeFont">pack://application:,,,/Resources/#Amplitude</FontFamily>
+            <FontFamily x:Key="ProximaSansFont">pack://application:,,,/Resources/#ProximaSansMedium</FontFamily>
+
+            <Color x:Key="Turquoise">#1abc9c</Color>
+            <Color x:Key="Emerald">#2ecc71</Color>
+            <Color x:Key="PeterRiver">#3498db</Color>
+            <Color x:Key="Amethyst">#9b59b6</Color>
+            <Color x:Key="WetAsphalt">#34495e</Color>
+
+            <Color x:Key="GreenSea">#16a085</Color>
+            <Color x:Key="Nephritis">#27ae60</Color>
+            <Color x:Key="BelizeHole">#2980b9</Color>
+            <Color x:Key="Wisteria">#8e44ad</Color>
+            <Color x:Key="MidnightBlue">#2c3e50</Color>
+
+            <Color x:Key="SunFlower">#f1c40f</Color>
+            <Color x:Key="Carrot">#e67e22</Color>
+            <Color x:Key="Alizarin">#e74c3c</Color>
+            <Color x:Key="Clouds">#ecf0f1</Color>
+            <Color x:Key="Concrete">#95a5a6</Color>
+            
+            <Color x:Key="Orange">#f39c12</Color>
+            <Color x:Key="Pumpkin">#d35400</Color>
+            <Color x:Key="Pomegranate">#c0392b</Color>
+            <Color x:Key="Silver">#bdc3c7</Color>
+            <Color x:Key="Asbestos">#7f8c8d</Color>
+            
+            <SolidColorBrush x:Key="TurquoiseBrush" Color="{StaticResource Turquoise}" />
+            <SolidColorBrush x:Key="EmeraldBrush" Color="{StaticResource Emerald}" />
             <SolidColorBrush x:Key="PeterRiverBrush" Color="{StaticResource PeterRiver}" />
+            <SolidColorBrush x:Key="AmethystBrush" Color="{StaticResource Amethyst}" />
+            <SolidColorBrush x:Key="WetAsphaltBrush" Color="{StaticResource WetAsphalt}" />
+            
+            <SolidColorBrush x:Key="GreenSeaBrush" Color="{StaticResource GreenSea}" />
+            <SolidColorBrush x:Key="NephritisBrush" Color="{StaticResource Nephritis}" />
+            <SolidColorBrush x:Key="BelizeHoleBrush" Color="{StaticResource BelizeHole}" />
+            <SolidColorBrush x:Key="WisteriaBrush" Color="{StaticResource Wisteria}" />
             <SolidColorBrush x:Key="MidnightBlueBrush" Color="{StaticResource MidnightBlue}" />
-            <SolidColorBrush x:Key="ConcreteBrush" Color="{StaticResource Concrete}" />
+
+            <SolidColorBrush x:Key="SunFlowerBrush" Color="{StaticResource SunFlower}" />
+            <SolidColorBrush x:Key="CarrotBrush" Color="{StaticResource Carrot}" />
+            <SolidColorBrush x:Key="AlizarinBrush" Color="{StaticResource Alizarin}" />
             <SolidColorBrush x:Key="CloudsBrush" Color="{StaticResource Clouds}" />
+            <SolidColorBrush x:Key="ConcreteBrush" Color="{StaticResource Concrete}" />
+
+            <SolidColorBrush x:Key="OrangeBrush" Color="{StaticResource Orange}" />
+            <SolidColorBrush x:Key="PumpkinBrush" Color="{StaticResource Pumpkin}" />
+            <SolidColorBrush x:Key="PomegranateBrush" Color="{StaticResource Pomegranate}" />
             <SolidColorBrush x:Key="AsbestosBrush" Color="{StaticResource Asbestos}" />
             <SolidColorBrush x:Key="SilverBrush" Color="{StaticResource Silver}" />
-            <SolidColorBrush x:Key="BelizeHoleBrush" Color="{StaticResource BelizeHole}" />
             
-            <Style x:Key="buttonStyle" TargetType="Button">
+            <Style x:Key="BaseButton" TargetType="Button">
                 <Setter Property="Margin" Value="2" />
                 <Setter Property="Width" Value="75" />
                 <Setter Property="HorizontalAlignment" Value="Left"/>
+            </Style>
+            <Style x:Key="BaseLabel" TargetType="Label">
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+                <Setter Property="FontFamily" Value="{StaticResource ResourceKey=ProximaSansFont}" />
+                <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
+            </Style>
+            <Style x:Key="BaseTextBlock" TargetType="TextBlock">
+                <!--<Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="VerticalAlignment" Value="Top" />-->
+                <Setter Property="FontFamily" Value="{StaticResource ResourceKey=ProximaSansFont}" />
+                <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
             </Style>
         </ResourceDictionary>
     </Application.Resources>

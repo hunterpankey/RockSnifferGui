@@ -11,42 +11,118 @@
     </UserControl.DataContext>
     <UserControl.Resources>
         <ResourceDictionary>
-            <Style x:Key="LabelLiteral" TargetType="Label">
+            <Style x:Key="NotesPlayedLabel" TargetType="Label" BasedOn="{StaticResource BaseLabel}">
+                <Setter Property="FontSize" Value="16" />
+            </Style>
+            <Style x:Key="NotesPlayedTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+                <Setter Property="FontSize" Value="18" />
+                <Setter Property="TextAlignment" Value="Center" />
+            </Style>
+            <Style x:Key="LabelLiteral" TargetType="Label" BasedOn="{StaticResource NotesPlayedLabel}">
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+                <Setter Property="Width" Value="120" />
+            </Style>
+            <Style x:Key="LabelValue" TargetType="Label" BasedOn="{StaticResource NotesPlayedLabel}">
                 <Setter Property="HorizontalAlignment" Value="Left" />
                 <Setter Property="VerticalAlignment" Value="Top" />
                 <Setter Property="Width" Value="100" />
-                <Setter Property="Canvas.Left" Value="10" />
             </Style>
-            <Style x:Key="LabelValue" TargetType="Label">
-                <Setter Property="HorizontalAlignment" Value="Left" />
-                <Setter Property="VerticalAlignment" Value="Top" />
-                <Setter Property="Width" Value="100" />
-                <Setter Property="Canvas.Left" Value="115" />
+            <Style x:Key="BarBackground" TargetType="Rectangle">
+                <Setter Property="Height" Value="20" />
+                <Setter Property="Width" Value="296" />
+                <Setter Property="Fill" Value="{StaticResource PeterRiverBrush}" />
+                <Setter Property="Stroke" Value="{StaticResource MidnightBlueBrush}" />
+                <Setter Property="StrokeThickness" Value="0" />
+                <Setter Property="Canvas.ZIndex" Value="0" />
             </Style>
+            <Style x:Key="BarFill" TargetType="Rectangle">
+                <Setter Property="Fill" Value="{StaticResource SilverBrush}" />
+                <Setter Property="Height" Value="20" />
+                <Setter Property="Canvas.ZIndex" Value="1" />
+            </Style>
+            <Style x:Key="BarLabel" TargetType="Label" BasedOn="{StaticResource LabelValue}">
+                <Setter Property="Canvas.Top" Value="-4" />
+                <Setter Property="Canvas.ZIndex" Value="2" />
+            </Style>
+            <local:SongAccuracyConverter x:Key="songAccuracyConverter" />
+            <local:SongProgressConverter x:Key="songProgressConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
-    <Canvas Grid.Row="1" HorizontalAlignment="Left" Height="227" VerticalAlignment="Top" Width="350" Background="#ffffffff">
-        <Label x:Name="songTimerLabel" Content="Time" Style="{StaticResource LabelLiteral}" Canvas.Top="10" />
-        <Label x:Name="songTimerimeValueLabel" Content="{Binding SongTimerDisplay}" Style="{StaticResource LabelValue}" Canvas.Top="10"/>
+    <Grid x:Name="notesStackPanel" Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="26" />
+            <RowDefinition Height="26" />
+            <RowDefinition Height="26" />
+            <RowDefinition Height="26" />
+            <RowDefinition Height="26" />
+            <RowDefinition Height="26" />
+        </Grid.RowDefinitions>
+            
+        <!-- Song Elapsed Time Display -->
+        <Grid Name="songTimerGrid" Grid.Row="0" Height="26" Margin="0,0,5,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="110" SharedSizeGroup="RowLabels" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Label x:Name="songTimerLabel" Grid.Column="0" Content="Time" Style="{StaticResource LabelLiteral}" />
+            <Border Grid.Column="1" BorderBrush="{StaticResource ConcreteBrush}" BorderThickness="2" CornerRadius="2" Margin="10,0,0,0">
+                <Canvas Height="20" SnapsToDevicePixels="True">
+                    <Rectangle Style="{StaticResource BarBackground}"/>
+                    <Rectangle Name="songProgressBar" Style="{StaticResource BarFill}"
+                        Width="{Binding SongPercentage, Converter={StaticResource songProgressConverter}}" />
+                    <Label Name="songTimerimeValueLabel" Style="{StaticResource BarLabel}" Content="{Binding SongTimerDisplay}" />
+                </Canvas>
+            </Border>
+        </Grid>
 
-        <Label x:Name="notesHitLabel" Content="Notes Hit" Style="{StaticResource LabelLiteral}" Canvas.Top="41"/>
-        <Label x:Name="notesHitValueLabel" Content="{Binding NotesHit}" Style="{StaticResource LabelValue}" Canvas.Top="41"/>
+        <!-- Notes Hit/Missed/Total Display -->
+        <Grid x:Name="notesHitMissedTotalGrid" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="110" SharedSizeGroup="RowLabels" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Label x:Name="notesHitMissedTotalLabel" Grid.Column="0" Content="Note Hit / Miss" Style="{StaticResource LabelLiteral}" />
+            <Border BorderBrush="{StaticResource ConcreteBrush}" BorderThickness="2" CornerRadius="2" Grid.Column="1"  Margin="10,5,0,0">
+                <Grid x:Name="notesHitMissedGrid" Height="26">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Name="hitColumn" Width="1*" />
+                        <ColumnDefinition Name="missedColumn" Width="2*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Background="{StaticResource NephritisBrush}" Text="{Binding NotesHit}" Style="{StaticResource NotesPlayedTextBlock}" />
+                    <TextBlock Grid.Column="1" Background="{StaticResource PomegranateBrush}" Text="{Binding NotesMissed}" Style="{StaticResource NotesPlayedTextBlock}" />
+                </Grid>
+            </Border>
+        </Grid>
 
-        <Label x:Name="notesMissedLabel" Content="Notes Missed" Style="{StaticResource LabelLiteral}" Canvas.Top="71"/>
-        <Label x:Name="notesMissedValueLabel" Content="{Binding NotesMissed}" Style="{StaticResource LabelValue}" Canvas.Top="71"/>
+        <!-- Old Streaks Displays -->
+        <StackPanel x:Name="currentStreakPanel" Orientation="Horizontal" Grid.Row="2">
+            <Label x:Name="currentStreakLabel" Content="Current Streak" Style="{StaticResource LabelLiteral}" />
+            <Label x:Name="currentStreakValueLabel" Content="{Binding CurrentStreak}" Style="{StaticResource LabelValue}" />
+        </StackPanel>
 
-        <Label x:Name="totalNotesLabel" Content="Total Notes" Style="{StaticResource LabelLiteral}" Canvas.Top="102"/>
-        <Label x:Name="totalNotesValueLabel" Content="{Binding TotalNotes}" Style="{StaticResource LabelValue}" Canvas.Top="102"/>
+        <StackPanel x:Name="maxStreakPanel" Orientation="Horizontal" Grid.Row="3">
+            <Label x:Name="highestStreakLabel" Content="Highest Streak" Style="{StaticResource LabelLiteral}" />
+            <Label x:Name="highestStreakValueLabel" Content="{Binding MaxStreak}" Style="{StaticResource LabelValue}" />
+        </StackPanel>
 
-        <Label x:Name="currentStreakLabel" Content="Current Streak" Style="{StaticResource LabelLiteral}" Canvas.Top="134"/>
-        <Label x:Name="currentStreakValueLabel" Content="{Binding CurrentStreak}" Style="{StaticResource LabelValue}" Canvas.Top="134"/>
+        <!-- Note Accuracy Display -->
+        <StackPanel x:Name="accuracyPanel" Orientation="Horizontal" Grid.Row="4">
+            <Label x:Name="noteHitPercentageLabel" Content="Note Hit Pct." Style="{StaticResource LabelLiteral}" />
+            <Canvas>
+                <Rectangle Style="{StaticResource BarBackground}" />
+                <Rectangle Name="songAccuracyBar" Style="{StaticResource BarFill}" 
+                        Width="{Binding Accuracy, Converter={StaticResource songAccuracyConverter}}" />
+                <Label x:Name="noteHitPercentageValueLabel" Style="{StaticResource BarLabel}" Content="{Binding AccuracyDisplay}" />
+            </Canvas>
+        </StackPanel>
 
-        <Label x:Name="highestStreakLabel" Content="Highest Streak" Style="{StaticResource LabelLiteral}" Canvas.Top="165"/>
-        <Label x:Name="highestStreakValueLabel" Content="{Binding MaxStreak}" Style="{StaticResource LabelValue}" Canvas.Top="165"/>
-
-        <Label x:Name="noteHitPercentageLabel" Content="Note Hit Pct." Style="{StaticResource LabelLiteral}" Canvas.Top="195"/>
-        <Label x:Name="noteHitPercentageValueLabel" Content="{Binding AccuracyDisplay}" Style="{StaticResource LabelValue}" Canvas.Top="195" />
-        <!--<Binding Path="Accuracy" StringFormat="{}{0}%" />
-        </Label>-->
-    </Canvas>
+        <!--<StackPanel Orientation="Horizontal" Grid.Row="5">
+            <TextBlock Text="{Binding NotesHit}" Margin="0,0,25,0"/>
+            <TextBlock Text="{Binding NotesMissed}" Margin="0,0,25,0"/>
+            <TextBlock Text="{Binding TotalNotes}" Margin="0,0,25,0"/>
+            <TextBlock Text="{Binding CurrentStreak}" Margin="0,0,25,0"/>
+            <TextBlock Text="{Binding MaxStreak}" />
+        </StackPanel>-->
+    </Grid>
 </UserControl>

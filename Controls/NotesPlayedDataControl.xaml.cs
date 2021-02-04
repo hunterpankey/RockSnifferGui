@@ -1,4 +1,5 @@
 ﻿using RockSnifferLib.RSHelpers.NoteData;
+using RockSnifferLib.Sniffing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,12 +25,43 @@ namespace RockSnifferGui.Controls
         public NotesPlayedDataControl()
         {
             InitializeComponent();
+            this.notesStackPanel.Loaded += notesStackPanel_Loaded;
+            //this.songProgressBar.Loaded += SongProgressBar_Loaded;
+        }
+
+        //private void SongProgressBar_Loaded(object sender, RoutedEventArgs e)
+        //{
+        //    this.songProgressStoryboard.Begin(this);
+        //}
+
+        private void notesStackPanel_Loaded(object sender, RoutedEventArgs e)
+        {
+            //this.NotesLoadedStoryboard.Begin(this);
         }
 
         public void UpdateNoteData(INoteData noteData, float songTimer)
         {
             this.npvm.SongTimer = songTimer;
             this.npvm.NoteData = noteData;
+
+            this.UpdateHitMissedColumns(noteData);
+        }
+
+        private void UpdateHitMissedColumns(INoteData noteData)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                if (noteData != null)
+                {
+                    this.hitColumn.Width = new GridLength(noteData.TotalNotesHit, GridUnitType.Star);
+                    this.missedColumn.Width = new GridLength(noteData.TotalNotesMissed, GridUnitType.Star);
+                }
+            });
+        }
+
+        public void UpdateSong(SongDetails songDetails)
+        {
+            this.npvm.SongDetails = songDetails;
         }
     }
 }

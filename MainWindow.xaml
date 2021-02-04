@@ -7,7 +7,7 @@
         xmlns:RockSnifferGui="clr-namespace:RockSnifferGui"
         xmlns:Controls="clr-namespace:RockSnifferGui.Controls"
         mc:Ignorable="d"
-        Title="RockSniffer GUI" Height="450" Width="550" Icon="sniffy.ico">
+        Title="RockSniffer GUI" Height="375" Width="450" Icon="Resources/sniffy.ico" Background="{StaticResource WetAsphaltBrush}" Foreground="{StaticResource CloudsBrush}">
     <Window.Resources>
         <RoutedUICommand x:Key="togglePlayHistoryCommand" Text="Toggle Play _History" x:Name="togglePlayHistoryCommand">
             <RoutedUICommand.InputGestures>
