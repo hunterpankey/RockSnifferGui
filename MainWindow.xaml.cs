@@ -267,13 +267,18 @@ namespace RockSnifferGui
                     {
                         n.TotalNotesHit = i;
                         n.TotalNotesMissed = i * 2;
+                        n.CurrentHitStreak = i / 2;
                     }
                     else
                     {
+                        n.CurrentMissStreak = i - 1 / 2;
                         n.TotalNotesHit = i + 1;
                         n.TotalNotesMissed = i * 2 - 1;
                     }
 
+                    n.HighestHitStreak = i + 1 / 2;
+
+                    n.Accuracy = (float)(1.0 * n.TotalNotesHit) / n.TotalNotes;
                     this.notesPlayedControl.UpdateNoteData(n, i);
 
                     Thread.Sleep(1000);

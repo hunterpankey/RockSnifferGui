@@ -25,18 +25,6 @@ namespace RockSnifferGui.Controls
         public NotesPlayedDataControl()
         {
             InitializeComponent();
-            this.notesStackPanel.Loaded += notesStackPanel_Loaded;
-            //this.songProgressBar.Loaded += SongProgressBar_Loaded;
-        }
-
-        //private void SongProgressBar_Loaded(object sender, RoutedEventArgs e)
-        //{
-        //    this.songProgressStoryboard.Begin(this);
-        //}
-
-        private void notesStackPanel_Loaded(object sender, RoutedEventArgs e)
-        {
-            //this.NotesLoadedStoryboard.Begin(this);
         }
 
         public void UpdateNoteData(INoteData noteData, float songTimer)

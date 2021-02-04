@@ -7,7 +7,9 @@
         xmlns:RockSnifferGui="clr-namespace:RockSnifferGui"
         xmlns:Controls="clr-namespace:RockSnifferGui.Controls"
         mc:Ignorable="d"
-        Title="RockSniffer GUI" Height="375" Width="450" Icon="Resources/sniffy.ico" Background="{StaticResource WetAsphaltBrush}" Foreground="{StaticResource CloudsBrush}">
+        Title="RockSniffer GUI" Icon="Resources/sniffy.ico" 
+        Height="350" Width="450" MinHeight="350" MinWidth="275" 
+        Background="{StaticResource WetAsphaltBrush}" Foreground="{StaticResource CloudsBrush}">
     <Window.Resources>
         <RoutedUICommand x:Key="togglePlayHistoryCommand" Text="Toggle Play _History" x:Name="togglePlayHistoryCommand">
             <RoutedUICommand.InputGestures>
@@ -46,9 +48,7 @@
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                     </Grid>
@@ -60,10 +60,8 @@
                     <Run Text="{Binding Path=Version, Mode=OneWay}" FontWeight="Bold" />
                 </TextBlock>   
             </StatusBarItem>
-            <Separator Grid.Column="1" />
-            <StatusBarItem Grid.Column="2" />
-            <Separator Grid.Column="3" />
-            <StatusBarItem Grid.Column="4" Margin="0,0,0,0" >
+            <StatusBarItem Grid.Column="1" />
+            <StatusBarItem Grid.Column="2" Margin="0,0,0,0" >
                 <TextBlock Name="gameProcessAttachedLabel">
                     <Run Text="Game" />
                     <Run Text="{Binding Path=GameProcessServiceStatus, Mode=OneWay}" FontWeight="Bold" />
@@ -73,8 +71,8 @@
 
         <Grid x:Name="contentGrid">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Controls:NowPlayingControl Grid.Row="0" x:Name="nowPlayingControl" />
             <Controls:NotesPlayedDataControl Grid.Row="1" x:Name="notesPlayedControl" />
