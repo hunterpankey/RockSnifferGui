@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:RockSnifferGui.Controls"
              xmlns:root="clr-namespace:RockSnifferGui"
              mc:Ignorable="d" 
-             d:DesignHeight="118" d:DesignWidth="478">
+             Margin="5">
     <UserControl.DataContext>
         <local:NowPlayingViewModel x:Name="npvm" />
     </UserControl.DataContext>
@@ -27,33 +27,47 @@
                 <Setter Property="Height" Value="36" />
                 <Setter Property="Canvas.Left" Value="190" />
             </Style>
+            <Style x:Key="ValueTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+                <Setter Property="Width" Value="300" />
+                <Setter Property="Height" Value="36" />
+                <Setter Property="FontSize" Value="28" />
+            </Style>
+            <Style x:Key="NowPlayingTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+                <Setter Property="Margin" Value="0,0,0,5" />
+            </Style>
+            <Style x:Key="ArtistTextBlock" TargetType="TextBlock" BasedOn="{StaticResource NowPlayingTextBlock}">
+                <Setter Property="FontSize" Value="32" />
+            </Style>
+            <Style x:Key="OtherTextBlock" TargetType="TextBlock" BasedOn="{StaticResource NowPlayingTextBlock}">
+                <Setter Property="FontSize" Value="24" />
+                <Setter Property="FontFamily" Value="{StaticResource AmplitudeFont}" />
+            </Style>
             <local:AlbumArtImageConverter x:Key="AlbumArtImageConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <StackPanel Orientation="Horizontal"  Margin="5">
-        <StackPanel.Resources>
+    <Grid x:Name="nowPlayingGrid">
+        <Grid.Resources>
             <root:DebugDataBindingConvertor x:Key="DebugBinding" />
             <BitmapImage x:Key="DefaultAlbumImage" UriSource="/Resources/sniffy.ico" />
-            <BitmapImage x:Key="FenderGuitarPickImage" UriSource="/Resources/Fender_Guitar_pick_01.png" />
-        </StackPanel.Resources>
-        <Image x:Name="albumArtImage" Width="100" Height="100" Stretch="Fill"
-            Source="{Binding AlbumArtImage, 
-                Converter={StaticResource AlbumArtImageConverter}, 
-                FallbackValue={StaticResource DefaultAlbumImage}, 
-                TargetNullValue={StaticResource DefaultAlbumImage}}" />
-        <StackPanel Orientation="Vertical">
-            <StackPanel Orientation="Horizontal">
-                <Label x:Name="songNameLabel" Style="{DynamicResource ValueLabel}" Content="{Binding SongName}" FontSize="24" Height="37" />
-                <!--, Converter={StaticResource DebugBinding}}" />-->
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{Binding Height, ElementName=nowPlayingGrid, Mode=OneWay}" MaxWidth="200" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Viewbox Grid.Column="0" HorizontalAlignment="Left">
+            <Image x:Name="albumArtImage" Stretch="Fill"
+                Source="{Binding AlbumArtImage, 
+                    Converter={StaticResource AlbumArtImageConverter}, 
+                    FallbackValue={StaticResource DefaultAlbumImage}, 
+                    TargetNullValue={StaticResource DefaultAlbumImage}}" />
+        </Viewbox>
+        <Viewbox Name="textViewbox" HorizontalAlignment="Left" Margin="10,0,0,0" Grid.Column="1" VerticalAlignment="Top">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="{Binding SongName}" Style="{StaticResource ArtistTextBlock}" />
+                <TextBlock Text="{Binding ArtistName}" Style="{StaticResource OtherTextBlock}" />
+                <TextBlock Text="{Binding AlbumDisplay}" Style="{StaticResource OtherTextBlock}" />
             </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <Label x:Name="bandNameLabel" Style="{DynamicResource ValueLabel}" Content="{Binding ArtistName}" FontFamily="{StaticResource AmplitudeFont}" Height="30" />
-                <!--, Converter={StaticResource DebugBinding}}" />-->
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <Label x:Name="albumNameLabel" Style="{DynamicResource ValueLabel}"  Content="{Binding AlbumDisplay}" FontFamily="{StaticResource AmplitudeFont}" Height="34" />
-            </StackPanel>
-        </StackPanel>
-    </StackPanel>
+        </Viewbox>
+    </Grid>
 </UserControl>

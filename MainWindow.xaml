@@ -71,7 +71,7 @@
 
         <Grid x:Name="contentGrid">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
+                <RowDefinition Height="*" MaxHeight="200" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Controls:NowPlayingControl Grid.Row="0" x:Name="nowPlayingControl" />
