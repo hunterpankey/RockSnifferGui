@@ -1,0 +1,78 @@
+﻿<UserControl x:Class="RockSnifferGui.Controls.PlayHistoryGrid"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:RockSnifferGui.Controls"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <Style x:Key="HeaderCell" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="{StaticResource MidnightBlueBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
+            <Setter Property="Padding" Value="2" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontFamily" Value="{StaticResource ProximaSansFont}" />
+        </Style>
+        <Style x:Key="HeaderCellCentered" TargetType="DataGridColumnHeader" BasedOn="{StaticResource HeaderCell}">
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="BaseRow" TargetType="DataGridRow">
+            <Setter Property="Background" Value="{StaticResource WetAsphaltBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
+            <Setter Property="Padding" Value="10,10,10,10" />
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource WetAsphaltBrush}" />
+                    <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
+                    <Setter Property="BorderBrush" Value="Transparent" />
+                    <Setter Property="BorderThickness" Value="0" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="BaseCell" TargetType="DataGridCell">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontFamily" Value="{StaticResource AmplitudeFont}" />
+            <Setter Property="TextBlock.Effect">
+                <Setter.Value>
+                    <DropShadowEffect Direction="300" ShadowDepth="0" Opacity="0.8" BlurRadius="12"
+                        Color="{StaticResource MidnightBlue}"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="IsEnabled" Value="False" />
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="{StaticResource WetAsphaltBrush}" />
+                    <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
+                    <Setter Property="BorderBrush" Value="Transparent" />
+                    <Setter Property="BorderThickness" Value="0" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="CellCentered" TargetType="DataGridCell" BasedOn="{StaticResource BaseCell}">
+            <Setter Property="TextBlock.TextAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="PaddedTextBlock" TargetType="TextBlock">
+            <Setter Property="Padding" Value="4,4,4,4" />
+        </Style>
+               
+    </UserControl.Resources>
+    
+    <DataGrid Name="playHistoryDataGrid" Grid.Row="1" AutoGenerateColumns="False" DataContext="{Binding SongPlays}" IsReadOnly="True" RowHeaderWidth="0"
+        HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent" Focusable="False" GridLinesVisibility="None" 
+        ColumnHeaderStyle="{StaticResource HeaderCell}" CellStyle="{StaticResource BaseCell}" RowStyle="{StaticResource BaseRow}">
+        <DataGrid.Columns>
+            <DataGridTextColumn x:Name="startTime" Binding="{Binding StartTime}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Time" MinWidth="130" />
+            <DataGridTextColumn x:Name="artistNameColumn" Binding="{Binding SongDetails.ArtistName}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Artist" MinWidth="200" />
+            <DataGridTextColumn x:Name="songNameColumn" Binding="{Binding SongDetails.SongName}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Song" MinWidth="200" />
+            <DataGridTextColumn x:Name="albumNameColumn" Binding="{Binding SongDetails.AlbumName}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Album" MinWidth="200" />
+            <DataGridTextColumn x:Name="yearNameColumn" Binding="{Binding SongDetails.AlbumYear}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Year" MinWidth="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
+
+            <DataGridTextColumn x:Name="hitNotesColumn" Binding="{Binding NotesHit}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Hit" MinWidth="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
+            <DataGridTextColumn x:Name="missedNotesColumn" Binding="{Binding NotesMissed}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Missed" MinWidth="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
+            <DataGridTextColumn x:Name="noteAccuracyColumn" Binding="{Binding AccuracyAsPercentage}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Accuracy" MinWidth="65" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
+            <DataGridTextColumn x:Name="maxStreakColumn" Binding="{Binding HighestHitStreak}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Streak" MinWidth="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
+            <!--<DataGridTextColumn x:Name="finalColumn" Width="*"  HeaderStyle="{StaticResource HeaderCellCentered}" />-->
+        </DataGrid.Columns>
+    </DataGrid>
+</UserControl>

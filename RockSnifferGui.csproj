@@ -75,6 +75,9 @@
     </Compile>
     <Compile Include="Controls\NotesPlayedViewModel.cs" />
     <Compile Include="Controls\NowPlayingViewModel.cs" />
+    <Compile Include="Controls\PlayHistoryGrid.xaml.cs">
+      <DependentUpon>PlayHistoryGrid.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DebugDataBindingConvertor.cs" />
     <Compile Include="Services\GameProcessChangedEventArgs.cs" />
     <Compile Include="Services\GameProcessService.cs" />
@@ -83,6 +86,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\NowPlayingControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\PlayHistoryGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

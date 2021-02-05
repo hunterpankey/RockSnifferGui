@@ -36,7 +36,7 @@ namespace RockSnifferGui
 
             this.SongPlays = songPlays;
             this.playHistoryDataGrid.Loaded += PlayHistoryDataGrid_Loaded;
-            this.SizeChanged += PlayHistoryWindow_SizeChanged;
+            //this.SizeChanged += PlayHistoryWindow_SizeChanged;
 
             this.sniffer = sniffer;
             this.AttachSniffer();
@@ -46,12 +46,25 @@ namespace RockSnifferGui
 
         private void PlayHistoryWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            this.playHistoryDataGrid.Width = e.NewSize.Width - SystemParameters.VerticalScrollBarWidth;
+            double newWidth = e.NewSize.Width;
+
+            if (this.playHistoryDataGrid.ItemCount > 0)
+            {
+                var border = VisualTreeHelper.GetChild(this.playHistoryDataGrid, 0) as Decorator;
+
+                if (border != null)
+                {
+                    newWidth -= border.ActualWidth;
+                }
+            }
+
+            this.playHistoryDataGrid.Width = newWidth;
         }
 
         private void PlayHistoryDataGrid_Loaded(object sender, RoutedEventArgs e)
         {
-            this.RefreshDisplay();
+            this.playHistoryDataGrid.SetItems(this.songPlays);
+            this.playHistoryDataGrid.RefreshDisplay();
         }
 
         private void AttachSniffer()
@@ -71,28 +84,13 @@ namespace RockSnifferGui
         private void Sniffer_OnSongEnded(object sender, RockSnifferLib.Events.OnSongEndedArgs e)
         {
             Thread.Sleep(1000);
-            this.RefreshDisplay();
+            this.playHistoryDataGrid.RefreshDisplay();
         }
 
         private void refreshButton_Click(object sender, RoutedEventArgs e)
         {
-            this.RefreshDisplay();
-        }
-
-        private void RefreshDisplay()
-        {
-            this.playHistoryDataGrid.ItemsSource = this.SongPlays;
-            this.playHistoryDataGrid.Items.Refresh();
-
-            if (this.playHistoryDataGrid.Items.Count > 0)
-            {
-                var border = VisualTreeHelper.GetChild(this.playHistoryDataGrid, 0) as Decorator;
-                if (border != null)
-                {
-                    var scroll = border.Child as ScrollViewer;
-                    if (scroll != null) scroll.ScrollToEnd();
-                }
-            }
+            this.playHistoryDataGrid.SetItems(this.songPlays);
+            this.playHistoryDataGrid.RefreshDisplay();
         }
 
         private void testButton_Click(object sender, RoutedEventArgs e)
@@ -100,7 +98,8 @@ namespace RockSnifferGui
             SQLiteStore store = new SQLiteStore();
             store.Test();
             this.songPlays = store.GetAll();
-            this.RefreshDisplay();
+            this.playHistoryDataGrid.SetItems(this.songPlays);
+            this.playHistoryDataGrid.RefreshDisplay();
         }
     }
 }
