@@ -72,6 +72,6 @@ namespace RockSnifferGui.Controls
         public int CurrentStreak { get => currentStreak; set => currentStreak = value; }
         public int MaxStreak { get => maxStreak; set => maxStreak = value; }
         public float Accuracy { get => accuracy; set => accuracy = value; }
-        public string AccuracyDisplay { get => string.Format(@"{0:f2}%", this.Accuracy * 100); }
+        public string AccuracyDisplay { get => string.Format(@"{0:f2}%", this.Accuracy); }
     }
 }
