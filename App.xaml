@@ -85,6 +85,26 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            <Style TargetType="Menu">
+                <Setter Property="Background" Value="{StaticResource MidnightBlueBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
+            </Style>
+            <Style TargetType="MenuItem">
+                <Setter Property="Background" Value="{StaticResource MidnightBlueBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
+            </Style>
+            <Style TargetType="ToolBar">
+                <Setter Property="Background" Value="{StaticResource WisteriaBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
+            </Style>
+            <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button">
+                <Setter Property="Background" Value="{StaticResource WisteriaBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
+            </Style>
+            <Style TargetType="StatusBar">
+                <Setter Property="Background" Value="{StaticResource WisteriaBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

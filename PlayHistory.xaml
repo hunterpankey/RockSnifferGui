@@ -14,6 +14,11 @@
         </ResourceDictionary>
     </Window.Resources>
     <DockPanel Name="playHistoryDockPanel" Width="Auto">
+        <ToolBar x:Name="mainToolbar" DockPanel.Dock="Top" Height="30" VerticalAlignment="Top" Margin="0" ToolBarTray.IsLocked="True">
+            <Button Name="refreshButton" Click="refreshButton_Click">Refresh</Button>
+            <!--<Button Name="testButton" Content="Test" Click="testButton_Click" Visibility="Hidden" />-->
+            <!--<Button x:Name="testButton" Command="{StaticResource manualTestCommand}">Test Something</Button>-->
+        </ToolBar>
         <StatusBar Name="statusBar" DockPanel.Dock="Bottom" Margin="0,0,0,0">
             <StatusBar.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -40,15 +45,10 @@
         </StatusBar>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <StackPanel Orientation="Horizontal" Grid.Row="0">
-                <Label Content="Song Play History" />
-                <Button Name="refreshButton" Content="Refresh" Style="{StaticResource BaseButton}" Click="refreshButton_Click" />
-                <Button Name="testButton" Content="Test" Style="{StaticResource BaseButton}" Click="testButton_Click" Visibility="Hidden" />
-            </StackPanel>
-            <controls:PlayHistoryGrid x:Name="playHistoryDataGrid" Grid.Row="1" Width="{Binding Width, ElementName=playHistoryDockPanel, Mode=OneWay}" />
+            <controls:PlayHistoryGrid x:Name="playHistoryDataGrid" Grid.Row="0" Width="{Binding Width, ElementName=playHistoryDockPanel, Mode=OneWay}" />
         </Grid>
     </DockPanel>
 </Window>

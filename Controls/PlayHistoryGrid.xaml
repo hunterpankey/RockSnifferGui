@@ -72,7 +72,6 @@
             <DataGridTextColumn x:Name="missedNotesColumn" Binding="{Binding NotesMissed}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Missed" MinWidth="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
             <DataGridTextColumn x:Name="noteAccuracyColumn" Binding="{Binding AccuracyAsPercentage}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Accuracy" MinWidth="65" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
             <DataGridTextColumn x:Name="maxStreakColumn" Binding="{Binding HighestHitStreak}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Streak" MinWidth="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
-            <!--<DataGridTextColumn x:Name="finalColumn" Width="*"  HeaderStyle="{StaticResource HeaderCellCentered}" />-->
         </DataGrid.Columns>
     </DataGrid>
 </UserControl>

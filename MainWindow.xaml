@@ -37,7 +37,7 @@
             </MenuItem>
         </Menu>
         
-        <ToolBar x:Name="mainToolbar" DockPanel.Dock="Top" Height="30" VerticalAlignment="Top" Margin="0">
+        <ToolBar x:Name="mainToolbar" DockPanel.Dock="Top" Height="30" VerticalAlignment="Top" Margin="0" ToolBarTray.IsLocked="True">
             <Button x:Name="playHistoryButton" Command="{StaticResource togglePlayHistoryCommand}">Play History</Button>
             <!--<Button x:Name="testButton" Command="{StaticResource manualTestCommand}">Test Something</Button>-->
         </ToolBar>
