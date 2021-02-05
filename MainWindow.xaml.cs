@@ -258,31 +258,37 @@ namespace RockSnifferGui
                 SongDetails songDetails = new SongDetails() { SongLength = 60f };
                 this.notesPlayedControl.UpdateSong(songDetails);
 
-                for (int i = 0; i < 30; i++)
-                {
-                    GenericNoteData n = new GenericNoteData();
-                    n.TotalNotes = i * 3;
+                GenericNoteData n = new GenericNoteData();
+                n.TotalNotesHit = 150;
+                n.TotalNotesMissed = 5;
+                n.TotalNotes = 155;
+                this.notesPlayedControl.UpdateNoteData(n, 140);
 
-                    if (i % 2 == 0)
-                    {
-                        n.TotalNotesHit = i;
-                        n.TotalNotesMissed = i * 2;
-                        n.CurrentHitStreak = i / 2;
-                    }
-                    else
-                    {
-                        n.CurrentMissStreak = i - 1 / 2;
-                        n.TotalNotesHit = i + 1;
-                        n.TotalNotesMissed = i * 2 - 1;
-                    }
+                //for (int i = 0; i < 30; i++)
+                //{
+                //    GenericNoteData n = new GenericNoteData();
+                //    n.TotalNotes = i * 3;
 
-                    n.HighestHitStreak = i + 1 / 2;
+                //    if (i % 2 == 0)
+                //    {
+                //        n.TotalNotesHit = i;
+                //        n.TotalNotesMissed = i * 2;
+                //        n.CurrentHitStreak = i / 2;
+                //    }
+                //    else
+                //    {
+                //        n.CurrentMissStreak = i - 1 / 2;
+                //        n.TotalNotesHit = i + 1;
+                //        n.TotalNotesMissed = i * 2 - 1;
+                //    }
 
-                    n.Accuracy = (float)(1.0 * n.TotalNotesHit) / n.TotalNotes;
-                    this.notesPlayedControl.UpdateNoteData(n, i);
+                //    n.HighestHitStreak = i + 1 / 2;
 
-                    Thread.Sleep(1000);
-                }
+                //    n.Accuracy = (float)(1.0 * n.TotalNotesHit) / n.TotalNotes;
+                //    this.notesPlayedControl.UpdateNoteData(n, i);
+
+                //    Thread.Sleep(1000);
+                //}
             }).Start();
         }
 

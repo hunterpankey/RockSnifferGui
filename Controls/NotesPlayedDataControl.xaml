@@ -36,9 +36,8 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
-            <!--<RowDefinition Height="*" />-->
         </Grid.RowDefinitions>
-            
+
         <!-- Song Elapsed Time Display -->
         <Grid x:Name="songTimerProgressBarGrid" Grid.Row="0" Margin="0,0,0,5">
             <Grid.ColumnDefinitions>
@@ -57,26 +56,22 @@
             </Border>
         </Grid>
 
-        <!-- Notes Hit/Missed/Total Display -->
-        <Grid x:Name="notesHitMissedTotalGrid" Grid.Row="1" Margin="0,0,0,5">
+        <!-- New Notes Hit/Missed/Total Display-->
+        <Grid x:Name="hitMissProgressBarGrid" Grid.Row="1" Margin="0,0,0,5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="110" SharedSizeGroup="RowTitleText" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <TextBlock x:Name="notesHitMissedTotalTextBlock" Grid.Column="0" Text="Hit / Miss" Style="{StaticResource NotesPlayedTextBlock}" />
+            <TextBlock Text="Hit / Miss" Style="{StaticResource NotesPlayedTextBlock}" />
             <Border Grid.Column="1" Style="{StaticResource NotesPlayedBorder}">
-                <Grid x:Name="notesHitMissedGrid">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Name="hitColumn" Width="1*" />
-                        <ColumnDefinition Name="missedColumn" Width="2*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Background="{StaticResource NephritisBrush}" Style="{StaticResource NotesHitMissedTextBlock}"/>
-                    <TextBlock Grid.Column="1" Background="{StaticResource PomegranateBrush}" Style="{StaticResource NotesHitMissedTextBlock}" />
-                    <Viewbox Grid.Column="0" MaxHeight="50" HorizontalAlignment="Left">
-                        <TextBlock Text="{Binding NotesHit}" Style="{StaticResource NotesPlayedTextBlock}" Padding="5,0,0,0" />
+                <Grid>
+                    <ProgressBar x:Name="hitMissProgressBar" Value="{Binding NotesHit, Mode=OneWay}" Minimum="0" Maximum="{Binding TotalNotes}"
+                             Foreground="{StaticResource NephritisBrush}" Background="{StaticResource PomegranateBrush}" />
+                    <Viewbox MaxHeight="50" HorizontalAlignment="Left">
+                        <TextBlock Text="{Binding NotesHit}" Margin="5,0,0,0" Style="{StaticResource NotesPlayedTextBlock}" />
                     </Viewbox>
-                    <Viewbox Grid.Column="1" MaxHeight="50" HorizontalAlignment="Right">
-                        <TextBlock  Text="{Binding NotesMissed}" Style="{StaticResource NotesPlayedTextBlock}" Padding="0,0,5,0" TextAlignment="Right" />
+                    <Viewbox MaxHeight="50" HorizontalAlignment="Right">
+                        <TextBlock Text="{Binding NotesMissed}" Margin="0,0,5,0" Style="{StaticResource NotesPlayedTextBlock}" />
                     </Viewbox>
                 </Grid>
             </Border>

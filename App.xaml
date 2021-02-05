@@ -31,19 +31,19 @@
             <Color x:Key="Alizarin">#e74c3c</Color>
             <Color x:Key="Clouds">#ecf0f1</Color>
             <Color x:Key="Concrete">#95a5a6</Color>
-            
+
             <Color x:Key="Orange">#f39c12</Color>
             <Color x:Key="Pumpkin">#d35400</Color>
             <Color x:Key="Pomegranate">#c0392b</Color>
             <Color x:Key="Silver">#bdc3c7</Color>
             <Color x:Key="Asbestos">#7f8c8d</Color>
-            
+
             <SolidColorBrush x:Key="TurquoiseBrush" Color="{StaticResource Turquoise}" />
             <SolidColorBrush x:Key="EmeraldBrush" Color="{StaticResource Emerald}" />
             <SolidColorBrush x:Key="PeterRiverBrush" Color="{StaticResource PeterRiver}" />
             <SolidColorBrush x:Key="AmethystBrush" Color="{StaticResource Amethyst}" />
             <SolidColorBrush x:Key="WetAsphaltBrush" Color="{StaticResource WetAsphalt}" />
-            
+
             <SolidColorBrush x:Key="GreenSeaBrush" Color="{StaticResource GreenSea}" />
             <SolidColorBrush x:Key="NephritisBrush" Color="{StaticResource Nephritis}" />
             <SolidColorBrush x:Key="BelizeHoleBrush" Color="{StaticResource BelizeHole}" />
@@ -61,7 +61,7 @@
             <SolidColorBrush x:Key="PomegranateBrush" Color="{StaticResource Pomegranate}" />
             <SolidColorBrush x:Key="AsbestosBrush" Color="{StaticResource Asbestos}" />
             <SolidColorBrush x:Key="SilverBrush" Color="{StaticResource Silver}" />
-            
+
             <Style x:Key="BaseButton" TargetType="Button">
                 <Setter Property="Margin" Value="2" />
                 <Setter Property="Width" Value="75" />
@@ -74,8 +74,6 @@
                 <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
             </Style>
             <Style x:Key="BaseTextBlock" TargetType="TextBlock">
-                <!--<Setter Property="HorizontalAlignment" Value="Left" />
-                <Setter Property="VerticalAlignment" Value="Top" />-->
                 <Setter Property="FontFamily" Value="{StaticResource ResourceKey=ProximaSansFont}" />
                 <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
                 <Setter Property="TextBlock.Effect">
@@ -86,11 +84,11 @@
                 </Setter>
             </Style>
             <Style TargetType="Menu">
-                <Setter Property="Background" Value="{StaticResource MidnightBlueBrush}" />
+                <Setter Property="Background" Value="{StaticResource WisteriaBrush}" />
                 <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
             </Style>
             <Style TargetType="MenuItem">
-                <Setter Property="Background" Value="{StaticResource MidnightBlueBrush}" />
+                <Setter Property="Background" Value="{StaticResource WisteriaBrush}" />
                 <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
             </Style>
             <Style TargetType="ToolBar">
