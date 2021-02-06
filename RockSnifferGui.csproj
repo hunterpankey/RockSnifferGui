@@ -79,6 +79,7 @@
       <DependentUpon>PlayHistoryGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="DebugDataBindingConvertor.cs" />
+    <Compile Include="PlayHistoryViewModel.cs" />
     <Compile Include="Services\GameProcessChangedEventArgs.cs" />
     <Compile Include="Services\GameProcessService.cs" />
     <Page Include="Controls\NotesPlayedDataControl.xaml">

@@ -1,18 +1,4 @@
-﻿using RockSnifferGui.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows.Controls;
 
 namespace RockSnifferGui.Controls
 {
@@ -23,28 +9,16 @@ namespace RockSnifferGui.Controls
     {
         public PlayHistoryGrid()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
-        public void RefreshDisplay()
+        public void ScrollToBottom()
         {
-            //this.playHistoryDataGrid.ItemsSource = this.SongPlays;
-            this.playHistoryDataGrid.Items.Refresh();
-
             if (this.playHistoryDataGrid.Items.Count > 0)
             {
-                var border = VisualTreeHelper.GetChild(this.playHistoryDataGrid, 0) as Decorator;
-                if (border != null)
-                {
-                    var scroll = border.Child as ScrollViewer;
-                    if (scroll != null) scroll.ScrollToEnd();
-                }
+                var lastItem = this.playHistoryDataGrid.Items[this.playHistoryDataGrid.Items.Count - 1];
+                this.playHistoryDataGrid.ScrollIntoView(lastItem);
             }
-        }
-
-        public void SetItems(IEnumerable<SongPlayInstance> items)
-        {
-            this.playHistoryDataGrid.ItemsSource = items;
         }
 
         public int ItemCount

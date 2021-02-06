@@ -14,6 +14,7 @@
             <FontFamily x:Key="AmplitudeFont">pack://application:,,,/Resources/#Amplitude</FontFamily>
             <FontFamily x:Key="ProximaSansFont">pack://application:,,,/Resources/#ProximaSansMedium</FontFamily>
 
+            <!-- #region colors -->
             <Color x:Key="Turquoise">#1abc9c</Color>
             <Color x:Key="Emerald">#2ecc71</Color>
             <Color x:Key="PeterRiver">#3498db</Color>
@@ -37,7 +38,8 @@
             <Color x:Key="Pomegranate">#c0392b</Color>
             <Color x:Key="Silver">#bdc3c7</Color>
             <Color x:Key="Asbestos">#7f8c8d</Color>
-
+            <!--#endregion -->
+            <!-- #region brushes -->
             <SolidColorBrush x:Key="TurquoiseBrush" Color="{StaticResource Turquoise}" />
             <SolidColorBrush x:Key="EmeraldBrush" Color="{StaticResource Emerald}" />
             <SolidColorBrush x:Key="PeterRiverBrush" Color="{StaticResource PeterRiver}" />
@@ -61,7 +63,8 @@
             <SolidColorBrush x:Key="PomegranateBrush" Color="{StaticResource Pomegranate}" />
             <SolidColorBrush x:Key="AsbestosBrush" Color="{StaticResource Asbestos}" />
             <SolidColorBrush x:Key="SilverBrush" Color="{StaticResource Silver}" />
-
+            <!--#endregion-->
+            
             <Style x:Key="BaseButton" TargetType="Button">
                 <Setter Property="Margin" Value="2" />
                 <Setter Property="Width" Value="75" />

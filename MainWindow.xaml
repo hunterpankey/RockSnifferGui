@@ -56,7 +56,7 @@
             </StatusBar.ItemsPanel>
             <StatusBarItem Grid.Column="0" Margin="0,0,0,0">
                 <TextBlock>
-                    <Run Text="RockSniffer GUI" />
+                    <Run Text="Unofficial RockSniffer GUI" />
                     <Run Text="{Binding Path=Version, Mode=OneWay}" FontWeight="Bold" />
                 </TextBlock>   
             </StatusBarItem>

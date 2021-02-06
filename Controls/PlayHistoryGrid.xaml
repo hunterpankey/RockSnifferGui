@@ -55,10 +55,9 @@
         <Style x:Key="PaddedTextBlock" TargetType="TextBlock">
             <Setter Property="Padding" Value="4,4,4,4" />
         </Style>
-               
     </UserControl.Resources>
     
-    <DataGrid Name="playHistoryDataGrid" Grid.Row="1" AutoGenerateColumns="False" DataContext="{Binding SongPlays}" IsReadOnly="True" RowHeaderWidth="0"
+    <DataGrid Name="playHistoryDataGrid" Grid.Row="1" AutoGenerateColumns="False" ItemsSource="{Binding SongPlays}" IsReadOnly="True" RowHeaderWidth="0"
         HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent" Focusable="False" GridLinesVisibility="None" 
         ColumnHeaderStyle="{StaticResource HeaderCell}" CellStyle="{StaticResource BaseCell}" RowStyle="{StaticResource BaseRow}">
         <DataGrid.Columns>
