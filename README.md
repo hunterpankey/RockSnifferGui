@@ -1,4 +1,4 @@
-# (Unofficial) RockSnifferGui v0.2.0
+# (Unofficial) RockSnifferGui v0.2.0 [[Download]](https://github.com/hunterpankey/RockSnifferGui/releases/download/0.2.0/RockSnifferGui-0.2.0.zip)
 A simple application to display RockSniffer data instead of having to read and display the text files from vanilla RockSniffer.
 
 ## Overview
