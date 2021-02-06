@@ -1,21 +1,8 @@
 ﻿using RockSnifferGui.DataStore;
 using RockSnifferGui.Model;
-using RockSnifferLib.RSHelpers.NoteData;
-using RockSnifferLib.Sniffing;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace RockSnifferGui
 {
@@ -24,83 +11,40 @@ namespace RockSnifferGui
     /// </summary>
     public partial class PlayHistoryWindow : Window
     {
-        private IEnumerable<SongPlayInstance> songPlays;
-        private Sniffer sniffer;
-
-        public IEnumerable<SongPlayInstance> SongPlays { get => songPlays; set => songPlays = value; }
-        public int SongPlayCount { get => SongPlays.Count(); }
-
-        public PlayHistoryWindow(List<SongPlayInstance> songPlays, Sniffer sniffer)
+        public PlayHistoryWindow(List<SongPlayInstance> songPlays)
         {
-            InitializeComponent();
+            this.InitializeComponent();
 
-            this.SongPlays = songPlays;
-            this.playHistoryDataGrid.Loaded += PlayHistoryDataGrid_Loaded;
-            this.SizeChanged += PlayHistoryWindow_SizeChanged;
-
-            this.sniffer = sniffer;
-            this.AttachSniffer();
-
-            this.DataContext = this;
+            this.phvm.SongPlays = new ObservableCollection<SongPlayInstance>(songPlays);
+            this.playHistoryDataGrid.ScrollToBottom();
         }
 
-        private void PlayHistoryWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        public void UpdateSongPlays(IEnumerable<SongPlayInstance> songPlays)
         {
-            this.playHistoryDataGrid.Width = e.NewSize.Width - SystemParameters.VerticalScrollBarWidth;
+            this.phvm.SongPlays = new ObservableCollection<SongPlayInstance>(songPlays);
         }
 
-        private void PlayHistoryDataGrid_Loaded(object sender, RoutedEventArgs e)
+        public void AddSongPlay(SongPlayInstance songPlay)
         {
-            this.RefreshDisplay();
+            this.phvm.AddSongPlay(songPlay);
+            this.playHistoryDataGrid.ScrollToBottom();
         }
 
-        private void AttachSniffer()
+        public void ScrollToBottom()
         {
-            if (this.sniffer != null)
-            {
-                this.sniffer.OnSongEnded += Sniffer_OnSongEnded;
-            }
-        }
-
-        public void AttachSniffer(Sniffer sniffer)
-        {
-            this.sniffer = sniffer;
-            this.AttachSniffer();
-        }
-
-        private void Sniffer_OnSongEnded(object sender, RockSnifferLib.Events.OnSongEndedArgs e)
-        {
-            Thread.Sleep(1000);
-            this.RefreshDisplay();
+            this.playHistoryDataGrid.ScrollToBottom();
         }
 
         private void refreshButton_Click(object sender, RoutedEventArgs e)
         {
-            this.RefreshDisplay();
-        }
-
-        private void RefreshDisplay()
-        {
-            this.playHistoryDataGrid.ItemsSource = this.SongPlays;
-            this.playHistoryDataGrid.Items.Refresh();
-
-            if (this.playHistoryDataGrid.Items.Count > 0)
-            {
-                var border = VisualTreeHelper.GetChild(this.playHistoryDataGrid, 0) as Decorator;
-                if (border != null)
-                {
-                    var scroll = border.Child as ScrollViewer;
-                    if (scroll != null) scroll.ScrollToEnd();
-                }
-            }
+            MessageBox.Show("This button doesn't do anything anymore. Thanks, ObservableCollection class!", "No Operation", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void testButton_Click(object sender, RoutedEventArgs e)
         {
             SQLiteStore store = new SQLiteStore();
             store.Test();
-            this.songPlays = store.GetAll();
-            this.RefreshDisplay();
+            this.phvm.SongPlays = new ObservableCollection<SongPlayInstance>(store.GetAll());
         }
     }
 }

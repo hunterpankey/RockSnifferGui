@@ -5,48 +5,123 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RockSnifferGui.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="225" d:DesignWidth="350">
+             d:DesignHeight="225" d:DesignWidth="350" Margin="5">
     <UserControl.DataContext>
         <local:NotesPlayedViewModel x:Name="npvm" />
     </UserControl.DataContext>
     <UserControl.Resources>
         <ResourceDictionary>
-            <Style x:Key="LabelLiteral" TargetType="Label">
-                <Setter Property="HorizontalAlignment" Value="Left" />
-                <Setter Property="VerticalAlignment" Value="Top" />
-                <Setter Property="Width" Value="100" />
-                <Setter Property="Canvas.Left" Value="10" />
+            <Style x:Key="NotesPlayedLabel" TargetType="Label" BasedOn="{StaticResource BaseLabel}">
+                <Setter Property="FontSize" Value="16" />
             </Style>
-            <Style x:Key="LabelValue" TargetType="Label">
-                <Setter Property="HorizontalAlignment" Value="Left" />
-                <Setter Property="VerticalAlignment" Value="Top" />
-                <Setter Property="Width" Value="100" />
-                <Setter Property="Canvas.Left" Value="115" />
+            <Style x:Key="NotesPlayedTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+                <Setter Property="FontSize" Value="20" />
+                <Setter Property="TextAlignment" Value="Left" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+            <Style x:Key="NotesHitMissedTextBlock" TargetType="TextBlock">
+                <Setter Property="VerticalAlignment" Value="Stretch" />
+            </Style>
+            <Style x:Key="NotesPlayedBorder" TargetType="Border">
+                <Setter Property="BorderBrush" Value="{StaticResource ConcreteBrush}" />
+                <Setter Property="BorderThickness" Value="2" />
+                <Setter Property="CornerRadius" Value=".5" />
+                <Setter Property="Margin" Value="10,0,0,0" />
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Canvas Grid.Row="1" HorizontalAlignment="Left" Height="227" VerticalAlignment="Top" Width="350" Background="#ffffffff">
-        <Label x:Name="songTimerLabel" Content="Time" Style="{StaticResource LabelLiteral}" Canvas.Top="10" />
-        <Label x:Name="songTimerimeValueLabel" Content="{Binding SongTimerDisplay}" Style="{StaticResource LabelValue}" Canvas.Top="10"/>
+    <Grid x:Name="notesGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-        <Label x:Name="notesHitLabel" Content="Notes Hit" Style="{StaticResource LabelLiteral}" Canvas.Top="41"/>
-        <Label x:Name="notesHitValueLabel" Content="{Binding NotesHit}" Style="{StaticResource LabelValue}" Canvas.Top="41"/>
+        <!-- Song Elapsed Time Display -->
+        <Grid x:Name="songTimerProgressBarGrid" Grid.Row="0" Margin="0,0,0,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="110" SharedSizeGroup="RowTitleText" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Song Time" Style="{StaticResource NotesPlayedTextBlock}" />
+            <Border Grid.Column="1" Style="{StaticResource NotesPlayedBorder}">
+                <Grid>
+                    <ProgressBar x:Name="songTimerProgressBar" Value="{Binding SongPercentage, Mode=OneWay}" Minimum="0" Maximum="1"
+                             Foreground="{StaticResource SilverBrush}" Background="{StaticResource PeterRiverBrush}" />
+                    <Viewbox Grid.Column="0" MaxHeight="50" HorizontalAlignment="Left">
+                        <TextBlock Text="{Binding SongTimerDisplay}" Margin="5,0,0,0" Style="{StaticResource NotesPlayedTextBlock}" />
+                    </Viewbox>
+                </Grid>
+            </Border>
+        </Grid>
 
-        <Label x:Name="notesMissedLabel" Content="Notes Missed" Style="{StaticResource LabelLiteral}" Canvas.Top="71"/>
-        <Label x:Name="notesMissedValueLabel" Content="{Binding NotesMissed}" Style="{StaticResource LabelValue}" Canvas.Top="71"/>
+        <!-- New Notes Hit/Missed/Total Display-->
+        <Grid x:Name="hitMissProgressBarGrid" Grid.Row="1" Margin="0,0,0,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="110" SharedSizeGroup="RowTitleText" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Hit / Miss" Style="{StaticResource NotesPlayedTextBlock}" />
+            <Border Grid.Column="1" Style="{StaticResource NotesPlayedBorder}">
+                <Grid>
+                    <ProgressBar x:Name="hitMissProgressBar" Value="{Binding NotesHit, Mode=OneWay}" Minimum="0" Maximum="{Binding TotalNotes}"
+                             Foreground="{StaticResource NephritisBrush}" Background="{StaticResource PomegranateBrush}" />
+                    <Viewbox MaxHeight="50" HorizontalAlignment="Left">
+                        <TextBlock Text="{Binding NotesHit}" Margin="5,0,0,0" Style="{StaticResource NotesPlayedTextBlock}" />
+                    </Viewbox>
+                    <Viewbox MaxHeight="50" HorizontalAlignment="Right">
+                        <TextBlock Text="{Binding NotesMissed}" Margin="0,0,5,0" Style="{StaticResource NotesPlayedTextBlock}" />
+                    </Viewbox>
+                </Grid>
+            </Border>
+        </Grid>
 
-        <Label x:Name="totalNotesLabel" Content="Total Notes" Style="{StaticResource LabelLiteral}" Canvas.Top="102"/>
-        <Label x:Name="totalNotesValueLabel" Content="{Binding TotalNotes}" Style="{StaticResource LabelValue}" Canvas.Top="102"/>
+        <!-- New Streaks Display -->
+        <Grid x:Name="streaksProgressBarGrid" Grid.Row="2" Margin="0,0,0,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="110" SharedSizeGroup="RowTitleText" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Streaks" Style="{StaticResource NotesPlayedTextBlock}" />
+            <Border Grid.Column="1" Style="{StaticResource NotesPlayedBorder}">
+                <Grid>
+                    <ProgressBar x:Name="streaksProgressBar" Value="{Binding CurrentStreak, Mode=OneWay}" Minimum="0" Maximum="{Binding MaxStreak}"
+                             Foreground="{StaticResource SilverBrush}" Background="{StaticResource PeterRiverBrush}" />
+                    <Viewbox MaxHeight="50" HorizontalAlignment="Left">
+                        <TextBlock Text="{Binding CurrentStreak}" Margin="5,0,0,0" Style="{StaticResource NotesPlayedTextBlock}" />
+                    </Viewbox>
+                    <Viewbox MaxHeight="50" HorizontalAlignment="Right">
+                        <TextBlock Text="{Binding MaxStreak}" Margin="0,0,5,0" Style="{StaticResource NotesPlayedTextBlock}" />
+                    </Viewbox>
+                </Grid>
+            </Border>
+        </Grid>
 
-        <Label x:Name="currentStreakLabel" Content="Current Streak" Style="{StaticResource LabelLiteral}" Canvas.Top="134"/>
-        <Label x:Name="currentStreakValueLabel" Content="{Binding CurrentStreak}" Style="{StaticResource LabelValue}" Canvas.Top="134"/>
+        <!-- Note Accuracy Display -->
+        <Grid x:Name="accuracyProgressBarGrid" Grid.Row="3" Margin="0,0,0,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="110" SharedSizeGroup="RowTitleText" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Note Hit Pct." Style="{StaticResource NotesPlayedTextBlock}" />
+            <Border Grid.Column="1" Style="{StaticResource NotesPlayedBorder}">
+                <Grid>
+                    <ProgressBar x:Name="accuracyProgressBar" Value="{Binding Accuracy, Mode=OneWay}" Minimum="0" Maximum="1"
+                             Foreground="{StaticResource SilverBrush}" Background="{StaticResource PeterRiverBrush}" />
+                    <Viewbox MaxHeight="50" HorizontalAlignment="Left">
+                        <TextBlock Text="{Binding AccuracyDisplay}" Margin="5,0,0,0" Style="{StaticResource NotesPlayedTextBlock}" />
+                    </Viewbox>
+                </Grid>
+            </Border>
+        </Grid>
 
-        <Label x:Name="highestStreakLabel" Content="Highest Streak" Style="{StaticResource LabelLiteral}" Canvas.Top="165"/>
-        <Label x:Name="highestStreakValueLabel" Content="{Binding MaxStreak}" Style="{StaticResource LabelValue}" Canvas.Top="165"/>
-
-        <Label x:Name="noteHitPercentageLabel" Content="Note Hit Pct." Style="{StaticResource LabelLiteral}" Canvas.Top="195"/>
-        <Label x:Name="noteHitPercentageValueLabel" Content="{Binding AccuracyDisplay}" Style="{StaticResource LabelValue}" Canvas.Top="195" />
-        <!--<Binding Path="Accuracy" StringFormat="{}{0}%" />
-        </Label>-->
-    </Canvas>
+        <!--<StackPanel Orientation="Horizontal" Grid.Row="5">
+            <TextBlock Text="{Binding NotesHit}" Margin="0,0,25,0"/>
+            <TextBlock Text="{Binding NotesMissed}" Margin="0,0,25,0"/>
+            <TextBlock Text="{Binding TotalNotes}" Margin="0,0,25,0"/>
+            <TextBlock Text="{Binding CurrentStreak}" Margin="0,0,25,0"/>
+            <TextBlock Text="{Binding MaxStreak}" />
+        </StackPanel>-->
+    </Grid>
 </UserControl>

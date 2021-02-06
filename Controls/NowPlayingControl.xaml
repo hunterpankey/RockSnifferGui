@@ -6,51 +6,73 @@
              xmlns:local="clr-namespace:RockSnifferGui.Controls"
              xmlns:root="clr-namespace:RockSnifferGui"
              mc:Ignorable="d" 
-             d:DesignHeight="118" d:DesignWidth="478">
+             Margin="5">
     <UserControl.DataContext>
         <local:NowPlayingViewModel x:Name="npvm" />
     </UserControl.DataContext>
     <UserControl.Resources>
         <ResourceDictionary>
-            <Style x:Key="LiteralLabel" TargetType="Label">
-                <Setter Property="HorizontalAlignment" Value="Left" />
-                <Setter Property="VerticalAlignment" Value="Top" />
-                <Setter Property="Width" Value="50" />
-                <Setter Property="Height" Value="26" />
-                <Setter Property="Canvas.Left" Value="115" />
+            <Style x:Key="NowPlayingLabel" TargetType="Label" BasedOn="{StaticResource BaseLabel}">
+                <Setter Property="FontSize" Value="20" />
             </Style>
-            <Style x:Key="ValueLabel" TargetType="Label">
-                <Setter Property="HorizontalAlignment" Value="Left" />
-                <Setter Property="VerticalAlignment" Value="Top" />
+            <Style x:Key="LiteralLabel" TargetType="Label" BasedOn="{StaticResource NowPlayingLabel}">
+                <Setter Property="Width" Value="70" />
+                <Setter Property="Height" Value="36" />
+                <Setter Property="Canvas.Left" Value="115" />
+                <!--<Setter Property="FontWeight" Value="DemiBold" />-->
+                <!--<Setter Property="FontStyle" Value="Oblique" />-->
+            </Style>
+            <Style x:Key="ValueLabel" TargetType="Label" BasedOn="{StaticResource NowPlayingLabel}">
                 <Setter Property="Width" Value="300" />
-                <Setter Property="Height" Value="26" />
-                <Setter Property="Canvas.Left" Value="170" />
-                <Setter Property="FontWeight" Value="Bold" />
+                <Setter Property="Height" Value="36" />
+                <Setter Property="Canvas.Left" Value="190" />
+            </Style>
+            <Style x:Key="ValueTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+                <Setter Property="Width" Value="300" />
+                <Setter Property="Height" Value="36" />
+                <Setter Property="FontSize" Value="28" />
+            </Style>
+            <Style x:Key="NowPlayingTextBlock" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlock}">
+                <Setter Property="Margin" Value="0,0,0,5" />
+            </Style>
+            <Style x:Key="ArtistTextBlock" TargetType="TextBlock" BasedOn="{StaticResource NowPlayingTextBlock}">
+                <Setter Property="FontSize" Value="32" />
+            </Style>
+            <Style x:Key="OtherTextBlock" TargetType="TextBlock" BasedOn="{StaticResource NowPlayingTextBlock}">
+                <Setter Property="FontSize" Value="24" />
+                <Setter Property="FontFamily" Value="{StaticResource AmplitudeFont}" />
             </Style>
             <local:AlbumArtImageConverter x:Key="AlbumArtImageConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
-    <Canvas Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="118" Width="478" Background="#ffffffff">
-        <Canvas.Resources>
+
+    <Grid x:Name="nowPlayingGrid">
+        <Grid.Resources>
             <root:DebugDataBindingConvertor x:Key="DebugBinding" />
-            <BitmapImage x:Key="DefaultAlbumImage" UriSource="/sniffy.ico" />
-        </Canvas.Resources>
-        <Label x:Name="bandLabel" Canvas.Top="10" Style="{DynamicResource LiteralLabel}">Band</Label>
-        <Label x:Name="bandNameLabel" Canvas.Top="10" Style="{DynamicResource ValueLabel}" 
-               Content="{Binding ArtistName}" />  <!--, Converter={StaticResource DebugBinding}}" />-->
-
-        <Label x:Name="songLabel" Canvas.Top="36" Style="{DynamicResource LiteralLabel}">Song</Label>
-        <Label x:Name="songNameLabel" Canvas.Top="36" Style="{DynamicResource ValueLabel}" 
-               Content="{Binding SongName}" /> <!--, Converter={StaticResource DebugBinding}}" />-->
-
-        <Label x:Name="albumName" Canvas.Top="62" Style="{DynamicResource LiteralLabel}">Album</Label>
-        <Label x:Name="albumNameLabel" Canvas.Top="62" Style="{DynamicResource ValueLabel}"  Content="{Binding AlbumDisplay}" />
-
-        <Image x:Name="albumArtImage" HorizontalAlignment="Left" VerticalAlignment="Top" 
-                               Height="100" Width="100" 
-                               Canvas.Left="10" Canvas.Top="10"
-                               Source="{Binding AlbumArtImage, Converter={StaticResource AlbumArtImageConverter}, FallbackValue={StaticResource DefaultAlbumImage}, TargetNullValue={StaticResource DefaultAlbumImage}}"
-                />
-
-    </Canvas>
+            <BitmapImage x:Key="DefaultAlbumImage" UriSource="/Resources/sniffy.ico" />
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{Binding Height, ElementName=nowPlayingGrid, Mode=OneWay}" MaxWidth="200" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Viewbox Grid.Column="0" HorizontalAlignment="Left">
+            <Image x:Name="albumArtImage" Stretch="Fill"
+                Source="{Binding AlbumArtImage, 
+                    Converter={StaticResource AlbumArtImageConverter}, 
+                    FallbackValue={StaticResource DefaultAlbumImage}, 
+                    TargetNullValue={StaticResource DefaultAlbumImage}}">
+                <Image.Effect>
+                    <DropShadowEffect Direction="300" ShadowDepth="5" Opacity="0.4" BlurRadius="12"
+                                          Color="{StaticResource MidnightBlue}"/>
+                </Image.Effect>
+            </Image>
+        </Viewbox>
+        <Viewbox Name="textViewbox" HorizontalAlignment="Left" Margin="10,0,0,0" Grid.Column="1" VerticalAlignment="Top">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="{Binding SongName}" Style="{StaticResource ArtistTextBlock}" />
+                <TextBlock Text="{Binding ArtistName}" Style="{StaticResource OtherTextBlock}" />
+                <TextBlock Text="{Binding AlbumDisplay}" Style="{StaticResource OtherTextBlock}" />
+            </StackPanel>
+        </Viewbox>
+    </Grid>
 </UserControl>

@@ -75,7 +75,11 @@
     </Compile>
     <Compile Include="Controls\NotesPlayedViewModel.cs" />
     <Compile Include="Controls\NowPlayingViewModel.cs" />
+    <Compile Include="Controls\PlayHistoryGrid.xaml.cs">
+      <DependentUpon>PlayHistoryGrid.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DebugDataBindingConvertor.cs" />
+    <Compile Include="PlayHistoryViewModel.cs" />
     <Compile Include="Services\GameProcessChangedEventArgs.cs" />
     <Compile Include="Services\GameProcessService.cs" />
     <Page Include="Controls\NotesPlayedDataControl.xaml">
@@ -83,6 +87,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\NowPlayingControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\PlayHistoryGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -137,6 +145,8 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Resource Include="Resources\ProximaSansMedium.ttf" />
+    <Resource Include="Resources\Amplitude-Medium.ttf" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -153,7 +163,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="sniffy.ico" />
+    <Resource Include="Resources\sniffy.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Fender_Guitar_pick_01.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.113.1\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.113.1\build\net46\System.Data.SQLite.Core.targets')" />
