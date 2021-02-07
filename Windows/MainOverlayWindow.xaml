@@ -7,7 +7,7 @@
         xmlns:Controls="clr-namespace:RockSnifferGui.Controls"
         mc:Ignorable="d"
         Title="MainOverlayWindow" Height="150" Width="750" WindowStyle="None"
-        Background="Transparent" Foreground="{StaticResource CloudsBrush}" Topmost="True"
+        Background="Transparent" Foreground="{Binding Foreground}" Topmost="True"
         ResizeMode="NoResize" AllowsTransparency="True">
 
     <Window.DataContext>

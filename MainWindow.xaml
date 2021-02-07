@@ -11,21 +11,26 @@
         Height="350" Width="450" MinHeight="350" MinWidth="275" 
         Background="{StaticResource WetAsphaltBrush}" Foreground="{StaticResource CloudsBrush}">
     <Window.Resources>
-        <RoutedUICommand x:Key="togglePlayHistoryCommand" Text="Toggle Play _History" x:Name="togglePlayHistoryCommand">
-            <RoutedUICommand.InputGestures>
-                <KeyGesture>Ctrl+H</KeyGesture>
-            </RoutedUICommand.InputGestures>
-        </RoutedUICommand>
-        <RoutedUICommand x:Key="toggleOverlayCommand" Text="Toggle _Overlay" x:Name="toggleOverlayCommand">
-            <RoutedUICommand.InputGestures>
-                <KeyGesture>Ctrl+O</KeyGesture>
-            </RoutedUICommand.InputGestures>
-        </RoutedUICommand>
-        <RoutedUICommand x:Key="manualTestCommand" Text="_Test" x:Name="manualTestCommand">
-            <RoutedUICommand.InputGestures>
-                <KeyGesture>Ctrl+Alt+T</KeyGesture>
-            </RoutedUICommand.InputGestures>
-        </RoutedUICommand>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/ColorsAndBrushes.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <RoutedUICommand x:Key="togglePlayHistoryCommand" Text="Toggle Play _History" x:Name="togglePlayHistoryCommand">
+                <RoutedUICommand.InputGestures>
+                    <KeyGesture>Ctrl+H</KeyGesture>
+                </RoutedUICommand.InputGestures>
+            </RoutedUICommand>
+            <RoutedUICommand x:Key="toggleOverlayCommand" Text="Toggle _Overlay" x:Name="toggleOverlayCommand">
+                <RoutedUICommand.InputGestures>
+                    <KeyGesture>Ctrl+O</KeyGesture>
+                </RoutedUICommand.InputGestures>
+            </RoutedUICommand>
+            <RoutedUICommand x:Key="manualTestCommand" Text="_Test" x:Name="manualTestCommand">
+                <RoutedUICommand.InputGestures>
+                    <KeyGesture>Ctrl+Alt+T</KeyGesture>
+                </RoutedUICommand.InputGestures>
+            </RoutedUICommand>
+        </ResourceDictionary>
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="{StaticResource togglePlayHistoryCommand}" x:Name="TogglePlayHistoryCommandBinding" Executed="TogglePlayHistoryCommandBinding_Executed" />
@@ -43,7 +48,7 @@
                 <MenuItem Header="_Overlay" Name="mainOverlayMenuItem" IsCheckable="True" Command="{StaticResource toggleOverlayCommand}" />
             </MenuItem>
         </Menu>
-        
+
         <ToolBar x:Name="mainToolbar" DockPanel.Dock="Top" Height="30" VerticalAlignment="Top" Margin="0" ToolBarTray.IsLocked="True">
             <Button x:Name="playHistoryButton" Command="{StaticResource togglePlayHistoryCommand}">Play History</Button>
             <Button x:Name="toggleOverlayButton" Command="{StaticResource toggleOverlayCommand}">Toggle Overlay</Button>
@@ -66,7 +71,7 @@
                 <TextBlock>
                     <Run Text="Unofficial RockSniffer GUI" />
                     <Run Text="{Binding Path=Version, Mode=OneWay}" FontWeight="Bold" />
-                </TextBlock>   
+                </TextBlock>
             </StatusBarItem>
             <StatusBarItem Grid.Column="1" />
             <StatusBarItem Grid.Column="2" Margin="0,0,0,0" >

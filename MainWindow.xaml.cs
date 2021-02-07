@@ -102,8 +102,6 @@ namespace RockSnifferGui
                 this.SetupSniffer(GameProcessService.Instance.GameProcess);
             }
 
-            this.Closing += this.MainWindow_Closing;
-
             //Add RPC event listeners
             // not doing anything with Discord right now
             //if (config.rpcSettings.enabled)
@@ -288,15 +286,6 @@ namespace RockSnifferGui
         #region App Lifecycle Events
         private void ExitCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            Application.Current.Shutdown(0);
-        }
-
-        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            // no Discord RPC stuff right now
-            //rpcHandler?.Dispose();
-            //rpcHandler = null;
-
             Application.Current.Shutdown(0);
         }
         #endregion
