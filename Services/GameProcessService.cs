@@ -13,9 +13,10 @@ using System.Xaml.Schema;
 
 namespace RockSnifferGui.Services
 {
+    public enum GameProcessStatus { NOT_RUNNING, RUNNING, NOT_RESPONDING, EXITED }
+
     public class GameProcessService : IDisposable, INotifyPropertyChanged
     {
-        public enum ProcessStatus { NOT_RUNNING, RUNNING, NOT_RESPONDING, EXITED }
         private const string GameProcessHash = "GxT+/TXLpUFys+Cysek8zg==";
 
         public delegate void OnGameProcessChanged(object sender, GameProcessChangedEventArgs args);
@@ -23,7 +24,7 @@ namespace RockSnifferGui.Services
         public event PropertyChangedEventHandler PropertyChanged;
 
         private Process gameProcess;
-        private ProcessStatus gameProcessStatus;
+        private GameProcessStatus gameProcessStatus;
         private Thread processWatcher;
 
         private static GameProcessService instance;
@@ -45,20 +46,20 @@ namespace RockSnifferGui.Services
         }
 
         public Process GameProcess { get => gameProcess; private set => gameProcess = value; }
-        public ProcessStatus Status { get => gameProcessStatus; private set => gameProcessStatus = value; }
-        public string StatusForDisplay 
-        { 
+        public GameProcessStatus Status { get => gameProcessStatus; private set => gameProcessStatus = value; }
+        public string StatusForDisplay
+        {
             get
             {
-                switch(this.Status)
+                switch (this.Status)
                 {
-                    case ProcessStatus.RUNNING:
+                    case GameProcessStatus.RUNNING:
                         return "Running";
-                    case ProcessStatus.NOT_RESPONDING:
+                    case GameProcessStatus.NOT_RESPONDING:
                         return "Not Responding";
-                    case ProcessStatus.EXITED:
+                    case GameProcessStatus.EXITED:
                         return "Exited";
-                    case ProcessStatus.NOT_RUNNING:
+                    case GameProcessStatus.NOT_RUNNING:
                         return "Not Running";
                     default:
                         return string.Empty;
@@ -86,7 +87,7 @@ namespace RockSnifferGui.Services
 
             if (processes.Length == 0)
             {
-                this.Status = ProcessStatus.NOT_RUNNING;
+                this.Status = GameProcessStatus.NOT_RUNNING;
             }
             else
             {
@@ -103,8 +104,8 @@ namespace RockSnifferGui.Services
 
         private void InvokeNewGameProcess(Process gameProcess)
         {
-            this.GameProcessChanged?.BeginInvoke(this, new GameProcessChangedEventArgs(this.GameProcess), this.EndInvokeNewGameProcess, null);
-            //this.GameProcessChanged?.Invoke(this, new GameProcessChangedEventArgs(this.GameProcess));
+            //this.GameProcessChanged?.BeginInvoke(this, new GameProcessChangedEventArgs(this.GameProcess), this.EndInvokeNewGameProcess, null);
+            this.GameProcessChanged?.Invoke(this, new GameProcessChangedEventArgs(this.GameProcess));
         }
 
         private void EndInvokeNewGameProcess(IAsyncResult iar)
@@ -149,22 +150,22 @@ namespace RockSnifferGui.Services
 
                 while (true)
                 {
-                    ProcessStatus currentStatus = this.Status;
+                    GameProcessStatus currentStatus = this.Status;
                     Process currentProcess = this.GameProcess;
 
                     if (this.GameProcess != null)
                     {
                         if (this.GameProcess.Responding)
                         {
-                            this.Status = ProcessStatus.RUNNING;
+                            this.Status = GameProcessStatus.RUNNING;
                         }
                         else if (!this.GameProcess.Responding && !this.GameProcess.HasExited)
                         {
-                            this.Status = ProcessStatus.NOT_RESPONDING;
+                            this.Status = GameProcessStatus.NOT_RESPONDING;
                         }
                         else if (this.GameProcess.HasExited)
                         {
-                            this.Status = ProcessStatus.EXITED;
+                            this.Status = GameProcessStatus.EXITED;
                             this.GameProcess = null;
 
                             this.FindGameProcess();
@@ -172,18 +173,18 @@ namespace RockSnifferGui.Services
                     }
                     else
                     {
-                        this.Status = ProcessStatus.NOT_RUNNING;
+                        this.Status = GameProcessStatus.NOT_RUNNING;
                         this.FindGameProcess();
                     }
 
-                    if(currentStatus != this.Status)
+                    if (currentStatus != this.Status)
                     {
                         this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Status"));
                         this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("StatusForDisplay"));
                         Logger.Log($"GameProcessWatcher: New process status {this.StatusForDisplay}.");
                     }
 
-                    if(currentProcess != this.GameProcess)
+                    if (currentProcess != this.GameProcess)
                     {
                         Logger.Log("GameProcessWatcher: Located new game process.");
                         this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GameProcess"));
