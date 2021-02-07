@@ -91,16 +91,25 @@ namespace RockSnifferGui.Services
 
             if (GameProcessService.Instance.Status == GameProcessStatus.RUNNING)
             {
-                this.SetupSniffer(GameProcessService.Instance.GameProcess);
+                this.AttachSniffer(GameProcessService.Instance.GameProcess);
             }
         }
 
         private void GameProcessService_GameProcessChanged(object sender, GameProcessChangedEventArgs args)
         {
-            this.SetupSniffer(args.Process);
+            this.DetachSniffer();
+            this.AttachSniffer(args.Process);
         }
 
-        private void SetupSniffer(Process process)
+        private void DetachSniffer()
+        {
+            SnifferService.sniffer.OnSongChanged -= this.Sniffer_OnSongChanged;
+            SnifferService.sniffer.OnSongStarted -= this.Sniffer_OnSongStarted;
+            SnifferService.sniffer.OnSongEnded -= this.Sniffer_OnSongEnded;
+            SnifferService.sniffer.OnMemoryReadout -= this.Sniffer_OnMemoryReadout;
+        }
+
+        private void AttachSniffer(Process process)
         {
             SnifferService.sniffer = new Sniffer(process, cache, config.snifferSettings);
 
@@ -111,6 +120,7 @@ namespace RockSnifferGui.Services
 
             this.SnifferChanged?.Invoke(this, new SnifferChangedEventArgs(SnifferService.sniffer));
         }
+
 
         #region Sniffer Event Passthrough Handlers
         private void Sniffer_OnSongChanged(object sender, OnSongChangedArgs e)
