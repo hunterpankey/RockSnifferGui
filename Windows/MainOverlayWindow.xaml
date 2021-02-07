@@ -7,15 +7,27 @@
         xmlns:Controls="clr-namespace:RockSnifferGui.Controls"
         mc:Ignorable="d"
         Title="MainOverlayWindow" Height="150" Width="750" WindowStyle="None"
-        Background="{StaticResource WetAsphaltBrush}" Foreground="{StaticResource CloudsBrush}" Topmost="True"
+        Background="Transparent" Foreground="{StaticResource CloudsBrush}" Topmost="True"
         ResizeMode="NoResize" AllowsTransparency="True">
 
-    <Grid x:Name="contentGrid">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Controls:NowPlayingControl Grid.Column="0" x:Name="nowPlayingControl" />
-        <Controls:NotesPlayedDataControl Grid.Column="1" x:Name="notesPlayedControl" />
-    </Grid>
+    <Window.DataContext>
+        <local:MainOverlayWindowViewModel x:Name="mowvm" />
+    </Window.DataContext>
+    <Border BorderBrush="Transparent" BorderThickness="10">
+        <Border.Effect>
+            <DropShadowEffect ShadowDepth="{Binding DropShadowDepth}" 
+                              BlurRadius="{Binding DropShadowRadius}" 
+                              Opacity="{Binding DropShadowOpacity}"
+            Color="{Binding DropShadowColor}" />
+            <!--Color="{StaticResource Clouds}" />-->
+        </Border.Effect>
+        <Grid x:Name="contentGrid" Background="{StaticResource WetAsphaltBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Controls:NowPlayingControl Grid.Column="0" x:Name="nowPlayingControl" />
+            <Controls:NotesPlayedDataControl Grid.Column="1" x:Name="notesPlayedControl" />
+        </Grid>
+    </Border>
 </Window>

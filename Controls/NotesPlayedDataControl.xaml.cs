@@ -16,7 +16,7 @@ namespace RockSnifferGui.Controls
             this.InitializeComponent();
             this.SetupSniffer();
 
-            if((SnifferService.Instance.Status == SnifferState.SONG_PLAYING)
+            if ((SnifferService.Instance.Status == SnifferState.SONG_PLAYING)
                 || (SnifferService.Instance.Status == SnifferState.SONG_STARTING))
             {
                 this.ActivateSniffer();
@@ -81,7 +81,7 @@ namespace RockSnifferGui.Controls
 
         private void SnifferService_MemoryReadout(object sender, RockSnifferLib.Events.OnMemoryReadoutArgs args)
         {
-             this.UpdateNoteData(args.memoryReadout.noteData, args.memoryReadout.songTimer);
+            this.UpdateNoteData(args.memoryReadout.noteData, args.memoryReadout.songTimer);
         }
         #endregion
     }

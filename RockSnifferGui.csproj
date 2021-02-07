@@ -86,6 +86,7 @@
     <Compile Include="Windows\MainOverlayWindow.xaml.cs">
       <DependentUpon>MainOverlayWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\MainOverlayWindowViewModel.cs" />
     <Page Include="Controls\NotesPlayedDataControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
