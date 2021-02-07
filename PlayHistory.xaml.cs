@@ -1,5 +1,6 @@
 ﻿using RockSnifferGui.DataStore;
 using RockSnifferGui.Model;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -26,13 +27,19 @@ namespace RockSnifferGui
 
         public void AddSongPlay(SongPlayInstance songPlay)
         {
-            this.phvm.AddSongPlay(songPlay);
-            this.playHistoryDataGrid.ScrollToBottom();
+            App.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                this.phvm.AddSongPlay(songPlay);
+                this.playHistoryDataGrid.ScrollToBottom();
+            }));
         }
 
         public void ScrollToBottom()
         {
-            this.playHistoryDataGrid.ScrollToBottom();
+            App.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                this.playHistoryDataGrid.ScrollToBottom();
+            }));
         }
 
         private void refreshButton_Click(object sender, RoutedEventArgs e)
