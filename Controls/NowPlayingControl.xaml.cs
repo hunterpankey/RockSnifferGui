@@ -1,19 +1,9 @@
-﻿using RockSnifferGui;
+﻿using RockSnifferGui.Services;
+using RockSnifferLib.Events;
+using RockSnifferLib.Logging;
 using RockSnifferLib.Sniffing;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace RockSnifferGui.Controls
 {
@@ -21,20 +11,46 @@ namespace RockSnifferGui.Controls
     /// Interaction logic for NowPlayingControl.xaml
     /// </summary>
     public partial class NowPlayingControl : UserControl
-    {        
+    {
         public NowPlayingControl()
         {
-            InitializeComponent();
+            this.InitializeComponent();
+            this.SetupSniffer();
 
-            //Binding imageBinding = new Binding("SongDetails.albumArt");
-            //imageBinding.Source = this.npvm;
+            this.UpdateSong(SnifferService.Instance.CurrentSong);
+        }
 
-            //this.albumArtImage.SetBinding(Image.SourceProperty, imageBinding);
+        private void SetupSniffer()
+        {
+            SnifferService.Instance.SongStarted += this.Sniffer_OnSongStarted;
+            SnifferService.Instance.SongChanged += this.Sniffer_OnSongChanged;
+
+            this.npvm.SongDetails = SnifferService.Instance.CurrentSong;
         }
 
         public void UpdateSong(SongDetails songDetails)
         {
             this.npvm.SongDetails = songDetails;
         }
+
+        #region Sniffer Events
+
+        private void Sniffer_OnSongChanged(object sender, OnSongChangedArgs e)
+        {
+            //this.UpdateSong(e.songDetails);
+        }
+
+        private void Sniffer_OnSongStarted(object sender, OnSongStartedArgs e)
+        {
+            try
+            {
+                this.UpdateSong(e.song);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException(ex);
+            }
+        }
+        #endregion
     }
 }

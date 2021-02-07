@@ -30,13 +30,27 @@ namespace RockSnifferGui.Controls
             {
                 this.SetProperty(ref songDetails, value);
 
-                this.SetProperty(ref this.artistName, value.artistName, "ArtistName");
-                this.SetProperty(ref this.songName, value.songName, "SongName");
-                this.SetProperty(ref this.albumName, value.albumName, "AlbumName");
-                this.SetProperty(ref this.albumYear, value.albumYear, "AlbumYear");
-                this.SetProperty(ref this.albumArtImage, value.albumArt, "AlbumArtImage");
+                if (value != null)
+                {
 
-                this.OnPropertyChanged(new PropertyChangedEventArgs("AlbumDisplay"));
+                    this.SetProperty(ref this.artistName, value.artistName, "ArtistName");
+                    this.SetProperty(ref this.songName, value.songName, "SongName");
+                    this.SetProperty(ref this.albumName, value.albumName, "AlbumName");
+                    this.SetProperty(ref this.albumYear, value.albumYear, "AlbumYear");
+                    this.SetProperty(ref this.albumArtImage, value.albumArt, "AlbumArtImage");
+
+                    this.OnPropertyChanged(new PropertyChangedEventArgs("AlbumDisplay"));
+                }
+                else
+                {
+                    this.SetProperty(ref this.artistName, string.Empty, "ArtistName");
+                    this.SetProperty(ref this.songName, string.Empty, "SongName");
+                    this.SetProperty(ref this.albumName, string.Empty, "AlbumName");
+                    this.SetProperty(ref this.albumYear, 0, "AlbumYear");
+                    this.SetProperty(ref this.albumArtImage, null, "AlbumArtImage");
+
+                    this.OnPropertyChanged(new PropertyChangedEventArgs("AlbumDisplay"));
+                }
             }
         }
 
@@ -48,7 +62,7 @@ namespace RockSnifferGui.Controls
         {
             get
             {
-                if(string.IsNullOrEmpty(this.AlbumName) && (this.AlbumYear == 0))
+                if (string.IsNullOrEmpty(this.AlbumName) && (this.AlbumYear == 0))
                 {
                     return string.Empty;
                 }
