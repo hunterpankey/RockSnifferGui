@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RockSnifferGui.Controls"
              xmlns:root="clr-namespace:RockSnifferGui"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks" 
              mc:Ignorable="d" 
              Margin="5">
     <UserControl.DataContext>
@@ -49,7 +50,6 @@
     <Grid x:Name="nowPlayingGrid">
         <Grid.Resources>
             <root:DebugDataBindingConvertor x:Key="DebugBinding" />
-            <BitmapImage x:Key="DefaultAlbumImage" UriSource="/Resources/sniffy.ico" />
         </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="{Binding Height, ElementName=nowPlayingGrid, Mode=OneWay}" MaxWidth="200" />
@@ -59,8 +59,8 @@
             <Image x:Name="albumArtImage" Stretch="Fill"
                 Source="{Binding AlbumArtImage, 
                     Converter={StaticResource AlbumArtImageConverter}, 
-                    FallbackValue={StaticResource DefaultAlbumImage}, 
-                    TargetNullValue={StaticResource DefaultAlbumImage}}">
+                    FallbackValue={iconPacks:MaterialImage Kind=MusicBox, RotationAngle=10, Brush={StaticResource CloudsBrush}}, 
+                    TargetNullValue={iconPacks:MaterialImage Kind=MusicBox, RotationAngle=10, Brush={StaticResource CloudsBrush}}}">
                 <Image.Effect>
                     <DropShadowEffect Direction="300" ShadowDepth="5" Opacity="0.4" BlurRadius="12"
                         Color="{StaticResource MidnightBlue}"/>

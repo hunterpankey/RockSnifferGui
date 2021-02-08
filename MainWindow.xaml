@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:RockSnifferGui"
         xmlns:RockSnifferGui="clr-namespace:RockSnifferGui"
         xmlns:Controls="clr-namespace:RockSnifferGui.Controls"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks" 
         mc:Ignorable="d"
         Title="RockSniffer GUI" Icon="Resources/sniffy.ico" 
         Height="350" Width="450" MinHeight="350" MinWidth="275" 
@@ -49,9 +50,30 @@
             </MenuItem>
         </Menu>
 
-        <ToolBar x:Name="mainToolbar" DockPanel.Dock="Top" Height="30" VerticalAlignment="Top" Margin="0" ToolBarTray.IsLocked="True">
-            <Button x:Name="playHistoryButton" Command="{StaticResource togglePlayHistoryCommand}">Play History</Button>
-            <Button x:Name="toggleOverlayButton" Command="{StaticResource toggleOverlayCommand}">Toggle Overlay</Button>
+        <ToolBar x:Name="mainToolbar" DockPanel.Dock="Top" ToolBarTray.IsLocked="True">
+            <Button x:Name="playHistoryButton" Command="{StaticResource togglePlayHistoryCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel.Resources>
+                        <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                            <Setter Property="Margin" Value="0,0,5,0" />
+                        </Style>
+                    </StackPanel.Resources>
+                    <iconPacks:PackIconMaterial Kind="History" />
+                    <TextBlock>Play History</TextBlock>
+                </StackPanel>
+            </Button>
+
+            <Button x:Name="toggleOverlayButton" Command="{StaticResource toggleOverlayCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel.Resources>
+                        <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                            <Setter Property="Margin" Value="0,0,5,0" />
+                        </Style>
+                    </StackPanel.Resources>
+                    <iconPacks:PackIconMaterial Kind="Overscan" />
+                    <TextBlock>Toggle Overlay</TextBlock>
+                </StackPanel>
+            </Button>
             <!--<Button x:Name="testButton" Command="{StaticResource manualTestCommand}">Test Something</Button>-->
         </ToolBar>
 
