@@ -18,7 +18,7 @@ namespace RockSnifferGui
         private static GameProcessService gameProcessService;
         private static ICache cache;
 
-        private const string version = "0.3.0";
+        private const string version = "0.3.0a";
         public static string Version { get => "v" + version; }
         public static ICache Cache { get => App.cache; set => App.cache = value; }
 
