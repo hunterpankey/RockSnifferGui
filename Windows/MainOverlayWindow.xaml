@@ -1,0 +1,33 @@
+﻿<Window x:Class="RockSnifferGui.Windows.MainOverlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RockSnifferGui.Windows"
+        xmlns:Controls="clr-namespace:RockSnifferGui.Controls"
+        mc:Ignorable="d"
+        Title="MainOverlayWindow" Height="150" Width="750" WindowStyle="None"
+        Background="Transparent" Foreground="{Binding Foreground}" Topmost="True"
+        ResizeMode="NoResize" AllowsTransparency="True">
+
+    <Window.DataContext>
+        <local:MainOverlayWindowViewModel x:Name="mowvm" />
+    </Window.DataContext>
+    <Border BorderBrush="Transparent" BorderThickness="10">
+        <Border.Effect>
+            <DropShadowEffect ShadowDepth="{Binding DropShadowDepth}" 
+                              BlurRadius="{Binding DropShadowRadius}" 
+                              Opacity="{Binding DropShadowOpacity}"
+            Color="{Binding DropShadowColor}" />
+            <!--Color="{StaticResource Clouds}" />-->
+        </Border.Effect>
+        <Grid x:Name="contentGrid" Background="{StaticResource WetAsphaltBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Controls:NowPlayingControl Grid.Column="0" x:Name="nowPlayingControl" />
+            <Controls:NotesPlayedDataControl Grid.Column="1" x:Name="notesPlayedControl" />
+        </Grid>
+    </Border>
+</Window>

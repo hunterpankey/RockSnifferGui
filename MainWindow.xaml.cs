@@ -3,6 +3,7 @@ using RockSnifferGui.Configuration;
 using RockSnifferGui.DataStore;
 using RockSnifferGui.Model;
 using RockSnifferGui.Services;
+using RockSnifferGui.Windows;
 using RockSnifferLib.Cache;
 using RockSnifferLib.Events;
 using RockSnifferLib.Logging;
@@ -24,7 +25,6 @@ namespace RockSnifferGui
     {
         internal static ICache cache;
         internal static Config config;
-        internal static Sniffer sniffer;
 
         private static readonly bool Is64Bits = (IntPtr.Size == 8);
 
@@ -32,6 +32,7 @@ namespace RockSnifferGui
         private SongPlayInstance currentSong;
 
         private PlayHistoryWindow playHistoryWindow;
+        private MainOverlayWindow mainOverlayWindow;
 
         SQLiteStore songPlayInstancesDb = new SQLiteStore();
 
@@ -96,12 +97,10 @@ namespace RockSnifferGui
 
             Logger.Log("Waiting for rocksmith");
 
-            if (GameProcessService.Instance.Status == GameProcessService.ProcessStatus.RUNNING)
+            if (GameProcessService.Instance.Status == GameProcessStatus.RUNNING)
             {
                 this.SetupSniffer(GameProcessService.Instance.GameProcess);
             }
-
-            this.Closing += this.MainWindow_Closing;
 
             //Add RPC event listeners
             // not doing anything with Discord right now
@@ -120,14 +119,8 @@ namespace RockSnifferGui
 
         private void SetupSniffer(Process process)
         {
-            // Initialize file handle reader and memory reader
-            MainWindow.sniffer = new Sniffer(process, cache, config.snifferSettings);
-
-            // Listen for events
-            MainWindow.sniffer.OnSongStarted += this.Sniffer_OnSongStarted;
-            MainWindow.sniffer.OnSongEnded += this.Sniffer_OnSongEnded;
-
-            MainWindow.sniffer.OnMemoryReadout += this.Sniffer_OnMemoryReadout;
+            SnifferService.Instance.SongStarted += this.SnifferService_OnSongStarted;
+            SnifferService.Instance.SongEnded += this.SnifferService_OnSongEnded;
         }
 
         #region Game Process Events
@@ -146,13 +139,11 @@ namespace RockSnifferGui
         #endregion
 
         #region Sniffer Events
-        private void Sniffer_OnSongStarted(object sender, OnSongStartedArgs e)
+        private void SnifferService_OnSongStarted(object sender, OnSongStartedArgs e)
         {
             try
             {
-                this.nowPlayingControl.UpdateSong(e.song);
-                this.notesPlayedControl.UpdateSong(e.song);
-
+                SnifferService.Instance.MemoryReadout += this.SnifferService_OnMemoryReadout;
                 this.currentSong = new SongPlayInstance(e.song);
                 this.currentSong.StartSong();
             }
@@ -162,10 +153,12 @@ namespace RockSnifferGui
             }
         }
 
-        private void Sniffer_OnSongEnded(object sender, OnSongEndedArgs e)
+        private void SnifferService_OnSongEnded(object sender, OnSongEndedArgs e)
         {
             try
             {
+                SnifferService.Instance.MemoryReadout -= this.SnifferService_OnMemoryReadout;
+
                 if (this.currentSong != null)
                 {
                     this.currentSong.FinishSong();
@@ -187,12 +180,10 @@ namespace RockSnifferGui
             }
         }
 
-        private void Sniffer_OnMemoryReadout(object sender, OnMemoryReadoutArgs args)
+        private void SnifferService_OnMemoryReadout(object sender, OnMemoryReadoutArgs args)
         {
             try
             {
-                this.notesPlayedControl.UpdateNoteData(args.memoryReadout.noteData, args.memoryReadout.songTimer);
-
                 if ((this.currentSong != null) && (args.memoryReadout.noteData != null))
                 {
                     this.currentSong.UpdateNoteData(args.memoryReadout.noteData);
@@ -221,6 +212,26 @@ namespace RockSnifferGui
                 this.playHistoryWindow.Show();
                 this.playHistoryWindow.ScrollToBottom();
             }
+        }
+
+        private void ToggleOverlayCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if(this.mainOverlayWindow != null)
+            {
+                this.mainOverlayWindow.Close();
+                this.mainOverlayWindow = null;
+            }
+            else
+            {
+                this.mainOverlayWindow = new MainOverlayWindow();
+                this.mainOverlayWindow.Closed += this.MainOverlayWindow_Closed;
+                this.mainOverlayWindow.Show();
+            }
+        }
+
+        private void MainOverlayWindow_Closed(object sender, EventArgs e)
+        {
+            this.mainOverlayWindow = null;
         }
 
         private void ManualTestCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -275,20 +286,6 @@ namespace RockSnifferGui
         #region App Lifecycle Events
         private void ExitCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            Application.Current.Shutdown(0);
-        }
-
-        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (MainWindow.sniffer != null)
-            {
-                MainWindow.sniffer.Stop();
-            }
-
-            // no Discord RPC stuff right now
-            //rpcHandler?.Dispose();
-            //rpcHandler = null;
-
             Application.Current.Shutdown(0);
         }
         #endregion

@@ -11,6 +11,9 @@
     </UserControl.DataContext>
     <UserControl.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/ColorsAndBrushes.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
             <Style x:Key="NotesPlayedLabel" TargetType="Label" BasedOn="{StaticResource BaseLabel}">
                 <Setter Property="FontSize" Value="16" />
             </Style>
@@ -107,8 +110,8 @@
             <TextBlock Text="Note Hit Pct." Style="{StaticResource NotesPlayedTextBlock}" />
             <Border Grid.Column="1" Style="{StaticResource NotesPlayedBorder}">
                 <Grid>
-                    <ProgressBar x:Name="accuracyProgressBar" Value="{Binding Accuracy, Mode=OneWay}" Minimum="0" Maximum="1"
-                             Foreground="{StaticResource SilverBrush}" Background="{StaticResource PeterRiverBrush}" />
+                    <ProgressBar x:Name="accuracyProgressBar" Value="{Binding Accuracy, Mode=OneWay}" Minimum="0" Maximum="1" 
+                    Foreground="{StaticResource SilverBrush}" Background="{StaticResource PeterRiverBrush}" /> <!-- check 0-1 vs 0-100 scale for percentage-->
                     <Viewbox MaxHeight="50" HorizontalAlignment="Left">
                         <TextBlock Text="{Binding AccuracyDisplay}" Margin="5,0,0,0" Style="{StaticResource NotesPlayedTextBlock}" />
                     </Viewbox>

@@ -82,6 +82,11 @@
     <Compile Include="PlayHistoryViewModel.cs" />
     <Compile Include="Services\GameProcessChangedEventArgs.cs" />
     <Compile Include="Services\GameProcessService.cs" />
+    <Compile Include="Services\SnifferService.cs" />
+    <Compile Include="Windows\MainOverlayWindow.xaml.cs">
+      <DependentUpon>MainOverlayWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\MainOverlayWindowViewModel.cs" />
     <Page Include="Controls\NotesPlayedDataControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -118,9 +123,17 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Resources\ColorsAndBrushes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\MainOverlayWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -168,6 +181,7 @@
   <ItemGroup>
     <Resource Include="Resources\Fender_Guitar_pick_01.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.113.1\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.113.1\build\net46\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

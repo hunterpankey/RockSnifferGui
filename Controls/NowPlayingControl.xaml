@@ -63,7 +63,7 @@
                     TargetNullValue={StaticResource DefaultAlbumImage}}">
                 <Image.Effect>
                     <DropShadowEffect Direction="300" ShadowDepth="5" Opacity="0.4" BlurRadius="12"
-                                          Color="{StaticResource MidnightBlue}"/>
+                        Color="{StaticResource MidnightBlue}"/>
                 </Image.Effect>
             </Image>
         </Viewbox>
