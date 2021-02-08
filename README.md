@@ -1,4 +1,4 @@
-# (Unofficial) RockSnifferGui v0.3.0 [[Download]](https://github.com/hunterpankey/RockSnifferGui/releases/download/0.3.0/RockSnifferGui-0.3.0.zip)
+# (Unofficial) RockSnifferGui v0.3.0a [[Download]](https://github.com/hunterpankey/RockSnifferGui/releases/download/0.3.0a/RockSnifferGui-0.3.0a.zip)
 A simple application to display RockSniffer data instead of having to read and display the text files from vanilla RockSniffer.
 
 ## Overview
@@ -26,7 +26,7 @@ I initially had to set Rocksmith to windowed mode, but it seems to work in full 
 ## Download
 I don't know why Github makes this difficult, but to download, you have to go to the "[Releases](https://github.com/hunterpankey/RockSnifferGui/releases)" section, then expand the "Assets" section, and then finally download the "RockSnifferGui-0.2.0.zip" file to download. Or...
 
-### [Download (Unofficial) RockSniffer GUI v0.3.0](https://github.com/hunterpankey/RockSnifferGui/releases/download/0.3.0/RockSnifferGui-0.3.0.zip)
+### [Download (Unofficial) RockSniffer GUI v0.3.0](https://github.com/hunterpankey/RockSnifferGui/releases/download/0.3.0a/RockSnifferGui-0.3.0a.zip)
 
 Extract it into its own folder and run RockSnifferGui.exe to launch it. It will scan for any extra songs you might have and build the initial database of tracks. It will also create default configuration files and initialize the play history database to track song play instances. All files will be stored in the same folder as the application.
 
