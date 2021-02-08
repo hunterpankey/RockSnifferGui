@@ -103,10 +103,13 @@ namespace RockSnifferGui.Services
 
         private void DetachSniffer()
         {
-            SnifferService.sniffer.OnSongChanged -= this.Sniffer_OnSongChanged;
-            SnifferService.sniffer.OnSongStarted -= this.Sniffer_OnSongStarted;
-            SnifferService.sniffer.OnSongEnded -= this.Sniffer_OnSongEnded;
-            SnifferService.sniffer.OnMemoryReadout -= this.Sniffer_OnMemoryReadout;
+            if (SnifferService.sniffer != null)
+            {
+                SnifferService.sniffer.OnSongChanged -= this.Sniffer_OnSongChanged;
+                SnifferService.sniffer.OnSongStarted -= this.Sniffer_OnSongStarted;
+                SnifferService.sniffer.OnSongEnded -= this.Sniffer_OnSongEnded;
+                SnifferService.sniffer.OnMemoryReadout -= this.Sniffer_OnMemoryReadout;
+            }
         }
 
         private void AttachSniffer(Process process)
