@@ -13,9 +13,6 @@
         Background="{StaticResource WetAsphaltBrush}" Foreground="{StaticResource CloudsBrush}">
     <Window.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources/ColorsAndBrushes.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
             <RoutedUICommand x:Key="togglePlayHistoryCommand" Text="Toggle Play _History" x:Name="togglePlayHistoryCommand">
                 <RoutedUICommand.InputGestures>
                     <KeyGesture>Ctrl+H</KeyGesture>
@@ -31,11 +28,17 @@
                     <KeyGesture>Ctrl+Alt+T</KeyGesture>
                 </RoutedUICommand.InputGestures>
             </RoutedUICommand>
+            <RoutedUICommand x:Key="toggleGraphsCommand" Text="Toggle _Graphs" x:Name="toggleGraphsCommand">
+                <RoutedUICommand.InputGestures>
+                    <KeyGesture>Ctrl+G</KeyGesture>
+                </RoutedUICommand.InputGestures>
+            </RoutedUICommand>
         </ResourceDictionary>
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="{StaticResource togglePlayHistoryCommand}" x:Name="TogglePlayHistoryCommandBinding" Executed="TogglePlayHistoryCommandBinding_Executed" />
         <CommandBinding Command="{StaticResource toggleOverlayCommand}" x:Name="ToggleOverlayCommandBinding" Executed="ToggleOverlayCommandBinding_Executed" />
+        <CommandBinding Command="{StaticResource toggleGraphsCommand}" x:Name="ToggleGraphsCommandBinding" Executed="ToggleGraphsCommandBinding_Executed" />
         <CommandBinding Command="{StaticResource manualTestCommand}" x:Name="ManualTestCommandBinding" Executed="ManualTestCommandBinding_Executed" />
         <CommandBinding Command="{StaticResource exitCommand}" x:Name="ExitCommandBinding" Executed="ExitCommandBinding_Executed" />
     </Window.CommandBindings>
@@ -47,6 +50,7 @@
             <MenuItem Header="_View" Name="viewMenu">
                 <MenuItem Header="_Play History" Name="playHistoryMenuItem" IsCheckable="True" Command="{StaticResource togglePlayHistoryCommand}" />
                 <MenuItem Header="_Overlay" Name="mainOverlayMenuItem" IsCheckable="True" Command="{StaticResource toggleOverlayCommand}" />
+                <MenuItem Header="_Graphs" Name="graphMenuItem" IsCheckable="True" Command="{StaticResource toggleGraphsCommand}" />
             </MenuItem>
         </Menu>
 
@@ -72,6 +76,18 @@
                     </StackPanel.Resources>
                     <iconPacks:PackIconMaterial Kind="Overscan" />
                     <TextBlock>Toggle Overlay</TextBlock>
+                </StackPanel>
+            </Button>
+
+            <Button x:Name="toggleGraphsButton" Command="{StaticResource toggleGraphsCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel.Resources>
+                        <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                            <Setter Property="Margin" Value="0,0,5,0" />
+                        </Style>
+                    </StackPanel.Resources>
+                    <iconPacks:PackIconMaterial Kind="Graph" />
+                    <TextBlock>Toggle Graphs</TextBlock>
                 </StackPanel>
             </Button>
             <!--<Button x:Name="testButton" Command="{StaticResource manualTestCommand}">Test Something</Button>-->

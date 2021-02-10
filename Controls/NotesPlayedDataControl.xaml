@@ -12,9 +12,6 @@
     </UserControl.DataContext>
     <UserControl.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Resources/ColorsAndBrushes.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
             <Style x:Key="NotesPlayedLabel" TargetType="Label" BasedOn="{StaticResource BaseLabel}">
                 <Setter Property="FontSize" Value="16" />
             </Style>

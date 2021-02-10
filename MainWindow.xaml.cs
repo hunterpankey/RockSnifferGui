@@ -33,6 +33,7 @@ namespace RockSnifferGui
 
         private PlayHistoryWindow playHistoryWindow;
         private MainOverlayWindow mainOverlayWindow;
+        private GraphWindow graphWindow;
 
         SQLiteStore songPlayInstancesDb = new SQLiteStore();
 
@@ -225,13 +226,25 @@ namespace RockSnifferGui
             {
                 this.mainOverlayWindow = new MainOverlayWindow();
                 this.mainOverlayWindow.Closed += this.MainOverlayWindow_Closed;
+                this.mainOverlayMenuItem.IsChecked = true;
                 this.mainOverlayWindow.Show();
             }
         }
 
-        private void MainOverlayWindow_Closed(object sender, EventArgs e)
+        private void ToggleGraphsCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            this.mainOverlayWindow = null;
+            if (this.graphWindow != null)
+            {
+                this.graphWindow.Close();
+                this.graphWindow = null;
+            }
+            else
+            {
+                this.graphWindow = new GraphWindow();
+                this.graphWindow.Closed += this.GraphWindow_Closed;
+                this.graphMenuItem.IsChecked = true;
+                this.graphWindow.Show();
+            }
         }
 
         private void ManualTestCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -279,6 +292,18 @@ namespace RockSnifferGui
         {
             this.playHistoryWindow = null;
             this.playHistoryMenuItem.IsChecked = false;
+        }
+
+        private void MainOverlayWindow_Closed(object sender, EventArgs e)
+        {
+            this.mainOverlayWindow = null;
+            this.mainOverlayMenuItem.IsChecked = false;
+        }
+
+        private void GraphWindow_Closed(object sender, EventArgs e)
+        {
+            this.graphWindow = null;
+            this.graphMenuItem.IsChecked = false;
         }
 
         #endregion
