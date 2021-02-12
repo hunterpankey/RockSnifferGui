@@ -8,10 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
-using System.Windows.Ink;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Navigation;
 
 namespace RockSnifferGui.Controls
 {
@@ -37,7 +34,7 @@ namespace RockSnifferGui.Controls
         {
             this.InitializeComponent();
             this.DoSongGraph();
-            
+
             this.XFormatter = (rawValue) => (rawValue + 1).ToString();
             this.YFormatter = (rawValue) => rawValue.ToString("P0");
         }
@@ -61,11 +58,12 @@ namespace RockSnifferGui.Controls
                 int maxNotesInGroup = group.Max(p => p.TotalNotes);
                 this.SeriesCollection.Add(new LineSeries
                 {
-                    Title = $"{song.ArtistName} - {song.SongName} ({group.Count()})",
+                    //Title = $"({group.Count()}) {song.ArtistName} - {song.SongName}",
+                    Title = $"{song.ArtistName} - {song.SongName}",
                     Values = new ChartValues<float>(group.Select(p => p.Accuracy * p.TotalNotes / maxNotesInGroup)),
                     PointGeometry = DefaultGeometries.Circle,
                     PointGeometrySize = 12,
-                    PointForeground = TryFindResource("WetAsphaltBrush") as Brush,
+                    PointForeground = this.TryFindResource("WetAsphaltBrush") as Brush,
                     LineSmoothness = 1
                 });
             }

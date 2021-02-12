@@ -105,6 +105,7 @@ namespace RockSnifferGui.Services
         {
             if (SnifferService.sniffer != null)
             {
+                SnifferService.sniffer.OnStateChanged -= this.Sniffer_OnStateChanged;
                 SnifferService.sniffer.OnSongChanged -= this.Sniffer_OnSongChanged;
                 SnifferService.sniffer.OnSongStarted -= this.Sniffer_OnSongStarted;
                 SnifferService.sniffer.OnSongEnded -= this.Sniffer_OnSongEnded;
@@ -116,6 +117,7 @@ namespace RockSnifferGui.Services
         {
             SnifferService.sniffer = new Sniffer(process, cache, config.snifferSettings);
 
+            SnifferService.sniffer.OnStateChanged += this.Sniffer_OnStateChanged;
             SnifferService.sniffer.OnSongChanged += this.Sniffer_OnSongChanged;
             SnifferService.sniffer.OnSongStarted += this.Sniffer_OnSongStarted;
             SnifferService.sniffer.OnSongEnded += this.Sniffer_OnSongEnded;
@@ -124,21 +126,29 @@ namespace RockSnifferGui.Services
             this.SnifferChanged?.Invoke(this, new SnifferChangedEventArgs(SnifferService.sniffer));
         }
 
+        private void Sniffer_OnStateChanged(object sender, OnStateChangedArgs e)
+        {
+            Logger.Log($"SnifferService: OnStateChanged: from {e.oldState.ToString()} to {e.newState.ToString()}");
+        }
+
 
         #region Sniffer Event Passthrough Handlers
         private void Sniffer_OnSongChanged(object sender, OnSongChangedArgs e)
         {
+            Logger.Log($"SnifferService: OnSongChanged: {e.songDetails.ToString()}");
             this.CurrentSong = e.songDetails;
             this.SongChanged?.Invoke(this, e);
         }
 
         private void Sniffer_OnSongStarted(object sender, OnSongStartedArgs e)
         {
+            Logger.Log($"SnifferService: OnSongStarted: {e.song.ToString()}");
             this.SongStarted?.Invoke(this, e);
         }
 
         private void Sniffer_OnSongEnded(object sender, OnSongEndedArgs e)
         {
+            Logger.Log($"SnifferService: OnSongEnded: {e.song.ToString()}");
             this.SongEnded?.Invoke(this, e);
         }
 

@@ -30,14 +30,12 @@ namespace RockSnifferGui.Controls
         public static readonly DependencyProperty OrientationProperty =
             DependencyProperty.Register("Orientation", typeof(Orientation), typeof(SongGraphLegend), new PropertyMetadata(Orientation.Horizontal));
 
-        //public static readonly DependencyProperty CustomHeightProperty =
-        //    DependencyProperty.Register("Height", typeof(double), typeof(SongGraphLegend), new PropertyMetadata(Orientation.Horizontal));
-
         public SongGraphLegend()
         {
             this.InitializeComponent();
 
             this.itemsControl.DataContext = this;
+            this.headerControls.DataContext = this;
         }
 
         public ObservableCollection<CustomSeriesViewModel> LegendEntries { get; } = new ObservableCollection<CustomSeriesViewModel>();
@@ -69,8 +67,11 @@ namespace RockSnifferGui.Controls
                 }
 
                 this.OnPropertyChanged();
+                this.OnPropertyChanged("SelectedEntriesCount");
             }
         }
+
+        public int SelectedEntriesCount { get => this.LegendEntries.Count(l => l.IsVisible); }
 
         private Chart GetOwnerChart()
         {
@@ -94,8 +95,7 @@ namespace RockSnifferGui.Controls
             if (parentObject == null) return null;
 
             //check if the parent matches the type we're looking for
-            T parent = parentObject as T;
-            if (parent != null)
+            if (parentObject is T parent)
                 return parent;
             else
                 return FindParent<T>(parentObject);

@@ -13,31 +13,28 @@
             <root:DebugDataBindingConvertor x:Key="debugCoverter" />
         </ResourceDictionary>
     </UserControl.Resources>
-        <lvc:CartesianChart x:Name="songChart" Grid.Row="1" Series="{Binding SeriesCollection}" LegendLocation="Right">
-            <lvc:CartesianChart.ChartLegend>
-            <local:SongGraphLegend Orientation="Vertical" 
-                Height="{Binding ActualHeight, 
-                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=lvc:CartesianChart}, 
-                    Mode=OneWay}" />
-            </lvc:CartesianChart.ChartLegend>
-            <lvc:CartesianChart.AxisY>
-                <lvc:Axis Title="Accuracy" LabelFormatter="{Binding YFormatter}" Position="LeftBottom"
+    <lvc:CartesianChart x:Name="songChart" Grid.Row="1" Series="{Binding SeriesCollection}" LegendLocation="Right">
+        <lvc:CartesianChart.ChartLegend>
+            <local:SongGraphLegend Orientation="Vertical" />
+        </lvc:CartesianChart.ChartLegend>
+        <lvc:CartesianChart.AxisY>
+            <lvc:Axis Title="Accuracy" LabelFormatter="{Binding YFormatter}" Position="LeftBottom"
                             Foreground="{StaticResource CloudsBrush}" 
                             FontSize="14" FontWeight="SemiBold"
                             MinValue="{Binding MinAccuracy}" MaxValue="{Binding MaxAccuracy}">
-                    <lvc:Axis.Separator>
-                        <lvc:Separator Step=".1" IsEnabled="True" StrokeThickness=".2" />
-                    </lvc:Axis.Separator>
-                </lvc:Axis>
-            </lvc:CartesianChart.AxisY>
-            <lvc:CartesianChart.AxisX>
-                <lvc:Axis Title="Play Number" LabelFormatter="{Binding XFormatter}" Foreground="{StaticResource CloudsBrush}"
+                <lvc:Axis.Separator>
+                    <lvc:Separator Step=".1" IsEnabled="True" StrokeThickness=".2" />
+                </lvc:Axis.Separator>
+            </lvc:Axis>
+        </lvc:CartesianChart.AxisY>
+        <lvc:CartesianChart.AxisX>
+            <lvc:Axis Title="Play Number" LabelFormatter="{Binding XFormatter}" Foreground="{StaticResource CloudsBrush}"
                           FontSize="14" FontWeight="SemiBold">
-                    <lvc:Axis.Separator>
-                        <lvc:Separator Step="1" IsEnabled="False" />
-                    </lvc:Axis.Separator>
-                </lvc:Axis>
-            </lvc:CartesianChart.AxisX>
+                <lvc:Axis.Separator>
+                    <lvc:Separator Step="1" IsEnabled="False" />
+                </lvc:Axis.Separator>
+            </lvc:Axis>
+        </lvc:CartesianChart.AxisX>
         <lvc:CartesianChart.DataTooltip>
             <lvc:DefaultTooltip SelectionMode="OnlySender" ShowTitle="False" Background="{StaticResource WetAsphaltBrush}" CornerRadius="2" BorderBrush="{StaticResource ConcreteBrush}" BorderThickness=".5" />
         </lvc:CartesianChart.DataTooltip>

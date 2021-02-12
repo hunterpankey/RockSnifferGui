@@ -194,6 +194,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Resource Include="Resources\Cast W01 Regular.ttf" />
     <Resource Include="Resources\ProximaSansMedium.ttf" />
     <Resource Include="Resources\Amplitude-Medium.ttf" />
     <None Include="packages.config" />
