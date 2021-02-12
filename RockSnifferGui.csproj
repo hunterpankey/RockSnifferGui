@@ -103,6 +103,7 @@
     <Compile Include="PlayHistoryViewModel.cs" />
     <Compile Include="Services\GameProcessChangedEventArgs.cs" />
     <Compile Include="Services\GameProcessService.cs" />
+    <Compile Include="Services\PlayHistoryService.cs" />
     <Compile Include="Services\SnifferService.cs" />
     <Compile Include="Windows\GraphWindow.xaml.cs">
       <DependentUpon>GraphWindow.xaml</DependentUpon>

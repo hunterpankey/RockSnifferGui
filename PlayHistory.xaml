@@ -17,7 +17,6 @@
     </Window.DataContext>
     <DockPanel Name="playHistoryDockPanel" Width="Auto">
         <ToolBar x:Name="mainToolbar" DockPanel.Dock="Top" Height="30" VerticalAlignment="Top" Margin="0" ToolBarTray.IsLocked="True">
-            <!--<Button Name="refreshButton" Click="refreshButton_Click">Refresh</Button>-->
             <!--<Button Name="testButton" Content="Test" Click="testButton_Click" Visibility="Hidden" />-->
             <!--<Button x:Name="testButton" Command="{StaticResource manualTestCommand}">Test Something</Button>-->
         </ToolBar>
