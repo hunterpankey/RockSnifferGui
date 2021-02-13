@@ -16,8 +16,8 @@ namespace RockSnifferGui.Controls
             this.InitializeComponent();
             this.SetupSniffer();
 
-            if ((SnifferService.Instance.Status == SnifferState.SONG_PLAYING)
-                || (SnifferService.Instance.Status == SnifferState.SONG_STARTING))
+            if ((SnifferService.Instance.CurrentState == SnifferState.SONG_PLAYING)
+                || (SnifferService.Instance.CurrentState == SnifferState.SONG_STARTING))
             {
                 this.ActivateSniffer();
             }
@@ -46,7 +46,7 @@ namespace RockSnifferGui.Controls
             SnifferService.Instance.SongChanged += this.SnifferService_SongChanged;
             SnifferService.Instance.SongEnded += this.SnifferService_SongEnded;
 
-            if (SnifferService.Instance.Status == SnifferState.SONG_PLAYING)
+            if (SnifferService.Instance.CurrentState == SnifferState.SONG_PLAYING)
             {
                 this.ActivateSniffer();
             }

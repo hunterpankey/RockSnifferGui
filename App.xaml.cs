@@ -16,6 +16,8 @@ namespace RockSnifferGui
     public partial class App : Application
     {
         private static GameProcessService gameProcessService;
+        private static SnifferService snifferService;
+        private static CurrentSongService currentSongService;
         private static ICache cache;
 
         private const string version = "0.3.0a";
@@ -25,6 +27,9 @@ namespace RockSnifferGui
         public App()
         {
             App.gameProcessService = GameProcessService.Instance;
+            App.snifferService = SnifferService.Instance;
+            App.currentSongService = CurrentSongService.Instance;
+
             App.cache = new SQLiteCache();
 
             this.Exit += App_Exit;
