@@ -51,6 +51,7 @@ namespace RockSnifferGui
         public MainWindow()
         {
             this.InitializeComponent();
+            this.ContentRendered += this.MainWindow_ContentRendered;
 
             try
             {
@@ -69,6 +70,8 @@ namespace RockSnifferGui
         public void Initialize()
         {
             this.Title = string.Format("Unofficial RockSniffer GUI {0}", App.Version);
+            this.Closing += this.MainWindow_Closing;
+
             Logger.Log("RockSniffer GUI {0} ({1}bits)", App.Version, Is64Bits ? "64" : "32");
 
             config = new Config();
@@ -116,6 +119,16 @@ namespace RockSnifferGui
             //{
             //    addonService.SetSniffer(sniffer);
             //}
+        }
+
+        public void RestoreLocation()
+        {
+            Properties.Settings settings = Properties.Settings.Default;
+
+            this.Left = settings.MainWindowLeft;
+            this.Top = settings.MainWindowTop;
+            this.Width = settings.MainWindowWidth;
+            this.Height = settings.MainWindowHeight;
         }
 
         private void SetupSniffer(Process process)
@@ -225,6 +238,8 @@ namespace RockSnifferGui
             else
             {
                 this.mainOverlayWindow = new MainOverlayWindow();
+                this.mainOverlayWindow.WindowState = WindowState.Normal;
+
                 this.mainOverlayWindow.Closed += this.MainOverlayWindow_Closed;
                 this.mainOverlayMenuItem.IsChecked = true;
                 this.mainOverlayWindow.Show();
@@ -305,10 +320,24 @@ namespace RockSnifferGui
             this.graphWindow = null;
             this.graphMenuItem.IsChecked = false;
         }
-
         #endregion
 
         #region App Lifecycle Events
+        private void MainWindow_ContentRendered(object sender, EventArgs e)
+        {
+            this.RestoreLocation();
+        }
+
+        private void MainWindow_Closing(object sender, CancelEventArgs e)
+        {
+            Properties.Settings settings = Properties.Settings.Default;
+
+            settings.MainWindowLeft = this.Left;
+            settings.MainWindowTop = this.Top;
+            settings.MainWindowWidth = this.Width;
+            settings.MainWindowHeight = this.Height;
+        }
+
         private void ExitCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             Application.Current.Shutdown(0);

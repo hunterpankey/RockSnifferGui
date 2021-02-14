@@ -1,11 +1,5 @@
 ﻿using RockSnifferGui.Services;
 using RockSnifferLib.Cache;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace RockSnifferGui
@@ -32,12 +26,13 @@ namespace RockSnifferGui
 
             App.cache = new SQLiteCache();
 
-            this.Exit += App_Exit;
+            this.Exit += this.App_Exit;
         }
 
         private void App_Exit(object sender, ExitEventArgs e)
         {
             GameProcessService.Instance.Dispose();
+            RockSnifferGui.Properties.Settings.Default.Save();
         }
     }
 }
