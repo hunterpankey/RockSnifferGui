@@ -122,11 +122,13 @@
 
         <Grid x:Name="contentGrid">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" MaxHeight="200" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="5*" MaxHeight="200" />
+                <RowDefinition Height="4*" />
+                <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
             <Controls:NowPlayingControl Grid.Row="0" x:Name="nowPlayingControl" />
             <Controls:NotesPlayedDataControl Grid.Row="1" x:Name="notesPlayedControl" />
+            <Controls:SongSectionsControl Grid.Row="2" x:Name="songSectionsControl" />
         </Grid>
     </DockPanel>
 </Window>

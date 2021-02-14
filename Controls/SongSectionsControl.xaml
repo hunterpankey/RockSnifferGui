@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="RockSnifferGui.Controls.SongSectionsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:RockSnifferGui.Controls"
+             xmlns:common="clr-namespace:RockSnifferGui.Common"
+             mc:Ignorable="d" 
+             d:DesignHeight="50" d:DesignWidth="500" Margin="5">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <common:CaseConverter x:Key="CaseConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <UserControl.DataContext>
+        <local:SongSectionsViewModel x:Name="ssvm" />
+    </UserControl.DataContext>
+    <!--<Border BorderBrush="{StaticResource CloudsBrush}" BorderThickness="2">-->
+        <Grid x:Name="sectionsGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="8*" />
+                <ColumnDefinition Width="4*" />
+                <ColumnDefinition Width="8*" />
+            </Grid.ColumnDefinitions>
+            <!--<Viewbox Grid.Column="0" Margin="5,0">-->
+            <TextBlock Grid.Column="0" Margin="5,0" Text="{Binding Before, Converter={StaticResource CaseConverter}}" 
+                   Style="{StaticResource BaseTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Right" TextTrimming="WordEllipsis" />
+            <!--</Viewbox>-->
+            <!--<Viewbox Grid.Column="1" Margin="5,0">-->
+            <TextBlock Grid.Column="1" Margin="15,0" Text="{Binding Current, Converter={StaticResource CaseConverter}}" 
+                       Style="{StaticResource BaseTextBlock}" FontSize="24" Foreground="{StaticResource SunFlowerBrush}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            <!--</Viewbox>-->
+            <!--<Viewbox Grid.Column="2" Margin="5,0">-->
+            <TextBlock Grid.Column="2" Margin="5,0" Text="{Binding After, Converter={StaticResource CaseConverter}}" 
+                       Style="{StaticResource BaseTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Left" TextTrimming="WordEllipsis" />
+            <!--</Viewbox>-->
+        </Grid>
+    <!--</Border>-->
+</UserControl>
