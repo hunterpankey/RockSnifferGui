@@ -1,4 +1,5 @@
-﻿using RockSnifferLib.RSHelpers.NoteData;
+﻿using RockSnifferGui.Common;
+using RockSnifferLib.RSHelpers.NoteData;
 using RockSnifferLib.Sniffing;
 using System;
 using System.Collections.Generic;
@@ -52,12 +53,10 @@ namespace RockSnifferGui.Model
             }
         }
 
-        public object imageLock = new object();
-
-        public SongPlayInstance(SongDetails details, INoteData noteData = null, DateTime startTime = default(DateTime), DateTime endTime = default(DateTime))
+        public SongPlayInstance(SongDetails details = null, INoteData noteData = null, DateTime startTime = default(DateTime), DateTime endTime = default(DateTime))
         {
-            this.SongDetails = details;
-            this.noteData = noteData ?? new LearnASongNoteData();
+            this.SongDetails = details ?? new SongDetails();
+            this.noteData = noteData ?? new GenericNoteData();
             this.startTime = startTime;
             this.endTime = endTime;
         }

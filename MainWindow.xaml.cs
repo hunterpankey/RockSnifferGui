@@ -211,7 +211,7 @@ namespace RockSnifferGui
         #endregion
 
         #region UI Events
-        public void TogglePlayHistoryCommandBinding_Executed(object sender, ExecutedRoutedEventArgs args)
+        private void TogglePlayHistoryCommandBinding_Executed(object sender, ExecutedRoutedEventArgs args)
         {
             if (this.playHistoryWindow != null)
             {
@@ -220,7 +220,7 @@ namespace RockSnifferGui
             }
             else
             {
-                this.playHistoryWindow = new PlayHistoryWindow(this.playedSongs);
+                this.playHistoryWindow = new PlayHistoryWindow();
                 this.playHistoryWindow.Closed += this.PlayHistoryWindow_Closed;
                 this.playHistoryMenuItem.IsChecked = true;
                 this.playHistoryWindow.Show();
