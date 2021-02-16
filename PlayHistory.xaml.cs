@@ -1,5 +1,6 @@
 ﻿using RockSnifferGui.DataStore;
 using RockSnifferGui.Model;
+using RockSnifferGui.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,17 +13,30 @@ namespace RockSnifferGui
     /// </summary>
     public partial class PlayHistoryWindow : Window
     {
-        public PlayHistoryWindow(List<SongPlayInstance> songPlays)
+        public PlayHistoryWindow()
         {
             this.InitializeComponent();
 
-            this.phvm.SongPlays = new ObservableCollection<SongPlayInstance>(songPlays);
+            this.UpdateSongPlays();
             this.playHistoryDataGrid.ScrollToBottom();
+
+            PlayHistoryService.Instance.NewSongHistorySong += this.PlayHistoryService_NewSongHistorySong;
+            this.playHistoryDataGrid.Loaded += this.PlayHistoryDataGrid_Loaded;
         }
 
-        public void UpdateSongPlays(IEnumerable<SongPlayInstance> songPlays)
+        private void UpdateSongPlays()
         {
-            this.phvm.SongPlays = new ObservableCollection<SongPlayInstance>(songPlays);
+            this.phvm.SongPlays = new ObservableCollection<SongPlayInstance>(PlayHistoryService.Instance.SongPlays);
+        }
+
+        private void PlayHistoryDataGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.ScrollToBottom();
+        }
+
+        private void PlayHistoryService_NewSongHistorySong(object sender, PlayHistorySongEndedArgs args)
+        {
+            this.UpdateSongPlays();
         }
 
         public void AddSongPlay(SongPlayInstance songPlay)
@@ -34,17 +48,12 @@ namespace RockSnifferGui
             }));
         }
 
-        public void ScrollToBottom()
+        private void ScrollToBottom()
         {
             App.Current.Dispatcher.Invoke(new Action(() =>
             {
                 this.playHistoryDataGrid.ScrollToBottom();
             }));
-        }
-
-        private void refreshButton_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("This button doesn't do anything anymore. Thanks, ObservableCollection class!", "No Operation", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void testButton_Click(object sender, RoutedEventArgs e)
