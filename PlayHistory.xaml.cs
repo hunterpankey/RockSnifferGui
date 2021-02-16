@@ -17,11 +17,16 @@ namespace RockSnifferGui
         {
             this.InitializeComponent();
 
-            this.phvm.SongPlays = new ObservableCollection<SongPlayInstance>(PlayHistoryService.Instance.SongPlays);
+            this.UpdateSongPlays();
             this.playHistoryDataGrid.ScrollToBottom();
 
             PlayHistoryService.Instance.NewSongHistorySong += this.PlayHistoryService_NewSongHistorySong;
             this.playHistoryDataGrid.Loaded += this.PlayHistoryDataGrid_Loaded;
+        }
+
+        private void UpdateSongPlays()
+        {
+            this.phvm.SongPlays = new ObservableCollection<SongPlayInstance>(PlayHistoryService.Instance.SongPlays);
         }
 
         private void PlayHistoryDataGrid_Loaded(object sender, RoutedEventArgs e)
@@ -31,7 +36,7 @@ namespace RockSnifferGui
 
         private void PlayHistoryService_NewSongHistorySong(object sender, PlayHistorySongEndedArgs args)
         {
-            this.AddSongPlay(args.song);
+            this.UpdateSongPlays();
         }
 
         public void AddSongPlay(SongPlayInstance songPlay)

@@ -71,7 +71,6 @@ namespace RockSnifferGui.Services
                 if (this.currentSong != null)
                 {
                     this.CurrentSong.FinishSong();
-                    this.SongPlays.Add(this.currentSong);
 
                     this.songPlayInstancesDb.Add(this.currentSong);
 
@@ -107,6 +106,20 @@ namespace RockSnifferGui.Services
         }
         #endregion
 
+        public IEnumerable<SongPlayInstance> GetSongPlays()
+        {
+            return this.songPlayInstancesDb.GetAll();
+        }
+
+        public IEnumerable<SongPlayInstance> GetSongPlaysByArtist(string artist)
+        {
+            return this.SongPlays.Where(p => p.SongDetails.ArtistName.Equals(artist, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public IEnumerable<SongPlayInstance> GetSongPlaysBySongId(string songId)
+        {
+            return this.SongPlays.Where(p => p.SongDetails.SongID.Equals(songId, StringComparison.OrdinalIgnoreCase));
+        }
     }
 
     public class PlayHistorySongEndedArgs
