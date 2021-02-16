@@ -1,13 +1,10 @@
 ﻿<Window x:Class="RockSnifferGui.PlayHistoryWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:RockSnifferGui"
-        xmlns:controls="clr-namespace:RockSnifferGui.Controls"
-        mc:Ignorable="d"
-        Title="Song Play History" Height="500"
-        Icon="/Resources/Sniffy.ico">
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:RockSnifferGui"
+    xmlns:controls="clr-namespace:RockSnifferGui.Controls" mc:Ignorable="d" Title="Song Play History" Height="500" Icon="/Resources/Sniffy.ico">
     <Window.Resources>
         <ResourceDictionary>
             <RoutedUICommand x:Key="backCommand" Text="_Back" x:Name="songDetailsBackCommand">
@@ -21,7 +18,7 @@
         </ResourceDictionary>
     </Window.Resources>
     <Window.CommandBindings>
-        <CommandBinding Command="{StaticResource backCommand}" Executed="BackCommandBinding_Executed"  CanExecute="BackCommandBinding_CanExecute" />
+        <CommandBinding Command="{StaticResource backCommand}" Executed="BackCommandBinding_Executed" CanExecute="BackCommandBinding_CanExecute" />
         <CommandBinding Command="{StaticResource selectSongCommand}" Executed="SelectSongBinding_Executed" />
     </Window.CommandBindings>
     <Window.DataContext>
@@ -63,8 +60,7 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <!--Width="{Binding Width, ElementName=playHistoryDockPanel, Mode=OneWay, Converter={StaticResource debugConverter}}"-->
-            <controls:PlayHistoryGrid x:Name="playHistoryDataGrid" Grid.Row="0" SelectSongCommand="{StaticResource selectSongCommand}" 
-                                      SongPlays="{Binding AllSongPlays}" />
+            <controls:PlayHistoryGrid x:Name="playHistoryDataGrid" Grid.Row="0" SelectSongCommand="{StaticResource selectSongCommand}" SongPlays="{Binding AllSongPlays}" />
             <controls:SongHistoryDetailsControl x:Name="songHistoryDetailsControl" Grid.Row="0" Visibility="Hidden" Song="{Binding SelectedSongInstance.SongDetails}" />
         </Grid>
     </DockPanel>

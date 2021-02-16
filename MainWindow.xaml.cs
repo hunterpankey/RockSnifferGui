@@ -23,19 +23,13 @@ namespace RockSnifferGui
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        internal static ICache cache;
         internal static Config config;
 
         private static readonly bool Is64Bits = (IntPtr.Size == 8);
 
-        private List<SongPlayInstance> playedSongs = new List<SongPlayInstance>();
-        private SongPlayInstance currentSong;
-
         private PlayHistoryWindow playHistoryWindow;
         private MainOverlayWindow mainOverlayWindow;
         private GraphWindow graphWindow;
-
-        SQLiteStore songPlayInstancesDb = new SQLiteStore();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -53,16 +47,8 @@ namespace RockSnifferGui
             this.InitializeComponent();
             this.ContentRendered += this.MainWindow_ContentRendered;
 
-            try
-            {
-                GameProcessService.Instance.GameProcessChanged += this.GameProcessService_GameProcessChanged;
-                GameProcessService.Instance.PropertyChanged += this.GameProcessService_PropertyChanged;
-                this.Initialize();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message + ex.StackTrace, "Exception", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            GameProcessService.Instance.PropertyChanged += this.GameProcessService_PropertyChanged;
+            this.Initialize();
 
             this.DataContext = this;
         }
@@ -94,17 +80,7 @@ namespace RockSnifferGui
             Logger.logSystemHandleQuery = config.debugSettings.debugSystemHandleQuery;
             Logger.logProcessingQueue = config.debugSettings.debugProcessingQueue;
 
-            //Initialize cache
-            cache = new SQLiteCache();
-
-            this.playedSongs = this.songPlayInstancesDb.GetAll();
-
             Logger.Log("Waiting for rocksmith");
-
-            if (GameProcessService.Instance.Status == GameProcessStatus.RUNNING)
-            {
-                this.SetupSniffer(GameProcessService.Instance.GameProcess);
-            }
 
             //Add RPC event listeners
             // not doing anything with Discord right now
@@ -131,81 +107,12 @@ namespace RockSnifferGui
             this.Height = settings.MainWindowHeight;
         }
 
-        private void SetupSniffer(Process process)
-        {
-            SnifferService.Instance.SongStarted += this.SnifferService_OnSongStarted;
-            SnifferService.Instance.SongEnded += this.SnifferService_OnSongEnded;
-        }
-
         #region Game Process Events
         private void GameProcessService_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName.Equals("StatusForDisplay"))
             {
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GameProcessServiceStatus"));
-            }
-        }
-
-        private void GameProcessService_GameProcessChanged(object sender, GameProcessChangedEventArgs e)
-        {
-            this.SetupSniffer(e.Process);
-        }
-        #endregion
-
-        #region Sniffer Events
-        private void SnifferService_OnSongStarted(object sender, OnSongStartedArgs e)
-        {
-            try
-            {
-                SnifferService.Instance.MemoryReadout += this.SnifferService_OnMemoryReadout;
-                this.currentSong = new SongPlayInstance(e.song);
-                this.currentSong.StartSong();
-            }
-            catch (Exception ex)
-            {
-                Utilities.ShowExceptionMessageBox(ex);
-            }
-        }
-
-        private void SnifferService_OnSongEnded(object sender, OnSongEndedArgs e)
-        {
-            try
-            {
-                SnifferService.Instance.MemoryReadout -= this.SnifferService_OnMemoryReadout;
-
-                if (this.currentSong != null)
-                {
-                    this.currentSong.FinishSong();
-                    this.playedSongs.Add(this.currentSong);
-
-                    this.songPlayInstancesDb.Add(this.currentSong);
-
-                    if (this.playHistoryWindow != null)
-                    {
-                        this.playHistoryWindow.AddSongPlay(this.currentSong);
-                    }
-                }
-
-                this.currentSong = null;
-            }
-            catch (Exception ex)
-            {
-                Utilities.ShowExceptionMessageBox(ex);
-            }
-        }
-
-        private void SnifferService_OnMemoryReadout(object sender, OnMemoryReadoutArgs args)
-        {
-            try
-            {
-                if ((this.currentSong != null) && (args.memoryReadout.noteData != null))
-                {
-                    this.currentSong.UpdateNoteData(args.memoryReadout.noteData);
-                }
-            }
-            catch (Exception ex)
-            {
-                Utilities.ShowExceptionMessageBox(ex);
             }
         }
         #endregion
@@ -224,13 +131,12 @@ namespace RockSnifferGui
                 this.playHistoryWindow.Closed += this.PlayHistoryWindow_Closed;
                 this.playHistoryMenuItem.IsChecked = true;
                 this.playHistoryWindow.Show();
-                this.playHistoryWindow.ScrollToBottom();
             }
         }
 
         private void ToggleOverlayCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if(this.mainOverlayWindow != null)
+            if (this.mainOverlayWindow != null)
             {
                 this.mainOverlayWindow.Close();
                 this.mainOverlayWindow = null;
