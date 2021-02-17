@@ -215,15 +215,15 @@ namespace RockSnifferGui.DataStore
                 albumArt = null
             };
 
-            try
-            {
-                byte[] blob = ReadField<byte[]>(reader, "album_art");
-                songDetails.albumArt = this.DeserializeImage(blob);
-            }
-            catch
-            {
+            //try
+            //{
+            //    byte[] blob = ReadField<byte[]>(reader, "album_art");
+            //    songDetails.albumArt = this.DeserializeImage(blob);
+            //}
+            //catch
+            //{
 
-            }
+            //}
 
             var noteDetails = new LearnASongNoteData();
 

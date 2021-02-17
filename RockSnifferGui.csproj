@@ -101,9 +101,6 @@
     <Compile Include="Controls\SongGraphLegend.xaml.cs">
       <DependentUpon>SongGraphLegend.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\SongHistoryDetailsControl.xaml.cs">
-      <DependentUpon>SongHistoryDetailsControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\SongSectionsControl.xaml.cs">
       <DependentUpon>SongSectionsControl.xaml</DependentUpon>
     </Compile>
@@ -141,10 +138,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\SongGraphLegend.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\SongHistoryDetailsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

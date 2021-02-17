@@ -24,8 +24,8 @@
             <Setter Property="Padding" Value="10,10,10,10" />
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource WetAsphaltBrush}" />
-                    <Setter Property="Background" Value="{StaticResource CloudsBrush}" />
+                    <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
+                    <Setter Property="Background" Value="{StaticResource WetAsphaltBrush}" />
                     <Setter Property="BorderBrush" Value="Transparent" />
                     <Setter Property="BorderThickness" Value="0" />
                 </Trigger>
@@ -34,21 +34,14 @@
         <Style x:Key="BaseCell" TargetType="DataGridCell">
             <Setter Property="FontSize" Value="20" />
             <Setter Property="FontFamily" Value="{StaticResource AmplitudeFont}" />
-            <Setter Property="TextBlock.Effect">
-                <Setter.Value>
-                    <DropShadowEffect Direction="300" ShadowDepth="0" Opacity="0.8" BlurRadius="12"
-                        Color="{StaticResource MidnightBlue}"/>
-                </Setter.Value>
-            </Setter>
-            <!--<Setter Property="IsEnabled" Value="False" />
             <Style.Triggers>
-                <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Background" Value="{StaticResource WetAsphaltBrush}" />
-                    <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource CloudsBrush}" />
+                    <Setter Property="Foreground" Value="{StaticResource WetAsphaltBrush}" />
                     <Setter Property="BorderBrush" Value="Transparent" />
                     <Setter Property="BorderThickness" Value="0" />
                 </Trigger>
-            </Style.Triggers>-->
+            </Style.Triggers>
         </Style>
         <Style x:Key="CellCentered" TargetType="DataGridCell" BasedOn="{StaticResource BaseCell}">
             <Setter Property="TextBlock.TextAlignment" Value="Center" />
@@ -69,10 +62,11 @@
         <!--<StackPanel Orientation="Horizontal" Grid.Row="0">
             <Button Grid.Row="0" Name="testButton" Height="30" Command="{Binding SelectSongCommand}">Select Song Command</Button>
         </StackPanel>-->
-        <DataGrid Name="playHistoryDataGrid" Grid.Row="1" AutoGenerateColumns="False" ItemsSource="{Binding SongPlays, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" RowHeaderWidth="0"
+        <DataGrid Name="playHistoryDataGrid" Grid.Row="1" AutoGenerateColumns="False" 
+                  ItemsSource="{Binding SongPlays, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" RowHeaderWidth="0"
         IsReadOnly="True" VerticalGridLinesBrush="Transparent"
         ColumnHeaderStyle="{StaticResource HeaderCell}" CellStyle="{StaticResource BaseCell}" RowStyle="{StaticResource BaseRow}"
-        IsSynchronizedWithCurrentItem="True">
+        IsSynchronizedWithCurrentItem="True" Background="{StaticResource WetAsphaltBrush}">
             <DataGrid.InputBindings>
                 <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding SelectSongCommand}" CommandParameter="{Binding ElementName=playHistoryDataGrid, Path=SelectedItem}" />
             </DataGrid.InputBindings>

@@ -60,8 +60,8 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <!--Width="{Binding Width, ElementName=playHistoryDockPanel, Mode=OneWay, Converter={StaticResource debugConverter}}"-->
-            <controls:PlayHistoryGrid x:Name="playHistoryDataGrid" Grid.Row="0" SelectSongCommand="{StaticResource selectSongCommand}" SongPlays="{Binding AllSongPlays}" />
-            <controls:SongHistoryDetailsControl x:Name="songHistoryDetailsControl" Grid.Row="0" Visibility="Hidden" Song="{Binding SelectedSongInstance.SongDetails}" />
+            <controls:PlayHistoryGrid x:Name="playHistoryDataGrid" Grid.Row="0" SelectSongCommand="{StaticResource selectSongCommand}" />
+            <controls:PlayHistoryGrid x:Name="playHistorySongGrid" Grid.Row="0" Visibility="Hidden" SelectedSong="{Binding SelectedSongInstance.SongDetails, Mode=TwoWay}" />
         </Grid>
     </DockPanel>
 </Window>

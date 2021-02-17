@@ -1,5 +1,8 @@
 ﻿using RockSnifferGui.Model;
-using System.Collections.ObjectModel;
+using RockSnifferGui.Services;
+using RockSnifferLib.Sniffing;
+using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -12,8 +15,36 @@ namespace RockSnifferGui.Controls
     public partial class PlayHistoryGrid : UserControl
     {
         private PlayHistoryGridViewModel vm;
+
+        #region Dependency Properties
         public static readonly DependencyProperty SelectSongCommandProperty = DependencyProperty.Register("SelectSongCommand", typeof(ICommand), typeof(PlayHistoryGrid),
-            new UIPropertyMetadata(null));
+            new UIPropertyMetadata(null, OnSelectSongCommandPropertyUpdated));
+
+        private static void OnSelectSongCommandPropertyUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            PlayHistoryGrid grid = (PlayHistoryGrid)d;
+            grid.OnSelectSongCommandPropertyUpdated(e.NewValue);
+        }
+
+        private void OnSelectSongCommandPropertyUpdated(object newValue)
+        {
+            this.SelectSongCommand = (ICommand)newValue;
+        }
+
+        public static readonly DependencyProperty SelectedSongProperty = DependencyProperty.Register("SelectedSong", typeof(SongDetails), typeof(PlayHistoryGrid),
+    new UIPropertyMetadata(null, OnSelectedSongPropertyUpdated));
+
+        private static void OnSelectedSongPropertyUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            PlayHistoryGrid grid = (PlayHistoryGrid)d;
+            grid.OnSelectedSongPropertyUpdated(e.NewValue);
+        }
+
+        private void OnSelectedSongPropertyUpdated(object newValue)
+        {
+            this.SelectedSong = (SongDetails)newValue;
+        }
+        #endregion
 
         public ICommand SelectSongCommand
         {
@@ -25,42 +56,50 @@ namespace RockSnifferGui.Controls
             }
         }
 
-        public static readonly DependencyProperty SongPlaysProperty = DependencyProperty.Register("SongPlays", typeof(ObservableCollection<SongPlayInstance>),
-            typeof(PlayHistoryGrid), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender, new PropertyChangedCallback(OnSongPlaysPropertyChanged), null, false, System.Windows.Data.UpdateSourceTrigger.PropertyChanged));
-
-        private static void OnSongPlaysPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        public SongDetails SelectedSong
         {
-            ((PlayHistoryGrid)d).OnSongPlaysPropertyChanged((ObservableCollection<SongPlayInstance>)(e.NewValue));
-        }
-
-        public ObservableCollection<SongPlayInstance> SongPlays
-        {
-            get => (ObservableCollection<SongPlayInstance>)this.GetValue(SongPlaysProperty);
+            get => (SongDetails)this.GetValue(SelectedSongProperty);
             set
             {
-                this.SetValue(SongPlaysProperty, value);
-                this.vm.SongPlays = value;
+                this.SetValue(SelectedSongProperty, value);
+                this.vm.SelectedSong = value;
+                this.UpdateSongPlays();
             }
         }
-
-        public void OnSongPlaysPropertyChanged(ObservableCollection<SongPlayInstance> songPlays)
-        {
-            this.SongPlays = this.SongPlays;
-        }
-
-        public static readonly DependencyProperty TestProperty = DependencyProperty.Register("Test", typeof(string), typeof(PlayHistoryGrid), new PropertyMetadata());
-        public string Test
-        {
-            get => (string)this.GetValue(TestProperty);
-            set => this.SetValue(TestProperty, value);
-        }
-
 
         public PlayHistoryGrid()
         {
             this.InitializeComponent();
             this.vm = new PlayHistoryGridViewModel();
-            this.LayoutRoot.DataContext = vm;
+            this.LayoutRoot.DataContext = this.vm;
+
+            PlayHistoryService.Instance.NewSongHistorySong += this.PlayHistoryService_NewSongHistorySong;
+
+            this.UpdateSongPlays();
+        }
+
+        private void PlayHistoryService_NewSongHistorySong(object sender, PlayHistorySongEndedArgs args)
+        {
+            this.UpdateSongPlays();
+        }
+
+        private void UpdateSongPlays()
+        {
+            App.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                IEnumerable<SongPlayInstance> songs = PlayHistoryService.Instance.SongPlays;
+
+                if (this.SelectedSong != null)
+                {
+                    songs = PlayHistoryService.Instance.GetSongPlaysBySongId(this.SelectedSong.songID);
+                }
+                this.vm.SongPlays.Clear();
+
+                foreach (SongPlayInstance songPlayInstance in songs)
+                {
+                    this.vm.SongPlays.Add(songPlayInstance);
+                }
+            }));
         }
 
         public void ScrollToBottom()

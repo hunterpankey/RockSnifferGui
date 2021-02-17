@@ -1,19 +1,16 @@
 ﻿using RockSnifferGui.Common;
 using RockSnifferGui.Model;
-using System;
-using System.Collections.Generic;
+using RockSnifferLib.Sniffing;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace RockSnifferGui.Controls
 {
     public class PlayHistoryGridViewModel : GenericViewModel
     {
-        private ObservableCollection<SongPlayInstance> songPlays;
+        private ObservableCollection<SongPlayInstance> songPlays = new ObservableCollection<SongPlayInstance>();
         private SongPlayInstance selectedSongInstance;
+        private SongDetails selectedSong;
         private ICommand selectSongCommand;
 
         public ObservableCollection<SongPlayInstance> SongPlays
@@ -22,6 +19,24 @@ namespace RockSnifferGui.Controls
             set
             {
                 this.SetProperty(ref this.songPlays, value, "SongPlays");
+            }
+        }
+
+        public SongPlayInstance SelectedSongInstance
+        {
+            get => this.selectedSongInstance;
+            set
+            {
+                this.SetProperty(ref this.selectedSongInstance, value, "SelectedSongInstance");
+            }
+        }
+
+        public SongDetails SelectedSong
+        {
+            get => this.selectedSong;
+            set
+            {
+                this.SetProperty(ref this.selectedSong, value, "SelectedSong");
             }
         }
 
@@ -34,13 +49,5 @@ namespace RockSnifferGui.Controls
             }
         }
 
-        public SongPlayInstance SelectedSongInstance
-        {
-            get => this.selectedSongInstance;
-            set
-            {
-                this.SetProperty(ref this.selectedSongInstance, value, "SelectedSongInstance");
-            }
-        }
     }
 }

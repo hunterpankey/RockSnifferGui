@@ -78,6 +78,12 @@
             <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button">
                 <Setter Property="Background" Value="{StaticResource WisteriaBrush}" />
                 <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
+                <Style.Triggers>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Background" Value="{StaticResource WisteriaBrush}" />
+                        <Setter Property="Foreground" Value="{StaticResource ConcreteBrush}" />
+                    </Trigger>
+                </Style.Triggers>
             </Style>
             <Style TargetType="StatusBar">
                 <Setter Property="Background" Value="{StaticResource WisteriaBrush}" />
