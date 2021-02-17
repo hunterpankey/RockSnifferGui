@@ -94,6 +94,7 @@
     <Compile Include="Controls\PlayHistoryGrid.xaml.cs">
       <DependentUpon>PlayHistoryGrid.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PlayHistoryGridViewModel.cs" />
     <Compile Include="Controls\SongGraphControl.xaml.cs">
       <DependentUpon>SongGraphControl.xaml</DependentUpon>
     </Compile>

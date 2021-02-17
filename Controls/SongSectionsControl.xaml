@@ -19,7 +19,7 @@
         <Grid x:Name="sectionsGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="8*" />
-                <ColumnDefinition Width="4*" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="8*" />
             </Grid.ColumnDefinitions>
             <!--<Viewbox Grid.Column="0" Margin="5,0">-->

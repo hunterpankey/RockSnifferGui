@@ -118,7 +118,7 @@ namespace RockSnifferGui
         #endregion
 
         #region UI Events
-        public void TogglePlayHistoryCommandBinding_Executed(object sender, ExecutedRoutedEventArgs args)
+        private void TogglePlayHistoryCommandBinding_Executed(object sender, ExecutedRoutedEventArgs args)
         {
             if (this.playHistoryWindow != null)
             {

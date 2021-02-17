@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RockSnifferGui.Controls"
+             xmlns:root="clr-namespace:RockSnifferGui"
              mc:Ignorable="d">
     <UserControl.Resources>
         <Style x:Key="HeaderCell" TargetType="DataGridColumnHeader">
@@ -23,8 +24,8 @@
             <Setter Property="Padding" Value="10,10,10,10" />
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="{StaticResource WetAsphaltBrush}" />
                     <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
+                    <Setter Property="Background" Value="{StaticResource WetAsphaltBrush}" />
                     <Setter Property="BorderBrush" Value="Transparent" />
                     <Setter Property="BorderThickness" Value="0" />
                 </Trigger>
@@ -33,17 +34,10 @@
         <Style x:Key="BaseCell" TargetType="DataGridCell">
             <Setter Property="FontSize" Value="20" />
             <Setter Property="FontFamily" Value="{StaticResource AmplitudeFont}" />
-            <Setter Property="TextBlock.Effect">
-                <Setter.Value>
-                    <DropShadowEffect Direction="300" ShadowDepth="0" Opacity="0.8" BlurRadius="12"
-                        Color="{StaticResource MidnightBlue}"/>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="IsEnabled" Value="False" />
             <Style.Triggers>
-                <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Background" Value="{StaticResource WetAsphaltBrush}" />
-                    <Setter Property="Foreground" Value="{StaticResource CloudsBrush}" />
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource CloudsBrush}" />
+                    <Setter Property="Foreground" Value="{StaticResource WetAsphaltBrush}" />
                     <Setter Property="BorderBrush" Value="Transparent" />
                     <Setter Property="BorderThickness" Value="0" />
                 </Trigger>
@@ -55,22 +49,39 @@
         <Style x:Key="PaddedTextBlock" TargetType="TextBlock">
             <Setter Property="Padding" Value="4,4,4,4" />
         </Style>
+        <root:DebugDataBindingConvertor x:Key="debugConverter" />
     </UserControl.Resources>
-    
-    <DataGrid Name="playHistoryDataGrid" Grid.Row="1" AutoGenerateColumns="False" ItemsSource="{Binding SongPlays}" IsReadOnly="True" RowHeaderWidth="0"
-        HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent" Focusable="False" GridLinesVisibility="None" 
-        ColumnHeaderStyle="{StaticResource HeaderCell}" CellStyle="{StaticResource BaseCell}" RowStyle="{StaticResource BaseRow}">
-        <DataGrid.Columns>
-            <DataGridTextColumn x:Name="startTime" Binding="{Binding StartTime}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Time" MinWidth="130" />
-            <DataGridTextColumn x:Name="artistNameColumn" Binding="{Binding SongDetails.ArtistName}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Artist" MinWidth="200" />
-            <DataGridTextColumn x:Name="songNameColumn" Binding="{Binding SongDetails.SongName}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Song" MinWidth="200" />
-            <DataGridTextColumn x:Name="albumNameColumn" Binding="{Binding SongDetails.AlbumName}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Album" MinWidth="200" />
-            <DataGridTextColumn x:Name="yearNameColumn" Binding="{Binding SongDetails.AlbumYear}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Year" MinWidth="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
+    <!--<UserControl.DataContext>
+        <local:PlayHistoryGridViewModel x:Name="vm" />
+    </UserControl.DataContext>-->
+    <Grid x:Name="LayoutRoot">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <!--<StackPanel Orientation="Horizontal" Grid.Row="0">
+            <Button Grid.Row="0" Name="testButton" Height="30" Command="{Binding SelectSongCommand}">Select Song Command</Button>
+        </StackPanel>-->
+        <DataGrid Name="playHistoryDataGrid" Grid.Row="1" AutoGenerateColumns="False" 
+                  ItemsSource="{Binding SongPlays, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" RowHeaderWidth="0"
+        IsReadOnly="True" VerticalGridLinesBrush="Transparent"
+        ColumnHeaderStyle="{StaticResource HeaderCell}" CellStyle="{StaticResource BaseCell}" RowStyle="{StaticResource BaseRow}"
+        IsSynchronizedWithCurrentItem="True" Background="{StaticResource WetAsphaltBrush}">
+            <DataGrid.InputBindings>
+                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding SelectSongCommand}" CommandParameter="{Binding ElementName=playHistoryDataGrid, Path=SelectedItem}" />
+            </DataGrid.InputBindings>
+            <DataGrid.Columns>
+                <DataGridTextColumn x:Name="startTime" Binding="{Binding StartTime}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Time" MinWidth="130" />
+                <DataGridTextColumn x:Name="artistNameColumn" Binding="{Binding SongDetails.ArtistName}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Artist" MinWidth="200" />
+                <DataGridTextColumn x:Name="songNameColumn" Binding="{Binding SongDetails.SongName}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Song" MinWidth="200" />
+                <DataGridTextColumn x:Name="albumNameColumn" Binding="{Binding SongDetails.AlbumName}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Album" MinWidth="200" />
+                <DataGridTextColumn x:Name="yearNameColumn" Binding="{Binding SongDetails.AlbumYear}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Year" MinWidth="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
 
-            <DataGridTextColumn x:Name="hitNotesColumn" Binding="{Binding NotesHit}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Hit" MinWidth="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
-            <DataGridTextColumn x:Name="missedNotesColumn" Binding="{Binding NotesMissed}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Missed" MinWidth="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
-            <DataGridTextColumn x:Name="noteAccuracyColumn" Binding="{Binding AccuracyAsPercentage}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Accuracy" MinWidth="65" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
-            <DataGridTextColumn x:Name="maxStreakColumn" Binding="{Binding HighestHitStreak}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Streak" MinWidth="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
-        </DataGrid.Columns>
-    </DataGrid>
+                <DataGridTextColumn x:Name="hitNotesColumn" Binding="{Binding NotesHit}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Hit" MinWidth="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
+                <DataGridTextColumn x:Name="missedNotesColumn" Binding="{Binding NotesMissed}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Missed" MinWidth="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
+                <DataGridTextColumn x:Name="noteAccuracyColumn" Binding="{Binding AccuracyAsPercentage}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Accuracy" MinWidth="65" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
+                <DataGridTextColumn x:Name="maxStreakColumn" Binding="{Binding HighestHitStreak}" ElementStyle="{StaticResource PaddedTextBlock}" Header="Streak" MinWidth="50" CellStyle="{StaticResource CellCentered}" HeaderStyle="{StaticResource HeaderCellCentered}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
 </UserControl>
