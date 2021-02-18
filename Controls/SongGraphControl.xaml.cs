@@ -3,6 +3,7 @@ using LiveCharts.Wpf;
 using RockSnifferGui.DataStore;
 using RockSnifferGui.Model;
 using RockSnifferLib.Cache;
+using RockSnifferLib.Logging;
 using RockSnifferLib.Sniffing;
 using System;
 using System.Collections.Generic;
@@ -53,19 +54,22 @@ namespace RockSnifferGui.Controls
 
             foreach (IGrouping<string, SongPlayInstance> group in groupedSongPlays)
             {
-                SongDetails song = allSongs.Where(s => s.SongID.Equals(group.Key)).First();
+                SongDetails song = allSongs.Where(s => s.SongID.Equals(group.Key)).FirstOrDefault();
 
-                int maxNotesInGroup = group.Max(p => p.TotalNotes);
-                this.SeriesCollection.Add(new LineSeries
+                if (song != null)
                 {
-                    //Title = $"({group.Count()}) {song.ArtistName} - {song.SongName}",
-                    Title = $"{song.ArtistName} - {song.SongName}",
-                    Values = new ChartValues<float>(group.Select(p => p.Accuracy * p.TotalNotes / maxNotesInGroup)),
-                    PointGeometry = DefaultGeometries.Circle,
-                    PointGeometrySize = 12,
-                    PointForeground = this.TryFindResource("WetAsphaltBrush") as Brush,
-                    LineSmoothness = 1
-                });
+                    int maxNotesInGroup = group.Max(p => p.TotalNotes);
+                    this.SeriesCollection.Add(new LineSeries
+                    {
+                        //Title = $"({group.Count()}) {song.ArtistName} - {song.SongName}",
+                        Title = $"{song.ArtistName} - {song.SongName}",
+                        Values = new ChartValues<float>(group.Select(p => p.Accuracy * p.TotalNotes / maxNotesInGroup)),
+                        PointGeometry = DefaultGeometries.Circle,
+                        PointGeometrySize = 12,
+                        PointForeground = this.TryFindResource("WetAsphaltBrush") as Brush,
+                        LineSmoothness = 1
+                    });
+                }
             }
 
             this.MinAccuracy = 0;
