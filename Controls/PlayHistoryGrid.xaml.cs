@@ -32,7 +32,7 @@ namespace RockSnifferGui.Controls
         }
 
         public static readonly DependencyProperty SelectedSongProperty = DependencyProperty.Register("SelectedSong", typeof(SongDetails), typeof(PlayHistoryGrid),
-    new UIPropertyMetadata(null, OnSelectedSongPropertyUpdated));
+            new UIPropertyMetadata(null, OnSelectedSongPropertyUpdated));
 
         private static void OnSelectedSongPropertyUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -81,6 +81,7 @@ namespace RockSnifferGui.Controls
         private void PlayHistoryService_NewSongHistorySong(object sender, PlayHistorySongEndedArgs args)
         {
             this.UpdateSongPlays();
+            this.ScrollToBottom();
         }
 
         private void UpdateSongPlays()

@@ -47,17 +47,17 @@ namespace RockSnifferGui
             }));
         }
 
-        private void BackCommandBinding_CanExecute(object sender, System.Windows.Input.CanExecuteRoutedEventArgs e)
+        private void BackCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = this.playHistoryDataGrid?.Visibility == Visibility.Hidden;
         }
 
-        private void BackCommandBinding_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+        private void BackCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             this.HideSongDetails();
         }
 
-        private void SelectSongBinding_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+        private void SelectSongBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             string song = string.Empty;
 
