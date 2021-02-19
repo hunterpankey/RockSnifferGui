@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data.SQLite;
-using System.Data;
-using System.IO;
-using RockSnifferLib.Logging;
-using RockSnifferLib.Sniffing;
-using Newtonsoft.Json;
-using System.Drawing.Imaging;
-using RockSnifferGui.Model;
-using Newtonsoft.Json.Linq;
-using System.Drawing;
-using RockSnifferLib.RSHelpers.NoteData;
-using System.Windows;
+﻿using Newtonsoft.Json;
 using RockSnifferGui.Common;
+using RockSnifferGui.Model;
+using RockSnifferLib.Logging;
+using RockSnifferLib.RSHelpers.NoteData;
+using RockSnifferLib.Sniffing;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SQLite;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 
 namespace RockSnifferGui.DataStore
 {
@@ -30,21 +25,21 @@ namespace RockSnifferGui.DataStore
                 SQLiteConnection.CreateFile(SQLiteSchemaStrings.DB_FILE_NAME);
             }
 
-            Connection = new SQLiteConnection($"Data Source={SQLiteSchemaStrings.DB_FILE_NAME};");
-            Connection.Open();
+            this.Connection = new SQLiteConnection($"Data Source={SQLiteSchemaStrings.DB_FILE_NAME};");
+            this.Connection.Open();
 
-            CreateTables();
+            this.CreateTables();
         }
 
         private void CreateTables()
         {
-            using (var cmd = Connection.CreateCommand())
+            using (var cmd = this.Connection.CreateCommand())
             {
                 cmd.CommandText = SQLiteSchemaStrings.SongHistoryTableCreate;
                 cmd.ExecuteNonQuery();
             }
 
-            using (var cmd = Connection.CreateCommand())
+            using (var cmd = this.Connection.CreateCommand())
             {
                 cmd.CommandText = SQLiteSchemaStrings.SongHistoryTableIdIndex;
                 cmd.ExecuteNonQuery();
@@ -52,13 +47,13 @@ namespace RockSnifferGui.DataStore
 
             // Enable WAL mode, it is MUCH faster
             // It shouldn't have any downsides in this case
-            using (var cmd = Connection.CreateCommand())
+            using (var cmd = this.Connection.CreateCommand())
             {
                 cmd.CommandText = SQLiteSchemaStrings.WriteAheadLogPragma;
                 cmd.ExecuteNonQuery();
             }
 
-            using (var cmd = Connection.CreateCommand())
+            using (var cmd = this.Connection.CreateCommand())
             {
                 cmd.CommandText = SQLiteSchemaStrings.SynchronousNormalPragma;
                 cmd.ExecuteNonQuery();
@@ -76,9 +71,9 @@ namespace RockSnifferGui.DataStore
             {
                 long toReturn = 0;
 
-                SQLiteTransaction transaction = Connection.BeginTransaction();
+                SQLiteTransaction transaction = this.Connection.BeginTransaction();
 
-                using (var cmd = Connection.CreateCommand())
+                using (var cmd = this.Connection.CreateCommand())
                 {
                     cmd.CommandText = SQLiteSchemaStrings.PlayHistoryInsert;
 
@@ -122,7 +117,7 @@ namespace RockSnifferGui.DataStore
                     #endregion
 
                     cmd.ExecuteNonQuery();
-                    toReturn = Connection.LastInsertRowId;
+                    toReturn = this.Connection.LastInsertRowId;
 
                     transaction.Commit();
 
@@ -143,6 +138,36 @@ namespace RockSnifferGui.DataStore
             }
         }
 
+        public List<SongPlayInstance> GetAll()
+        {
+            try
+            {
+                List<SongPlayInstance> toReturn = new List<SongPlayInstance>();
+
+                using (var cmd = this.Connection.CreateCommand())
+                {
+                    cmd.CommandText = SQLiteSchemaStrings.PlayHistorySelectAll;
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            toReturn.Add(this.ParseSongPlayInstance(reader));
+                        }
+                    }
+                }
+
+                return toReturn;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException(ex);
+                //Utilities.ShowExceptionMessageBox(ex);
+
+                throw ex;
+            }
+        }
+        
         public static byte[] SerializeImage(Image image, object imageLock)
         {
             byte[] toReturn = null;
@@ -174,124 +199,44 @@ namespace RockSnifferGui.DataStore
             return toReturn;
         }
 
-        public SongPlayInstance Get(string SongID)
+        private SongPlayInstance ParseSongPlayInstance(SQLiteDataReader reader)
         {
-            try
+            SongPlayInstance toReturn = null;
+
+            var songDetails = new SongDetails
             {
-                SongPlayInstance toReturn = null;
+                songID = ReadField<string>(reader, "songid"),
+                songName = ReadField<string>(reader, "songname"),
+                artistName = ReadField<string>(reader, "artistname"),
+                albumName = ReadField<string>(reader, "albumname"),
+                songLength = (float)ReadField<double>(reader, "songLength"),
+                albumYear = (int)ReadField<long>(reader, "albumYear"),
+                arrangements = JsonConvert.DeserializeObject<List<ArrangementDetails>>(ReadField<string>(reader, "arrangements")),
+                albumArt = null
+            };
 
-                using (var cmd = Connection.CreateCommand())
-                {
-                    cmd.CommandText = SQLiteSchemaStrings.PlayHistorySelectBySongId;
-                    cmd.Parameters.AddWithValue("@songid", SongID);
+            //try
+            //{
+            //    byte[] blob = ReadField<byte[]>(reader, "album_art");
+            //    songDetails.albumArt = this.DeserializeImage(blob);
+            //}
+            //catch
+            //{
 
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var songDetails = new SongDetails
-                            {
-                                songID = ReadField<string>(reader, "songid"),
-                                songName = ReadField<string>(reader, "songname"),
-                                artistName = ReadField<string>(reader, "artistname"),
-                                albumName = ReadField<string>(reader, "albumname"),
-                                songLength = (float)ReadField<double>(reader, "songLength"),
-                                albumYear = (int)ReadField<long>(reader, "albumYear"),
-                                arrangements = JsonConvert.DeserializeObject<List<ArrangementDetails>>(ReadField<string>(reader, "arrangements")),
-                                albumArt = null
-                            };
+            //}
 
-                            //try
-                            //{
-                            //    byte[] blob = ReadField<byte[]>(reader, "album_art");
-                            //    songDetails.albumArt = this.DeserializeImage(blob);
-                            //}
-                            //catch
-                            //{
+            var noteDetails = new LearnASongNoteData();
 
-                            //}
+            DateTime startTime = ReadField<DateTime>(reader, "start_time");
+            DateTime endTime = ReadField<DateTime>(reader, "end_time");
 
-                            var noteDetails = new LearnASongNoteData();
+            toReturn = new SongPlayInstance(songDetails, noteDetails, startTime, endTime);
 
-                            toReturn = new SongPlayInstance(songDetails, noteDetails);
-                            toReturn.NotesHit = (int)ReadField<long>(reader, "notes_hit");
-                            toReturn.NotesMissed = (int)ReadField<long>(reader, "notes_missed");
-                            toReturn.TotalNotes = (int)ReadField<long>(reader, "total_notes");
-                            toReturn.HighestHitStreak = (int)ReadField<long>(reader, "max_streak");
-
-                        }
-                    }
-                }
-
-                return toReturn;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogException(ex);
-                Utilities.ShowExceptionMessageBox(ex);
-
-                throw ex;
-            }
-        }
-
-        public List<SongPlayInstance> GetAll()
-        {
-            try
-            {
-                List<SongPlayInstance> toReturn = new List<SongPlayInstance>();
-
-                using (var cmd = Connection.CreateCommand())
-                {
-                    cmd.CommandText = SQLiteSchemaStrings.PlayHistorySelectAll;
-
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var songDetails = new SongDetails
-                            {
-                                songID = ReadField<string>(reader, "songid"),
-                                songName = ReadField<string>(reader, "songname"),
-                                artistName = ReadField<string>(reader, "artistname"),
-                                albumName = ReadField<string>(reader, "albumname"),
-                                songLength = (float)ReadField<double>(reader, "songLength"),
-                                albumYear = (int)ReadField<long>(reader, "albumYear"),
-                                //arrangements = JsonConvert.DeserializeObject<List<ArrangementDetails>>(ReadField<string>(reader, "arrangements")),
-                                albumArt = null
-                            };
-
-                            //try
-                            //{
-                            //    byte[] blob = ReadField<byte[]>(reader, "album_art");
-                            //    songDetails.albumArt = this.DeserializeImage(blob);
-                            //}
-                            //catch(Exception ex)
-                            //{
-                            //    Logger.LogException(ex);
-                            //}
-                            
-                            var noteDetails = new LearnASongNoteData();
-
-                            SongPlayInstance toAdd = new SongPlayInstance(songDetails, noteDetails, ReadField<DateTime>(reader, "start_time"), ReadField<DateTime>(reader, "end_time"));
-                            toAdd.NotesHit = (int)ReadField<long>(reader, "notes_hit");
-                            toAdd.NotesMissed = (int)ReadField<long>(reader, "notes_missed");
-                            toAdd.TotalNotes = (int)ReadField<long>(reader, "total_notes");
-                            toAdd.HighestHitStreak = (int)ReadField<long>(reader, "max_streak");
-
-                            toReturn.Add(toAdd);
-                        }
-                    }
-                }
-
-                return toReturn;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogException(ex);
-                Utilities.ShowExceptionMessageBox(ex);
-
-                throw ex;
-            }
+            toReturn.NotesHit = (int)ReadField<long>(reader, "notes_hit");
+            toReturn.NotesMissed = (int)ReadField<long>(reader, "notes_missed");
+            toReturn.TotalNotes = (int)ReadField<long>(reader, "total_notes");
+            toReturn.HighestHitStreak = (int)ReadField<long>(reader, "max_streak");
+            return toReturn;
         }
 
         private T ReadField<T>(SQLiteDataReader reader, string field)
@@ -310,9 +255,9 @@ namespace RockSnifferGui.DataStore
         {
             long toReturn = 0;
 
-            SQLiteTransaction transaction = Connection.BeginTransaction();
+            SQLiteTransaction transaction = this.Connection.BeginTransaction();
 
-            using (var cmd = Connection.CreateCommand())
+            using (var cmd = this.Connection.CreateCommand())
             {
                 cmd.CommandText = SQLiteSchemaStrings.PlayHistoryInsert;
 
@@ -349,7 +294,7 @@ namespace RockSnifferGui.DataStore
                 cmd.Parameters["@album_art"].Value = null;
 
                 cmd.ExecuteNonQuery();
-                toReturn = Connection.LastInsertRowId;
+                toReturn = this.Connection.LastInsertRowId;
 
                 transaction.Commit();
             }
@@ -409,7 +354,6 @@ namespace RockSnifferGui.DataStore
             VALUES (@songid,@songname,@artistname,@albumname,@songLength,@albumYear,@arrangements,@album_art,@notes_hit,@notes_missed,@total_notes,@max_streak,@start_time,@end_time);
             ";
 
-        public static string PlayHistorySelectBySongId = $@"SELECT * FROM {SQLiteSchemaStrings.PLAYED_SONGS_TABLE_NAME} WHERE songid = @songid LIMIT 1";
         public static string PlayHistorySelectAll = $@"SELECT * FROM {SQLiteSchemaStrings.PLAYED_SONGS_TABLE_NAME}";
     }
 }

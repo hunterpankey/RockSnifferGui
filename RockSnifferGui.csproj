@@ -37,6 +37,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
+    </Reference>
+    <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="MahApps.Metro.IconPacks.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0c0d510f9915137a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.IconPacks.Material.4.8.0\lib\net47\MahApps.Metro.IconPacks.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="MahApps.Metro.IconPacks.Material, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0c0d510f9915137a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.IconPacks.Material.4.8.0\lib\net47\MahApps.Metro.IconPacks.Material.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -64,6 +76,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Common\CaseConverter.cs" />
     <Compile Include="Common\GenericNoteData.cs" />
     <Compile Include="Common\GenericViewModel.cs" />
     <Compile Include="Common\Utilities.cs" />
@@ -78,11 +91,29 @@
     <Compile Include="Controls\PlayHistoryGrid.xaml.cs">
       <DependentUpon>PlayHistoryGrid.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PlayHistoryGridViewModel.cs" />
+    <Compile Include="Controls\SongGraphControl.xaml.cs">
+      <DependentUpon>SongGraphControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SongGraphLegend.xaml.cs">
+      <DependentUpon>SongGraphLegend.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SongSectionsControl.xaml.cs">
+      <DependentUpon>SongSectionsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SongSectionsViewModel.cs" />
     <Compile Include="DebugDataBindingConvertor.cs" />
+    <Compile Include="Model\NoteStatus.cs" />
     <Compile Include="PlayHistoryViewModel.cs" />
+    <Compile Include="Services\CurrentSongService.cs" />
     <Compile Include="Services\GameProcessChangedEventArgs.cs" />
     <Compile Include="Services\GameProcessService.cs" />
+    <Compile Include="Services\PlayHistoryService.cs" />
     <Compile Include="Services\SnifferService.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="Windows\GraphWindow.xaml.cs">
+      <DependentUpon>GraphWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\MainOverlayWindow.xaml.cs">
       <DependentUpon>MainOverlayWindow.xaml</DependentUpon>
     </Compile>
@@ -96,6 +127,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\PlayHistoryGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SongGraphControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SongGraphLegend.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SongSectionsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -131,6 +174,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Windows\GraphWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\MainOverlayWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -158,6 +205,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Resource Include="Resources\Cast W01 Regular.ttf" />
     <Resource Include="Resources\ProximaSansMedium.ttf" />
     <Resource Include="Resources\Amplitude-Medium.ttf" />
     <None Include="packages.config" />

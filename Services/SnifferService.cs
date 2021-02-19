@@ -3,6 +3,7 @@ using RockSnifferLib.Cache;
 using RockSnifferLib.Events;
 using RockSnifferLib.Logging;
 using RockSnifferLib.Sniffing;
+using RockSnifferGui.Common;
 using System;
 using System.Diagnostics;
 
@@ -33,6 +34,7 @@ namespace RockSnifferGui.Services
         private static Sniffer sniffer;
 
         private SongDetails currentSong = new SongDetails();
+        private SnifferState previousState = SnifferState.NONE;
 
         //public Sniffer Sniffer { get => SnifferService.sniffer; private set => SnifferService.sniffer = value; }
         #region Events
@@ -51,10 +53,15 @@ namespace RockSnifferGui.Services
 
         public delegate void OnMemoryReadout(object sender, OnMemoryReadoutArgs args);
         public event OnMemoryReadout MemoryReadout;
+
+        public delegate void OnStateChanged(object sender, OnStateChangedArgs args);
+        public event OnStateChanged StateChanged;
         #endregion
         #endregion
 
-        public SnifferState Status
+        public SongDetails CurrentSong { get => this.currentSong; set => this.currentSong = value; }
+
+        public SnifferState CurrentState
         {
             get
             {
@@ -69,7 +76,7 @@ namespace RockSnifferGui.Services
             }
         }
 
-        public SongDetails CurrentSong { get => this.currentSong; set => this.currentSong = value; }
+        public SnifferState PreviousState { get => this.previousState; private set => this.previousState = value; }
 
         private SnifferService()
         {
@@ -105,6 +112,7 @@ namespace RockSnifferGui.Services
         {
             if (SnifferService.sniffer != null)
             {
+                SnifferService.sniffer.OnStateChanged -= this.Sniffer_OnStateChanged;
                 SnifferService.sniffer.OnSongChanged -= this.Sniffer_OnSongChanged;
                 SnifferService.sniffer.OnSongStarted -= this.Sniffer_OnSongStarted;
                 SnifferService.sniffer.OnSongEnded -= this.Sniffer_OnSongEnded;
@@ -116,6 +124,7 @@ namespace RockSnifferGui.Services
         {
             SnifferService.sniffer = new Sniffer(process, cache, config.snifferSettings);
 
+            SnifferService.sniffer.OnStateChanged += this.Sniffer_OnStateChanged;
             SnifferService.sniffer.OnSongChanged += this.Sniffer_OnSongChanged;
             SnifferService.sniffer.OnSongStarted += this.Sniffer_OnSongStarted;
             SnifferService.sniffer.OnSongEnded += this.Sniffer_OnSongEnded;
@@ -124,21 +133,33 @@ namespace RockSnifferGui.Services
             this.SnifferChanged?.Invoke(this, new SnifferChangedEventArgs(SnifferService.sniffer));
         }
 
+        private void Sniffer_OnStateChanged(object sender, OnStateChangedArgs e)
+        {
+            Logger.Log($"SnifferService: OnStateChanged: from {e.oldState.ToString()} to {e.newState.ToString()}");
+            this.PreviousState = e.oldState;
+            // Current State is always live from the Sniffer object
+
+            this.StateChanged?.Invoke(this, e);
+        }
+
 
         #region Sniffer Event Passthrough Handlers
         private void Sniffer_OnSongChanged(object sender, OnSongChangedArgs e)
         {
+            Logger.Log($"SnifferService: OnSongChanged: {Utilities.SongDetailsDisplay(e.songDetails)}");
             this.CurrentSong = e.songDetails;
             this.SongChanged?.Invoke(this, e);
         }
 
         private void Sniffer_OnSongStarted(object sender, OnSongStartedArgs e)
         {
+            Logger.Log($"SnifferService: OnSongStarted: {Utilities.SongDetailsDisplay(e.song)}");
             this.SongStarted?.Invoke(this, e);
         }
 
         private void Sniffer_OnSongEnded(object sender, OnSongEndedArgs e)
         {
+            Logger.Log($"SnifferService: OnSongEnded: {Utilities.SongDetailsDisplay(e.song)}");
             this.SongEnded?.Invoke(this, e);
         }
 

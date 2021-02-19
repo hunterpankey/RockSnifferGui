@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks" 
              xmlns:local="clr-namespace:RockSnifferGui.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="225" d:DesignWidth="350" Margin="5">
@@ -11,9 +12,6 @@
     </UserControl.DataContext>
     <UserControl.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Resources/ColorsAndBrushes.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
             <Style x:Key="NotesPlayedLabel" TargetType="Label" BasedOn="{StaticResource BaseLabel}">
                 <Setter Property="FontSize" Value="16" />
             </Style>
@@ -44,10 +42,13 @@
         <!-- Song Elapsed Time Display -->
         <Grid x:Name="songTimerProgressBarGrid" Grid.Row="0" Margin="0,0,0,5">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="110" SharedSizeGroup="RowTitleText" />
-                <ColumnDefinition />
+                <ColumnDefinition Width="1*" SharedSizeGroup="RowTitleText" />
+                <ColumnDefinition Width="19*" />
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Song Time" Style="{StaticResource NotesPlayedTextBlock}" />
+            <Viewbox Grid.Column="0" HorizontalAlignment="Center">
+                <iconPacks:PackIconMaterial Kind="ClockOutline" ToolTip="Song Time" />
+            </Viewbox>
+            <!--<TextBlock Text="Song Time" Style="{StaticResource NotesPlayedTextBlock}" />-->
             <Border Grid.Column="1" Style="{StaticResource NotesPlayedBorder}">
                 <Grid>
                     <ProgressBar x:Name="songTimerProgressBar" Value="{Binding SongPercentage, Mode=OneWay}" Minimum="0" Maximum="1"
@@ -62,10 +63,18 @@
         <!-- New Notes Hit/Missed/Total Display-->
         <Grid x:Name="hitMissProgressBarGrid" Grid.Row="1" Margin="0,0,0,5">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="110" SharedSizeGroup="RowTitleText" />
-                <ColumnDefinition />
+                <ColumnDefinition Width="1*" SharedSizeGroup="RowTitleText" />
+                <ColumnDefinition Width="19*" />
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Hit / Miss" Style="{StaticResource NotesPlayedTextBlock}" />
+            <Viewbox Grid.Column="0" HorizontalAlignment="Right">
+                <!--<StackPanel Orientation="Horizontal">
+                    <iconPacks:PackIconMaterial Kind="BullseyeArrow" ToolTip="Notes Hit" />
+                    <iconPacks:PackIconMaterial Kind="SlashForward" ToolTip="" />
+                    <iconPacks:PackIconMaterial Kind="Close" ToolTip="Notes Missed" />
+                </StackPanel>-->
+                <iconPacks:PackIconMaterial Kind="BullseyeArrow" ToolTip="Notes Hit" />
+            </Viewbox>
+            <!--<TextBlock Text="Hit / Miss" Style="{StaticResource NotesPlayedTextBlock}" />-->
             <Border Grid.Column="1" Style="{StaticResource NotesPlayedBorder}">
                 <Grid>
                     <ProgressBar x:Name="hitMissProgressBar" Value="{Binding NotesHit, Mode=OneWay}" Minimum="0" Maximum="{Binding TotalNotes}"
@@ -83,10 +92,13 @@
         <!-- New Streaks Display -->
         <Grid x:Name="streaksProgressBarGrid" Grid.Row="2" Margin="0,0,0,5">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="110" SharedSizeGroup="RowTitleText" />
-                <ColumnDefinition />
+                <ColumnDefinition Width="1*" SharedSizeGroup="RowTitleText" />
+                <ColumnDefinition Width="19*" />
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Streaks" Style="{StaticResource NotesPlayedTextBlock}" />
+            <Viewbox Grid.Column="0" HorizontalAlignment="Right">
+                <iconPacks:PackIconMaterial Kind="Waves" ToolTip="Current/Max Streak" />
+            </Viewbox>
+            <!--<TextBlock Text="Streaks" Style="{StaticResource NotesPlayedTextBlock}" />-->
             <Border Grid.Column="1" Style="{StaticResource NotesPlayedBorder}">
                 <Grid>
                     <ProgressBar x:Name="streaksProgressBar" Value="{Binding CurrentStreak, Mode=OneWay}" Minimum="0" Maximum="{Binding MaxStreak}"
@@ -104,10 +116,13 @@
         <!-- Note Accuracy Display -->
         <Grid x:Name="accuracyProgressBarGrid" Grid.Row="3" Margin="0,0,0,5">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="110" SharedSizeGroup="RowTitleText" />
-                <ColumnDefinition />
+                <ColumnDefinition Width="1*" SharedSizeGroup="RowTitleText" />
+                <ColumnDefinition Width="19*" />
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Note Hit Pct." Style="{StaticResource NotesPlayedTextBlock}" />
+            <Viewbox Grid.Column="0" HorizontalAlignment="Right">
+                <iconPacks:PackIconMaterial Kind="Percent" ToolTip="Accuracy" />
+            </Viewbox>
+            <!--<TextBlock Text="Note Hit Pct." Style="{StaticResource NotesPlayedTextBlock}" />-->
             <Border Grid.Column="1" Style="{StaticResource NotesPlayedBorder}">
                 <Grid>
                     <ProgressBar x:Name="accuracyProgressBar" Value="{Binding Accuracy, Mode=OneWay}" Minimum="0" Maximum="1" 

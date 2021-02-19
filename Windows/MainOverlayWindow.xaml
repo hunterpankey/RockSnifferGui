@@ -19,15 +19,21 @@
                               BlurRadius="{Binding DropShadowRadius}" 
                               Opacity="{Binding DropShadowOpacity}"
             Color="{Binding DropShadowColor}" />
-            <!--Color="{StaticResource Clouds}" />-->
         </Border.Effect>
         <Grid x:Name="contentGrid" Background="{StaticResource WetAsphaltBrush}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Controls:NowPlayingControl Grid.Column="0" x:Name="nowPlayingControl" />
-            <Controls:NotesPlayedDataControl Grid.Column="1" x:Name="notesPlayedControl" />
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="30" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" x:Name="topContentGrid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Controls:NowPlayingControl Grid.Column="0" x:Name="nowPlayingControl" />
+                <Controls:NotesPlayedDataControl Grid.Column="1" x:Name="notesPlayedControl" />
+            </Grid>
+            <Controls:SongSectionsControl Grid.Row="1" x:Name="songSectionsControl" />
         </Grid>
     </Border>
 </Window>

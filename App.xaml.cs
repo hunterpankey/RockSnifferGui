@@ -1,11 +1,5 @@
 ﻿using RockSnifferGui.Services;
 using RockSnifferLib.Cache;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace RockSnifferGui
@@ -16,23 +10,29 @@ namespace RockSnifferGui
     public partial class App : Application
     {
         private static GameProcessService gameProcessService;
+        private static SnifferService snifferService;
+        private static CurrentSongService currentSongService;
         private static ICache cache;
 
-        private const string version = "0.3.0a";
+        private const string version = "0.4.0";
         public static string Version { get => "v" + version; }
         public static ICache Cache { get => App.cache; set => App.cache = value; }
 
         public App()
         {
             App.gameProcessService = GameProcessService.Instance;
+            App.snifferService = SnifferService.Instance;
+            App.currentSongService = CurrentSongService.Instance;
+
             App.cache = new SQLiteCache();
 
-            this.Exit += App_Exit;
+            this.Exit += this.App_Exit;
         }
 
         private void App_Exit(object sender, ExitEventArgs e)
         {
             GameProcessService.Instance.Dispose();
+            RockSnifferGui.Properties.Settings.Default.Save();
         }
     }
 }

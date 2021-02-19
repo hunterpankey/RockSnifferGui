@@ -3,29 +3,53 @@ using RockSnifferGui.Model;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows.Input;
 
 namespace RockSnifferGui
 {
     public class PlayHistoryViewModel : GenericViewModel, INotifyPropertyChanged
     {
-        private ObservableCollection<SongPlayInstance> songPlays = new ObservableCollection<SongPlayInstance>();
+        //private ObservableCollection<SongPlayInstance> allSongPlays = new ObservableCollection<SongPlayInstance>();
+        private int songPlayCount;
+        private SongPlayInstance selectedSongInstance = new SongPlayInstance();
 
-        public int SongPlayCount { get => this.SongPlays.Count(); }
-        public ObservableCollection<SongPlayInstance> SongPlays
-        {
-            get => this.songPlays;
+        public int SongPlayCount { 
+            get => this.songPlayCount; 
             set
             {
-                this.SetProperty(ref this.songPlays, value);
-                this.OnPropertyChanged(new PropertyChangedEventArgs("SongPlayCount"));
+                this.SetProperty(ref this.songPlayCount, value, "SongPlayCount");
             }
         }
+        //public ObservableCollection<SongPlayInstance> AllSongPlays
+        //{
+        //    get => this.allSongPlays;
+        //    set
+        //    {
+        //        this.SetProperty(ref this.allSongPlays, value, "AllSongPlays");
+        //        this.OnPropertyChanged(new PropertyChangedEventArgs("SongPlayCount"));
+        //    }
+        //}
 
-        public void AddSongPlay(SongPlayInstance songPlay)
+        //public void AddSongPlay(SongPlayInstance songPlay)
+        //{
+        //    this.allSongPlays.Add(songPlay);
+        //    this.OnPropertyChanged(new PropertyChangedEventArgs("AllSongPlays"));
+        //    this.OnPropertyChanged(new PropertyChangedEventArgs("SongPlayCount"));
+        //}
+
+        public ICommand SelectSongCommand
         {
-            this.songPlays.Add(songPlay);
-            this.OnPropertyChanged(new PropertyChangedEventArgs("SongPlays"));
-            this.OnPropertyChanged(new PropertyChangedEventArgs("SongPlayCount"));
+            get;
+            set;
+        }
+
+        public SongPlayInstance SelectedSongInstance 
+        { 
+            get => this.selectedSongInstance;
+            set
+            {
+                this.SetProperty(ref this.selectedSongInstance, value, "SelectedSongInstance");
+            }
         }
     }
 }

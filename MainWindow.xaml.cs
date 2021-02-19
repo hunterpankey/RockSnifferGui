@@ -23,18 +23,13 @@ namespace RockSnifferGui
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        internal static ICache cache;
         internal static Config config;
 
         private static readonly bool Is64Bits = (IntPtr.Size == 8);
 
-        private List<SongPlayInstance> playedSongs = new List<SongPlayInstance>();
-        private SongPlayInstance currentSong;
-
         private PlayHistoryWindow playHistoryWindow;
         private MainOverlayWindow mainOverlayWindow;
-
-        SQLiteStore songPlayInstancesDb = new SQLiteStore();
+        private GraphWindow graphWindow;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -50,17 +45,10 @@ namespace RockSnifferGui
         public MainWindow()
         {
             this.InitializeComponent();
+            this.ContentRendered += this.MainWindow_ContentRendered;
 
-            try
-            {
-                GameProcessService.Instance.GameProcessChanged += this.GameProcessService_GameProcessChanged;
-                GameProcessService.Instance.PropertyChanged += this.GameProcessService_PropertyChanged;
-                this.Initialize();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message + ex.StackTrace, "Exception", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            GameProcessService.Instance.PropertyChanged += this.GameProcessService_PropertyChanged;
+            this.Initialize();
 
             this.DataContext = this;
         }
@@ -68,6 +56,8 @@ namespace RockSnifferGui
         public void Initialize()
         {
             this.Title = string.Format("Unofficial RockSniffer GUI {0}", App.Version);
+            this.Closing += this.MainWindow_Closing;
+
             Logger.Log("RockSniffer GUI {0} ({1}bits)", App.Version, Is64Bits ? "64" : "32");
 
             config = new Config();
@@ -90,17 +80,7 @@ namespace RockSnifferGui
             Logger.logSystemHandleQuery = config.debugSettings.debugSystemHandleQuery;
             Logger.logProcessingQueue = config.debugSettings.debugProcessingQueue;
 
-            //Initialize cache
-            cache = new SQLiteCache();
-
-            this.playedSongs = this.songPlayInstancesDb.GetAll();
-
             Logger.Log("Waiting for rocksmith");
-
-            if (GameProcessService.Instance.Status == GameProcessStatus.RUNNING)
-            {
-                this.SetupSniffer(GameProcessService.Instance.GameProcess);
-            }
 
             //Add RPC event listeners
             // not doing anything with Discord right now
@@ -117,10 +97,14 @@ namespace RockSnifferGui
             //}
         }
 
-        private void SetupSniffer(Process process)
+        public void RestoreLocation()
         {
-            SnifferService.Instance.SongStarted += this.SnifferService_OnSongStarted;
-            SnifferService.Instance.SongEnded += this.SnifferService_OnSongEnded;
+            Properties.Settings settings = Properties.Settings.Default;
+
+            this.Left = settings.MainWindowLeft;
+            this.Top = settings.MainWindowTop;
+            this.Width = settings.MainWindowWidth;
+            this.Height = settings.MainWindowHeight;
         }
 
         #region Game Process Events
@@ -131,73 +115,10 @@ namespace RockSnifferGui
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GameProcessServiceStatus"));
             }
         }
-
-        private void GameProcessService_GameProcessChanged(object sender, GameProcessChangedEventArgs e)
-        {
-            this.SetupSniffer(e.Process);
-        }
-        #endregion
-
-        #region Sniffer Events
-        private void SnifferService_OnSongStarted(object sender, OnSongStartedArgs e)
-        {
-            try
-            {
-                SnifferService.Instance.MemoryReadout += this.SnifferService_OnMemoryReadout;
-                this.currentSong = new SongPlayInstance(e.song);
-                this.currentSong.StartSong();
-            }
-            catch (Exception ex)
-            {
-                Utilities.ShowExceptionMessageBox(ex);
-            }
-        }
-
-        private void SnifferService_OnSongEnded(object sender, OnSongEndedArgs e)
-        {
-            try
-            {
-                SnifferService.Instance.MemoryReadout -= this.SnifferService_OnMemoryReadout;
-
-                if (this.currentSong != null)
-                {
-                    this.currentSong.FinishSong();
-                    this.playedSongs.Add(this.currentSong);
-
-                    this.songPlayInstancesDb.Add(this.currentSong);
-
-                    if (this.playHistoryWindow != null)
-                    {
-                        this.playHistoryWindow.AddSongPlay(this.currentSong);
-                    }
-                }
-
-                this.currentSong = null;
-            }
-            catch (Exception ex)
-            {
-                Utilities.ShowExceptionMessageBox(ex);
-            }
-        }
-
-        private void SnifferService_OnMemoryReadout(object sender, OnMemoryReadoutArgs args)
-        {
-            try
-            {
-                if ((this.currentSong != null) && (args.memoryReadout.noteData != null))
-                {
-                    this.currentSong.UpdateNoteData(args.memoryReadout.noteData);
-                }
-            }
-            catch (Exception ex)
-            {
-                Utilities.ShowExceptionMessageBox(ex);
-            }
-        }
         #endregion
 
         #region UI Events
-        public void TogglePlayHistoryCommandBinding_Executed(object sender, ExecutedRoutedEventArgs args)
+        private void TogglePlayHistoryCommandBinding_Executed(object sender, ExecutedRoutedEventArgs args)
         {
             if (this.playHistoryWindow != null)
             {
@@ -206,17 +127,16 @@ namespace RockSnifferGui
             }
             else
             {
-                this.playHistoryWindow = new PlayHistoryWindow(this.playedSongs);
+                this.playHistoryWindow = new PlayHistoryWindow();
                 this.playHistoryWindow.Closed += this.PlayHistoryWindow_Closed;
                 this.playHistoryMenuItem.IsChecked = true;
                 this.playHistoryWindow.Show();
-                this.playHistoryWindow.ScrollToBottom();
             }
         }
 
         private void ToggleOverlayCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if(this.mainOverlayWindow != null)
+            if (this.mainOverlayWindow != null)
             {
                 this.mainOverlayWindow.Close();
                 this.mainOverlayWindow = null;
@@ -224,14 +144,28 @@ namespace RockSnifferGui
             else
             {
                 this.mainOverlayWindow = new MainOverlayWindow();
+                this.mainOverlayWindow.WindowState = WindowState.Normal;
+
                 this.mainOverlayWindow.Closed += this.MainOverlayWindow_Closed;
+                this.mainOverlayMenuItem.IsChecked = true;
                 this.mainOverlayWindow.Show();
             }
         }
 
-        private void MainOverlayWindow_Closed(object sender, EventArgs e)
+        private void ToggleGraphsCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            this.mainOverlayWindow = null;
+            if (this.graphWindow != null)
+            {
+                this.graphWindow.Close();
+                this.graphWindow = null;
+            }
+            else
+            {
+                this.graphWindow = new GraphWindow();
+                this.graphWindow.Closed += this.GraphWindow_Closed;
+                this.graphMenuItem.IsChecked = true;
+                this.graphWindow.Show();
+            }
         }
 
         private void ManualTestCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -281,9 +215,35 @@ namespace RockSnifferGui
             this.playHistoryMenuItem.IsChecked = false;
         }
 
+        private void MainOverlayWindow_Closed(object sender, EventArgs e)
+        {
+            this.mainOverlayWindow = null;
+            this.mainOverlayMenuItem.IsChecked = false;
+        }
+
+        private void GraphWindow_Closed(object sender, EventArgs e)
+        {
+            this.graphWindow = null;
+            this.graphMenuItem.IsChecked = false;
+        }
         #endregion
 
         #region App Lifecycle Events
+        private void MainWindow_ContentRendered(object sender, EventArgs e)
+        {
+            this.RestoreLocation();
+        }
+
+        private void MainWindow_Closing(object sender, CancelEventArgs e)
+        {
+            Properties.Settings settings = Properties.Settings.Default;
+
+            settings.MainWindowLeft = this.Left;
+            settings.MainWindowTop = this.Top;
+            settings.MainWindowWidth = this.Width;
+            settings.MainWindowHeight = this.Height;
+        }
+
         private void ExitCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             Application.Current.Shutdown(0);
