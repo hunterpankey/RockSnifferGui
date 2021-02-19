@@ -21,7 +21,7 @@ New in v0.4.0, you can double click on a played song to show just that song, so 
 ### Overlay
 Click the Toggle Overlay button on the main window toolbar to bring up the overlay window. This is a borderless/chromeless window suitable for showing on top of the game window for heads-up, live data. There's a nice glow effect around the window so it's not just a bare rectangle on screen. It uses the same displays as the main window, only side-by-side so it fits in a corner without covering a ton of the game window. Obviously, if you want to capture that in OBS or whatever and scale it up or down, feel free. (If that's possible. I know nothing about OBS, so you're on your own, Al Capone.)
 
-URSG doesn't yet remember the window locations between executions, so you'll have to move it in place each time it's shown. That's obviously a necessary feature, but, one step at a time, right? To move the window, just click and drag anywhere in the overlay and drop it wherever you want it.
+~~URSG doesn't yet remember the window locations between executions, so you'll have to move it in place each time it's shown. That's obviously a necessary feature, but, one step at a time, right?~~ This is updated for v0.4.0. URSG will now remember where the main window and overlay were from last time and put them there again. To move the window, just click and drag anywhere in the overlay and drop it wherever you want it.
 
 I initially had to set Rocksmith to windowed mode, but it seems to work in full screen mode with this build. Still, if it doesn't want to stay on top of the game window, hit F11 (on Windows, at least), or go into the game options' graphics settings and set it to windowed mode.
 
