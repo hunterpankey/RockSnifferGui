@@ -14,7 +14,7 @@ namespace RockSnifferGui
         private static CurrentSongService currentSongService;
         private static ICache cache;
 
-        private const string version = "0.3.0a";
+        private const string version = "0.4.0";
         public static string Version { get => "v" + version; }
         public static ICache Cache { get => App.cache; set => App.cache = value; }
 
